@@ -8,7 +8,13 @@ import {
   Sparkles,
   ChevronDown,
   TrendingUp,
+  FileText,
+  X,
+  Building2,
 } from "lucide-react";
+
+const PRODUCT_ID = "md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
+const CHECKOUT_URL = `https://madethis.com/checkout/orglens-ai/${PRODUCT_ID}`;
 
 function unlockAndGo(router: ReturnType<typeof useRouter>) {
   try {
@@ -60,7 +66,7 @@ interface RoleProfile {
   role: Role;
   required: Requirement[];
   candidates: Candidate[];
-  benchmarkPercentile: string; // e.g., "Top 12% of VP Product profiles"
+  benchmarkPercentile: string;
   topCandidateLabel: string;
   topCandidateScore: number;
   teamAvgScore: number;
@@ -681,13 +687,19 @@ function toneText(t: "green" | "amber" | "red") {
   return "text-rose-300";
 }
 
-function toneBg(t: "green" | "amber" | "red") {
-  if (t === "green") return "bg-emerald-500";
-  if (t === "amber") return "bg-amber-400";
-  return "bg-rose-500";
+export default function RoleFitPage() {
+  const [demoMode, setDemoMode] = useState(false);
+
+  if (demoMode) {
+    return <DemoRoleFit onClose={() => setDemoMode(false)} />;
+  }
+  return <DefaultRoleFit onActivateDemo={() => setDemoMode(true)} />;
 }
 
-export default function RoleFitPage() {
+// ===========================================================================
+// DEFAULT (non-demo) ROLE FIT — original content + new "View Full Demo" button
+// ===========================================================================
+function DefaultRoleFit({ onActivateDemo }: { onActivateDemo: () => void }) {
   const router = useRouter();
   const [selected, setSelected] = useState<Role>("VP Product");
   const [expandedRank, setExpandedRank] = useState<number | null>(1);
@@ -702,24 +714,40 @@ export default function RoleFitPage() {
     return () => clearTimeout(t);
   }, [selected]);
 
-  const expanded = useMemo(
-    () => profile.candidates.find((c) => c.rank === expandedRank) ?? null,
-    [profile, expandedRank]
-  );
-
   return (
     <div className="mx-auto max-w-[1400px]">
-      {/* Header */}
-      <header className="mb-8">
-        <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
-          Lens 2 — Role–Competency Fit Engine
-        </p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
-          Role–Competency Fit Engine
-        </h1>
-        <p className="mt-2 max-w-3xl text-sm text-zinc-400">
-          Identify who best fits critical roles using competency intelligence.
-        </p>
+      {/* Header with action buttons */}
+      <header className="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
+            Lens 2 — Role–Competency Fit Engine
+          </p>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
+            Role–Competency Fit Engine
+          </h1>
+          <p className="mt-2 max-w-3xl text-sm text-zinc-400">
+            Identify who best fits critical roles using competency intelligence.
+          </p>
+        </div>
+
+        {/* Action buttons */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
+            onClick={onActivateDemo}
+            className="inline-flex items-center gap-2 rounded-lg border-2 border-indigo-600 bg-transparent px-5 py-2.5 text-sm font-semibold text-indigo-300 transition-all hover:bg-indigo-600/10 hover:text-indigo-200"
+          >
+            <FileText className="h-4 w-4" />
+            View Full Demo Role Fit
+          </button>
+          <a
+            href={CHECKOUT_URL}
+            className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-500"
+          >
+            <Sparkles className="h-4 w-4" />
+            Unlock Full Analysis — $49
+          </a>
+        </div>
       </header>
 
       {/* Role tabs */}
@@ -891,14 +919,24 @@ export default function RoleFitPage() {
                 <p className="mt-1 text-xs text-zinc-400">
                   See every candidate, fit score, and gap analysis.
                 </p>
-                <button
-                  type="button"
-                  onClick={() => unlockAndGo(router)}
-                  className="mt-4 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-5 py-2.5 text-sm font-medium text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
-                >
-                  Unlock Full Rankings — $49
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </button>
+                <div className="mt-4 flex flex-col items-center justify-center gap-2 sm:flex-row">
+                  <button
+                    type="button"
+                    onClick={() => unlockAndGo(router)}
+                    className="inline-flex items-center gap-2 rounded-full bg-indigo-500 px-5 py-2.5 text-sm font-medium text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
+                  >
+                    Unlock Full Rankings — $49
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onActivateDemo}
+                    className="inline-flex items-center gap-2 rounded-full border-2 border-indigo-500/50 bg-transparent px-4 py-2 text-xs font-medium text-indigo-300 transition-all hover:bg-indigo-500/10 hover:text-indigo-200"
+                  >
+                    <FileText className="h-3.5 w-3.5" />
+                    View Full Demo
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1191,6 +1229,949 @@ function DetailBar({
           <span className="text-amber-400">↗ Development area</span>
         )}
       </p>
+    </div>
+  );
+}
+
+// ===========================================================================
+// DEMO ROLE FIT — Alpha Investment Group · 4 roles · full ranking unlocked
+// ===========================================================================
+
+type DemoRole =
+  | "Investment Lead"
+  | "Operations Manager"
+  | "Product Manager"
+  | "Research Lead";
+
+const DEMO_ROLE_ORDER: DemoRole[] = [
+  "Investment Lead",
+  "Operations Manager",
+  "Product Manager",
+  "Research Lead",
+];
+
+interface DemoRequirement {
+  label: string;
+  weight: number; // 0-100
+}
+
+interface DemoBreakdown {
+  leadership: number;
+  execution: number;
+  adaptability: number;
+  stability: number;
+  risk: number; // lower = better
+}
+
+interface DemoCandidate {
+  rank: number;
+  name: string;
+  fit: number;
+  strengths: string[];
+  gaps: string[];
+  breakdown: DemoBreakdown;
+  insight: string;
+  benchmarkNote: string;
+}
+
+interface DemoRoleProfile {
+  role: DemoRole;
+  description: string;
+  requirements: DemoRequirement[];
+  candidates: DemoCandidate[];
+}
+
+// Reusable per-person breakdowns + insights (the spec calls these out by name)
+const PERSON_BREAKDOWNS: Record<
+  string,
+  { breakdown: DemoBreakdown; insight: string }
+> = {
+  "Chifong Dong": {
+    breakdown: { leadership: 92, execution: 96, adaptability: 78, stability: 85, risk: 12 },
+    insight:
+      "Strong strategic and execution profile. Suitable for scaling-stage investment leadership. Monitor adaptability in ambiguous environments.",
+  },
+  "Eric Li": {
+    breakdown: { leadership: 88, execution: 93, adaptability: 84, stability: 86, risk: 14 },
+    insight:
+      "Analytical depth and execution discipline at the top of the org. Best deployed in technical leadership where structured judgment is critical.",
+  },
+  "Yijun Sim": {
+    breakdown: { leadership: 78, execution: 88, adaptability: 80, stability: 78, risk: 22 },
+    insight:
+      "Strong evaluator with high goal achievement. Develops well into mid-level leadership; coaching needed on composure under sustained pressure.",
+  },
+  "Luke Cai": {
+    breakdown: { leadership: 82, execution: 85, adaptability: 92, stability: 74, risk: 24 },
+    insight:
+      "High innovation and interpersonal energy. Best suited for product or commercial leadership; pair with a strong operator for delivery discipline.",
+  },
+  "Supriya Kumar": {
+    breakdown: { leadership: 84, execution: 80, adaptability: 78, stability: 82, risk: 20 },
+    insight:
+      "People-first leader with strong achievement orientation. Ideal for cross-functional people-leadership roles requiring trust-building at scale.",
+  },
+  "Lili Mao": {
+    breakdown: { leadership: 88, execution: 92, adaptability: 74, stability: 90, risk: 15 },
+    insight:
+      "Exceptional delivery and team support orientation. Strong operational leader. Consider for cross-functional execution roles.",
+  },
+  "Joyce Zhang": {
+    breakdown: { leadership: 72, execution: 58, adaptability: 84, stability: 42, risk: 68 },
+    insight:
+      "High social energy and network orientation. Significant risk under operational pressure. Best suited for stakeholder-facing or BD roles.",
+  },
+};
+
+const PERSON_TITLE: Record<string, string> = {
+  "Chifong Dong": "Head of Investment",
+  "Eric Li": "Head of Research",
+  "Yijun Sim": "Senior Analyst",
+  "Luke Cai": "Head of Product",
+  "Supriya Kumar": "Head of People",
+  "Lili Mao": "Head of Operations",
+  "Joyce Zhang": "Operations Lead",
+};
+
+const DEMO_ROLE_PROFILES: Record<DemoRole, DemoRoleProfile> = {
+  "Investment Lead": {
+    role: "Investment Lead",
+    description:
+      "Leads investment strategy, sourcing and execution. Requires high goal-orientation and analytical judgment.",
+    requirements: [
+      { label: "Achieving Goals", weight: 95 },
+      { label: "Evaluating Information", weight: 90 },
+      { label: "Driving Success", weight: 88 },
+      { label: "Exerting Influence", weight: 85 },
+      { label: "Coping with Pressure", weight: 80 },
+    ],
+    candidates: [
+      {
+        rank: 1,
+        name: "Chifong Dong",
+        fit: 95,
+        strengths: ["Strategic drive", "Goal achievement"],
+        gaps: ["Creative solutions"],
+        breakdown: PERSON_BREAKDOWNS["Chifong Dong"].breakdown,
+        insight: PERSON_BREAKDOWNS["Chifong Dong"].insight,
+        benchmarkNote:
+          "Chifong Dong scores 8% above benchmark for Investment Lead requirements.",
+      },
+      {
+        rank: 2,
+        name: "Eric Li",
+        fit: 91,
+        strengths: ["Analytical", "Execution"],
+        gaps: ["Influence"],
+        breakdown: PERSON_BREAKDOWNS["Eric Li"].breakdown,
+        insight: PERSON_BREAKDOWNS["Eric Li"].insight,
+        benchmarkNote:
+          "Eric Li scores 4% above benchmark for Investment Lead requirements.",
+      },
+      {
+        rank: 3,
+        name: "Yijun Sim",
+        fit: 90,
+        strengths: ["Goals", "Evaluation"],
+        gaps: ["Pressure coping"],
+        breakdown: PERSON_BREAKDOWNS["Yijun Sim"].breakdown,
+        insight: PERSON_BREAKDOWNS["Yijun Sim"].insight,
+        benchmarkNote:
+          "Yijun Sim scores 3% above benchmark for Investment Lead requirements.",
+      },
+      {
+        rank: 4,
+        name: "Luke Cai",
+        fit: 88,
+        strengths: ["Innovation", "Interaction"],
+        gaps: ["Structure"],
+        breakdown: PERSON_BREAKDOWNS["Luke Cai"].breakdown,
+        insight: PERSON_BREAKDOWNS["Luke Cai"].insight,
+        benchmarkNote:
+          "Luke Cai scores 1% above benchmark for Investment Lead requirements.",
+      },
+      {
+        rank: 5,
+        name: "Supriya Kumar",
+        fit: 85,
+        strengths: ["People support", "Goals"],
+        gaps: ["Influence"],
+        breakdown: PERSON_BREAKDOWNS["Supriya Kumar"].breakdown,
+        insight: PERSON_BREAKDOWNS["Supriya Kumar"].insight,
+        benchmarkNote:
+          "Supriya Kumar scores 2% below benchmark for Investment Lead requirements.",
+      },
+      {
+        rank: 6,
+        name: "Lili Mao",
+        fit: 82,
+        strengths: ["Delivery", "People support"],
+        gaps: ["Analytical depth"],
+        breakdown: PERSON_BREAKDOWNS["Lili Mao"].breakdown,
+        insight: PERSON_BREAKDOWNS["Lili Mao"].insight,
+        benchmarkNote:
+          "Lili Mao scores 5% below benchmark for Investment Lead requirements.",
+      },
+    ],
+  },
+  "Operations Manager": {
+    role: "Operations Manager",
+    description:
+      "Owns operational delivery, process discipline, and people support across the organization.",
+    requirements: [
+      { label: "Structuring Work", weight: 95 },
+      { label: "Coping with Pressure", weight: 90 },
+      { label: "Supporting Individuals", weight: 88 },
+      { label: "Driving Success", weight: 85 },
+      { label: "Achieving Goals", weight: 80 },
+    ],
+    candidates: [
+      {
+        rank: 1,
+        name: "Lili Mao",
+        fit: 94,
+        strengths: ["Structuring", "Supporting", "Delivery"],
+        gaps: ["Analytical rigor"],
+        breakdown: PERSON_BREAKDOWNS["Lili Mao"].breakdown,
+        insight: PERSON_BREAKDOWNS["Lili Mao"].insight,
+        benchmarkNote:
+          "Lili Mao scores 9% above benchmark for Operations Manager requirements.",
+      },
+      {
+        rank: 2,
+        name: "Supriya Kumar",
+        fit: 89,
+        strengths: ["Support", "Goals"],
+        gaps: ["Coping under pressure"],
+        breakdown: PERSON_BREAKDOWNS["Supriya Kumar"].breakdown,
+        insight: PERSON_BREAKDOWNS["Supriya Kumar"].insight,
+        benchmarkNote:
+          "Supriya Kumar scores 5% above benchmark for Operations Manager requirements.",
+      },
+      {
+        rank: 3,
+        name: "Chifong Dong",
+        fit: 85,
+        strengths: ["Goals", "Drive"],
+        gaps: ["People development"],
+        breakdown: PERSON_BREAKDOWNS["Chifong Dong"].breakdown,
+        insight: PERSON_BREAKDOWNS["Chifong Dong"].insight,
+        benchmarkNote:
+          "Chifong Dong scores 1% above benchmark for Operations Manager requirements.",
+      },
+      {
+        rank: 4,
+        name: "Yijun Sim",
+        fit: 80,
+        strengths: ["Evaluation"],
+        gaps: ["Structure", "Support"],
+        breakdown: PERSON_BREAKDOWNS["Yijun Sim"].breakdown,
+        insight: PERSON_BREAKDOWNS["Yijun Sim"].insight,
+        benchmarkNote:
+          "Yijun Sim scores 3% below benchmark for Operations Manager requirements.",
+      },
+      {
+        rank: 5,
+        name: "Joyce Zhang",
+        fit: 72,
+        strengths: ["Interaction", "Influence"],
+        gaps: ["Structure", "Composure"],
+        breakdown: PERSON_BREAKDOWNS["Joyce Zhang"].breakdown,
+        insight: PERSON_BREAKDOWNS["Joyce Zhang"].insight,
+        benchmarkNote:
+          "Joyce Zhang scores 14% below benchmark for Operations Manager requirements.",
+      },
+      {
+        rank: 6,
+        name: "Luke Cai",
+        fit: 70,
+        strengths: ["Innovation"],
+        gaps: ["Structure", "Coping"],
+        breakdown: PERSON_BREAKDOWNS["Luke Cai"].breakdown,
+        insight: PERSON_BREAKDOWNS["Luke Cai"].insight,
+        benchmarkNote:
+          "Luke Cai scores 16% below benchmark for Operations Manager requirements.",
+      },
+    ],
+  },
+  "Product Manager": {
+    role: "Product Manager",
+    description:
+      "Drives product strategy, customer empathy, and execution velocity across cross-functional teams.",
+    requirements: [
+      { label: "Creating Solutions", weight: 92 },
+      { label: "Interacting with People", weight: 88 },
+      { label: "Achieving Goals", weight: 85 },
+      { label: "Driving Success", weight: 82 },
+      { label: "Exerting Influence", weight: 78 },
+    ],
+    candidates: [
+      {
+        rank: 1,
+        name: "Luke Cai",
+        fit: 93,
+        strengths: ["Innovation", "Interaction", "Goals"],
+        gaps: ["Structural discipline"],
+        breakdown: PERSON_BREAKDOWNS["Luke Cai"].breakdown,
+        insight: PERSON_BREAKDOWNS["Luke Cai"].insight,
+        benchmarkNote:
+          "Luke Cai scores 9% above benchmark for Product Manager requirements.",
+      },
+      {
+        rank: 2,
+        name: "Joyce Zhang",
+        fit: 85,
+        strengths: ["Interaction", "Influence"],
+        gaps: ["Completing tasks", "Composure"],
+        breakdown: PERSON_BREAKDOWNS["Joyce Zhang"].breakdown,
+        insight: PERSON_BREAKDOWNS["Joyce Zhang"].insight,
+        benchmarkNote:
+          "Joyce Zhang scores 1% above benchmark for Product Manager requirements.",
+      },
+      {
+        rank: 3,
+        name: "Yijun Sim",
+        fit: 82,
+        strengths: ["Goals", "Evaluation"],
+        gaps: ["Creative output"],
+        breakdown: PERSON_BREAKDOWNS["Yijun Sim"].breakdown,
+        insight: PERSON_BREAKDOWNS["Yijun Sim"].insight,
+        benchmarkNote:
+          "Yijun Sim scores 2% below benchmark for Product Manager requirements.",
+      },
+      {
+        rank: 4,
+        name: "Eric Li",
+        fit: 79,
+        strengths: ["Analytical"],
+        gaps: ["Social interaction", "Influence"],
+        breakdown: PERSON_BREAKDOWNS["Eric Li"].breakdown,
+        insight: PERSON_BREAKDOWNS["Eric Li"].insight,
+        benchmarkNote:
+          "Eric Li scores 5% below benchmark for Product Manager requirements.",
+      },
+      {
+        rank: 5,
+        name: "Chifong Dong",
+        fit: 75,
+        strengths: ["Drive"],
+        gaps: ["Innovation", "Interaction"],
+        breakdown: PERSON_BREAKDOWNS["Chifong Dong"].breakdown,
+        insight: PERSON_BREAKDOWNS["Chifong Dong"].insight,
+        benchmarkNote:
+          "Chifong Dong scores 9% below benchmark for Product Manager requirements.",
+      },
+      {
+        rank: 6,
+        name: "Lili Mao",
+        fit: 72,
+        strengths: ["Support", "Delivery"],
+        gaps: ["Innovation"],
+        breakdown: PERSON_BREAKDOWNS["Lili Mao"].breakdown,
+        insight: PERSON_BREAKDOWNS["Lili Mao"].insight,
+        benchmarkNote:
+          "Lili Mao scores 12% below benchmark for Product Manager requirements.",
+      },
+    ],
+  },
+  "Research Lead": {
+    role: "Research Lead",
+    description:
+      "Leads investment research, sets analytical standards, and translates data into insight at the leadership level.",
+    requirements: [
+      { label: "Evaluating Information", weight: 95 },
+      { label: "Creating Solutions", weight: 90 },
+      { label: "Achieving Goals", weight: 85 },
+      { label: "Structuring Work", weight: 82 },
+      { label: "Driving Success", weight: 78 },
+    ],
+    candidates: [
+      {
+        rank: 1,
+        name: "Eric Li",
+        fit: 96,
+        strengths: ["Analytical depth", "Evaluation", "Goal drive"],
+        gaps: ["Interpersonal influence"],
+        breakdown: PERSON_BREAKDOWNS["Eric Li"].breakdown,
+        insight: PERSON_BREAKDOWNS["Eric Li"].insight,
+        benchmarkNote:
+          "Eric Li scores 12% above benchmark for Research Lead requirements.",
+      },
+      {
+        rank: 2,
+        name: "Chifong Dong",
+        fit: 88,
+        strengths: ["Goal achievement", "Drive"],
+        gaps: ["Creative depth"],
+        breakdown: PERSON_BREAKDOWNS["Chifong Dong"].breakdown,
+        insight: PERSON_BREAKDOWNS["Chifong Dong"].insight,
+        benchmarkNote:
+          "Chifong Dong scores 4% above benchmark for Research Lead requirements.",
+      },
+      {
+        rank: 3,
+        name: "Yijun Sim",
+        fit: 85,
+        strengths: ["Evaluation", "Goals"],
+        gaps: ["Innovation"],
+        breakdown: PERSON_BREAKDOWNS["Yijun Sim"].breakdown,
+        insight: PERSON_BREAKDOWNS["Yijun Sim"].insight,
+        benchmarkNote:
+          "Yijun Sim scores 1% above benchmark for Research Lead requirements.",
+      },
+      {
+        rank: 4,
+        name: "Luke Cai",
+        fit: 78,
+        strengths: ["Innovation"],
+        gaps: ["Analytical rigor", "Structure"],
+        breakdown: PERSON_BREAKDOWNS["Luke Cai"].breakdown,
+        insight: PERSON_BREAKDOWNS["Luke Cai"].insight,
+        benchmarkNote:
+          "Luke Cai scores 6% below benchmark for Research Lead requirements.",
+      },
+      {
+        rank: 5,
+        name: "Lili Mao",
+        fit: 72,
+        strengths: ["Structuring", "Delivery"],
+        gaps: ["Analytical depth"],
+        breakdown: PERSON_BREAKDOWNS["Lili Mao"].breakdown,
+        insight: PERSON_BREAKDOWNS["Lili Mao"].insight,
+        benchmarkNote:
+          "Lili Mao scores 12% below benchmark for Research Lead requirements.",
+      },
+      {
+        rank: 6,
+        name: "Joyce Zhang",
+        fit: 60,
+        strengths: ["Influence"],
+        gaps: ["Evaluation", "Structure", "Composure"],
+        breakdown: PERSON_BREAKDOWNS["Joyce Zhang"].breakdown,
+        insight: PERSON_BREAKDOWNS["Joyce Zhang"].insight,
+        benchmarkNote:
+          "Joyce Zhang scores 24% below benchmark for Research Lead requirements.",
+      },
+    ],
+  },
+};
+
+function DemoRoleFit({ onClose }: { onClose: () => void }) {
+  const [activeRole, setActiveRole] = useState<DemoRole>("Investment Lead");
+  const [expandedRank, setExpandedRank] = useState<number | null>(1);
+
+  const profile = DEMO_ROLE_PROFILES[activeRole];
+
+  // Reset expand to top candidate when role changes
+  useEffect(() => {
+    setExpandedRank(1);
+  }, [activeRole]);
+
+  const expandedCandidate = useMemo(
+    () => profile.candidates.find((c) => c.rank === expandedRank) ?? null,
+    [profile, expandedRank]
+  );
+
+  return (
+    <div className="-mx-6 -mt-16 md:-mx-10 md:-mt-10">
+      <DemoBanner onClose={onClose} />
+
+      <div className="mx-auto mt-6 max-w-[1400px] px-6 pb-12 md:px-10">
+        {/* Header */}
+        <header className="mb-6 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
+              Lens 2 — Role Competency Intelligence
+            </p>
+            <h1 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
+              Role–Competency Fit Engine
+            </h1>
+            <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-400">
+              <span className="inline-flex items-center gap-1.5">
+                <Building2 className="h-3.5 w-3.5 text-indigo-400" />
+                <strong className="text-white">Alpha Investment Group</strong>
+              </span>
+              <span className="text-zinc-700">·</span>
+              <span>30 employees</span>
+              <span className="text-zinc-700">·</span>
+              <span>Great 8 competency model · HUCAMA</span>
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2.5">
+            <button
+              type="button"
+              onClick={onClose}
+              className="inline-flex items-center gap-2 rounded-lg border-2 border-indigo-600 bg-transparent px-5 py-2.5 text-sm font-semibold text-indigo-300 transition-all hover:bg-indigo-600/10 hover:text-indigo-200"
+            >
+              <FileText className="h-4 w-4" />
+              View Full Demo Role Fit
+            </button>
+            <a
+              href={CHECKOUT_URL}
+              className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-500"
+            >
+              <Sparkles className="h-4 w-4" />
+              Unlock Full Analysis — $49
+            </a>
+          </div>
+        </header>
+
+        {/* Role tabs */}
+        <div className="mb-6">
+          <p className="mb-2 text-[10px] font-medium uppercase tracking-widest text-zinc-500">
+            Select role
+          </p>
+          <div className="inline-flex flex-wrap gap-1 rounded-full border border-[rgba(99,102,241,0.15)] bg-[#111118] p-1">
+            {DEMO_ROLE_ORDER.map((r) => (
+              <button
+                key={r}
+                type="button"
+                onClick={() => setActiveRole(r)}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors duration-200 ${
+                  activeRole === r
+                    ? "bg-indigo-600 text-white shadow-[0_0_24px_-6px_rgba(99,102,241,0.7)]"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                {r}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
+          {/* LEFT: Ranking table */}
+          <section>
+            <div className="overflow-hidden rounded-2xl border border-[rgba(99,102,241,0.15)] bg-[#111118]">
+              <div className="grid grid-cols-[40px_1.4fr_1.5fr_1.4fr_70px] gap-4 border-b border-[#1E1E24] bg-[#0A0A0B] px-5 py-3 text-[10px] font-medium uppercase tracking-widest text-zinc-500">
+                <span>#</span>
+                <span>Candidate</span>
+                <span>Fit Score</span>
+                <span>Strengths · Gaps</span>
+                <span className="text-right">Detail</span>
+              </div>
+
+              {profile.candidates.map((c) => {
+                const t = fitTone(c.fit);
+                const isExpanded = expandedRank === c.rank;
+                return (
+                  <div
+                    key={c.name}
+                    className="border-b border-[#1E1E24] last:border-0"
+                  >
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() =>
+                        setExpandedRank(isExpanded ? null : c.rank)
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setExpandedRank(isExpanded ? null : c.rank);
+                        }
+                      }}
+                      className={`grid cursor-pointer grid-cols-[40px_1.4fr_1.5fr_1.4fr_70px] items-center gap-4 px-5 py-4 transition-colors hover:bg-white/[0.02] ${
+                        isExpanded ? "bg-indigo-500/[0.05]" : ""
+                      }`}
+                    >
+                      {/* Rank pill */}
+                      <div>
+                        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-500/20 text-[11px] font-bold text-indigo-200 ring-1 ring-indigo-500/40">
+                          {c.rank}
+                        </span>
+                      </div>
+                      {/* Name */}
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold text-white">
+                          {c.name}
+                        </p>
+                        <p className="truncate text-[11px] text-zinc-500">
+                          {PERSON_TITLE[c.name] ?? "Team Member"}
+                        </p>
+                      </div>
+                      {/* Fit bar */}
+                      <div>
+                        <div className="flex items-center gap-3">
+                          <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/[0.05]">
+                            <div
+                              className={`h-full rounded-full transition-all duration-700 ease-out ${
+                                t === "green"
+                                  ? "bg-gradient-to-r from-indigo-600 to-indigo-400"
+                                  : t === "amber"
+                                    ? "bg-gradient-to-r from-indigo-500 to-amber-300"
+                                    : "bg-gradient-to-r from-indigo-500 to-rose-300"
+                              }`}
+                              style={{ width: `${c.fit}%` }}
+                            />
+                          </div>
+                          <span
+                            className={`shrink-0 rounded-full border border-indigo-500/30 bg-indigo-500/[0.1] px-2 py-0.5 font-mono text-xs font-bold ${toneText(t)}`}
+                          >
+                            {c.fit}%
+                          </span>
+                        </div>
+                      </div>
+                      {/* Pills */}
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap gap-1.5">
+                          {c.strengths.slice(0, 3).map((s) => (
+                            <span
+                              key={s}
+                              className="rounded-full border border-emerald-500/30 bg-emerald-500/[0.08] px-2 py-0.5 text-[10px] font-medium text-emerald-300"
+                            >
+                              {s}
+                            </span>
+                          ))}
+                          {c.gaps.slice(0, 3).map((g) => (
+                            <span
+                              key={g}
+                              className="rounded-full border border-amber-400/30 bg-amber-400/[0.08] px-2 py-0.5 text-[10px] font-medium text-amber-300"
+                            >
+                              {g}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      {/* Expand toggle */}
+                      <div className="text-right">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-medium uppercase tracking-widest text-zinc-400">
+                          <ChevronDown
+                            className={`h-3 w-3 text-indigo-400 transition-transform ${
+                              isExpanded ? "rotate-180" : ""
+                            }`}
+                          />
+                          {isExpanded ? "Hide" : "View"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Expanded detail */}
+                    <div
+                      className={`grid transition-all duration-300 ease-out ${
+                        isExpanded
+                          ? "grid-rows-[1fr] opacity-100"
+                          : "grid-rows-[0fr] opacity-0"
+                      }`}
+                    >
+                      <div className="overflow-hidden">
+                        <DemoCandidateDetail
+                          candidate={c}
+                          isOpen={isExpanded}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* RIGHT: Role requirements + benchmark */}
+          <aside className="space-y-5 lg:sticky lg:top-10 lg:self-start">
+            <div className="rounded-2xl border border-[rgba(99,102,241,0.15)] bg-[#111118] p-6">
+              <p className="text-[10px] font-medium uppercase tracking-widest text-indigo-400">
+                Role Requirements
+              </p>
+              <h3 className="mt-2 text-lg font-semibold text-white">
+                {profile.role}
+              </h3>
+              <p className="mt-1 text-xs leading-relaxed text-zinc-400">
+                {profile.description}
+              </p>
+
+              <div className="mt-4 space-y-3.5 border-t border-[#1E1E24] pt-4">
+                {profile.requirements.map((req) => (
+                  <div key={req.label}>
+                    <div className="flex items-baseline justify-between text-[11.5px]">
+                      <span className="text-zinc-300">{req.label}</span>
+                      <span className="font-mono text-zinc-200">
+                        {req.weight}%
+                      </span>
+                    </div>
+                    <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-white/[0.05]">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-indigo-600 to-indigo-400 transition-all duration-700 ease-out"
+                        style={{ width: `${req.weight}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-[rgba(99,102,241,0.15)] bg-[#111118] p-6">
+              <p className="text-[10px] font-medium uppercase tracking-widest text-indigo-400">
+                Top Match
+              </p>
+              {profile.candidates[0] && (
+                <>
+                  <h3 className="mt-2 text-base font-semibold text-white">
+                    {profile.candidates[0].name}
+                  </h3>
+                  <p className="mt-0.5 text-[11px] text-zinc-500">
+                    {PERSON_TITLE[profile.candidates[0].name] ?? "Team Member"}
+                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="font-mono text-3xl font-bold text-emerald-300">
+                      {profile.candidates[0].fit}%
+                    </span>
+                    <span className="text-[10px] uppercase tracking-widest text-zinc-500">
+                      role fit
+                    </span>
+                  </div>
+                  <div className="mt-4 rounded-lg border border-indigo-500/30 bg-indigo-500/[0.06] p-3">
+                    <p className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-widest text-indigo-300">
+                      <TrendingUp className="h-3 w-3" />
+                      Benchmark
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-zinc-200">
+                      {profile.candidates[0].benchmarkNote}
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="rounded-2xl border border-[rgba(99,102,241,0.15)] bg-[#111118] p-6">
+              <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-500">
+                Methodology
+              </p>
+              <p className="mt-2 text-xs leading-relaxed text-zinc-400">
+                Fit scores combine HUCAMA psychometric inputs and Great 8
+                behavioral signals weighted by role-specific competency
+                requirements.
+              </p>
+            </div>
+          </aside>
+        </div>
+
+        {/* Bottom CTA */}
+        <section className="mt-14 rounded-2xl border border-indigo-500/30 bg-gradient-to-br from-indigo-500/[0.08] via-[#111118] to-[#0A0A0B] p-8 text-center shadow-[0_0_60px_-15px_rgba(99,102,241,0.4)]">
+          <p className="text-[10px] font-medium uppercase tracking-widest text-indigo-300">
+            This is a demo · Real analysis is built from your team
+          </p>
+          <h3 className="mt-2 text-2xl font-bold tracking-tight text-white">
+            Run role-fit on every role in your organization
+          </h3>
+          <p className="mx-auto mt-2 max-w-2xl text-sm text-zinc-400">
+            Upload your team&apos;s HUCAMA reports, get back fit-scored
+            candidate rankings for every key role — strengths, gaps, and
+            development paths included.
+          </p>
+          <a
+            href={CHECKOUT_URL}
+            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-500"
+          >
+            <Sparkles className="h-4 w-4" />
+            Unlock Full Analysis — $49
+            <ArrowRight className="h-4 w-4" />
+          </a>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Demo Banner ----------
+function DemoBanner({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="sticky top-0 z-30 w-full bg-indigo-600 text-white shadow-[0_4px_24px_-8px_rgba(79,70,229,0.6)]">
+      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 md:flex-row md:items-center md:justify-between md:px-8">
+        <div className="flex items-start gap-3">
+          <span className="inline-flex h-6 shrink-0 items-center rounded-full bg-white/20 px-2 text-[10px] font-bold uppercase tracking-widest">
+            DEMO
+          </span>
+          <div>
+            <p className="text-sm font-semibold leading-tight">
+              Demo Mode — Role Competency Intelligence
+            </p>
+            <p className="mt-0.5 text-[11px] leading-snug text-indigo-100/90">
+              Fully unlocked preview · Alpha Investment Group · 30 employees
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <a
+            href={CHECKOUT_URL}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3.5 py-1.5 text-xs font-semibold text-indigo-700 transition-colors hover:bg-indigo-50"
+          >
+            Unlock Full Analysis — $49
+            <ArrowRight className="h-3 w-3" />
+          </a>
+          <button
+            onClick={onClose}
+            aria-label="Exit demo mode"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-white/15 text-white transition-colors hover:bg-white/25"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Demo Candidate Detail (5-dimension breakdown) ----------
+function DemoCandidateDetail({
+  candidate,
+  isOpen,
+}: {
+  candidate: DemoCandidate;
+  isOpen: boolean;
+}) {
+  const dims: { label: string; value: number; lowerBetter?: boolean }[] = [
+    { label: "Leadership Readiness", value: candidate.breakdown.leadership },
+    { label: "Execution Reliability", value: candidate.breakdown.execution },
+    { label: "Adaptability", value: candidate.breakdown.adaptability },
+    {
+      label: "Stability Under Pressure",
+      value: candidate.breakdown.stability,
+    },
+    {
+      label: "Organizational Risk",
+      value: candidate.breakdown.risk,
+      lowerBetter: true,
+    },
+  ];
+
+  return (
+    <div className="border-t border-[#1E1E24] bg-[#0A0A0B] px-5 py-5">
+      <div className="grid gap-6 md:grid-cols-2">
+        <div>
+          <p className="text-[10px] font-medium uppercase tracking-widest text-indigo-400">
+            5-Dimension Breakdown
+          </p>
+          <div className="mt-3 space-y-3">
+            {dims.map((d) => (
+              <DemoDimensionBar
+                key={d.label}
+                label={d.label}
+                value={d.value}
+                lowerBetter={d.lowerBetter}
+                animate={isOpen}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          {/* AI Insight */}
+          <div className="rounded-lg border border-indigo-500/30 bg-indigo-500/[0.06] p-4">
+            <p className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-widest text-indigo-300">
+              <Sparkles className="h-3 w-3" />
+              AI Insight
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-200">
+              {candidate.insight}
+            </p>
+          </div>
+
+          {/* Strengths pills */}
+          {candidate.strengths.length > 0 && (
+            <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/[0.04] p-3">
+              <p className="text-[10px] font-medium uppercase tracking-widest text-emerald-300">
+                Strengths
+              </p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {candidate.strengths.map((s) => (
+                  <span
+                    key={s}
+                    className="rounded-full border border-emerald-500/30 bg-emerald-500/[0.1] px-2 py-0.5 text-[11px] font-medium text-emerald-200"
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Gaps pills */}
+          {candidate.gaps.length > 0 && (
+            <div className="rounded-lg border border-amber-400/20 bg-amber-400/[0.04] p-3">
+              <p className="text-[10px] font-medium uppercase tracking-widest text-amber-300">
+                Gaps
+              </p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {candidate.gaps.map((g) => (
+                  <span
+                    key={g}
+                    className="rounded-full border border-amber-400/30 bg-amber-400/[0.1] px-2 py-0.5 text-[11px] font-medium text-amber-200"
+                  >
+                    {g}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Benchmark note */}
+      <div className="mt-5 rounded-lg border border-[#1E1E24] bg-[#111118] p-3.5">
+        <p className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-widest text-zinc-500">
+          <TrendingUp className="h-3 w-3" />
+          vs. Role Benchmark
+        </p>
+        <p className="mt-1 text-sm font-medium text-zinc-200">
+          {candidate.benchmarkNote}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function DemoDimensionBar({
+  label,
+  value,
+  lowerBetter,
+  animate,
+}: {
+  label: string;
+  value: number;
+  lowerBetter?: boolean;
+  animate: boolean;
+}) {
+  const isGood = lowerBetter ? value <= 25 : value >= 80;
+  const isWarn = lowerBetter
+    ? value > 25 && value <= 50
+    : value >= 65 && value < 80;
+
+  const barColor = isGood
+    ? "bg-gradient-to-r from-emerald-500 to-emerald-400"
+    : isWarn
+      ? "bg-gradient-to-r from-amber-500 to-amber-300"
+      : lowerBetter
+        ? "bg-gradient-to-r from-rose-500 to-rose-300"
+        : "bg-gradient-to-r from-rose-500 to-rose-300";
+  const valueColor = isGood
+    ? "text-emerald-300"
+    : isWarn
+      ? "text-amber-300"
+      : "text-rose-300";
+
+  return (
+    <div>
+      <div className="flex items-baseline justify-between text-[11.5px]">
+        <span className="text-zinc-300">
+          {label}
+          {lowerBetter && (
+            <span className="ml-1 text-[9px] uppercase tracking-widest text-zinc-600">
+              lower = better
+            </span>
+          )}
+        </span>
+        <span className={`font-mono font-semibold ${valueColor}`}>
+          {value}%
+        </span>
+      </div>
+      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-white/[0.05]">
+        <div
+          className={`h-full rounded-full transition-[width] duration-[1100ms] ease-out ${barColor}`}
+          style={{ width: animate ? `${value}%` : "0%" }}
+        />
+      </div>
     </div>
   );
 }

@@ -2,7 +2,20 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, ArrowRight, AlertTriangle, CheckCircle2 } from "lucide-react";
+import {
+  Lock,
+  ArrowRight,
+  AlertTriangle,
+  CheckCircle2,
+  Sparkles,
+  FileText,
+  X,
+  Network,
+  Building2,
+} from "lucide-react";
+
+const PRODUCT_ID = "md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
+const CHECKOUT_URL = `https://madethis.com/checkout/orglens-ai/${PRODUCT_ID}`;
 
 function unlockAndGo(router: ReturnType<typeof useRouter>) {
   try {
@@ -212,6 +225,19 @@ function activeTone(p: Person, d: Dimension): "green" | "amber" | "red" {
 }
 
 export default function OrgMapPage() {
+  const [demoMode, setDemoMode] = useState(false);
+
+  if (demoMode) {
+    return <DemoOrgMap onClose={() => setDemoMode(false)} />;
+  }
+
+  return <DefaultOrgMap onActivateDemo={() => setDemoMode(true)} />;
+}
+
+// ===========================================================================
+// DEFAULT (non-demo) ORG MAP — original content + new "View Full Demo" button
+// ===========================================================================
+function DefaultOrgMap({ onActivateDemo }: { onActivateDemo: () => void }) {
   const router = useRouter();
   const [active, setActive] = useState<Dimension>("Leadership");
 
@@ -234,18 +260,39 @@ export default function OrgMapPage() {
 
   return (
     <div className="mx-auto max-w-[1400px]">
-      {/* Header */}
-      <header className="mb-8">
-        <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
-          Lens 1 — Competency Org Map
-        </p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
-          Competency Org Map
-        </h1>
-        <p className="mt-2 max-w-3xl text-sm text-zinc-400">
-          Visualize how leadership, execution, adaptability, and stability flow
-          across your organization.
-        </p>
+      {/* Header with action buttons */}
+      <header className="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
+            Lens 1 — Competency Org Map
+          </p>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
+            Competency Org Map
+          </h1>
+          <p className="mt-2 max-w-3xl text-sm text-zinc-400">
+            Visualize how leadership, execution, adaptability, and stability flow
+            across your organization.
+          </p>
+        </div>
+
+        {/* Action buttons */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
+            onClick={onActivateDemo}
+            className="inline-flex items-center gap-2 rounded-lg border-2 border-indigo-600 bg-transparent px-5 py-2.5 text-sm font-semibold text-indigo-300 transition-all hover:bg-indigo-600/10 hover:text-indigo-200"
+          >
+            <FileText className="h-4 w-4" />
+            View Full Demo Org Analysis
+          </button>
+          <a
+            href={CHECKOUT_URL}
+            className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-500"
+          >
+            <Sparkles className="h-4 w-4" />
+            Unlock Full Analysis — $49
+          </a>
+        </div>
       </header>
 
       {/* Dimension toggle */}
@@ -454,20 +501,937 @@ export default function OrgMapPage() {
               Unlock the full 48-competency heatmap, every node-level score, and
               team-wide behavioral signal patterns.
             </p>
-            <button
-              type="button"
-              onClick={() => unlockAndGo(router)}
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-6 py-3 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
-            >
-              Unlock with Full Analysis — $49
-              <ArrowRight className="h-4 w-4" />
-            </button>
+            <div className="mt-6 flex flex-col items-center justify-center gap-2.5 sm:flex-row">
+              <button
+                type="button"
+                onClick={() => unlockAndGo(router)}
+                className="inline-flex items-center gap-2 rounded-full bg-indigo-500 px-6 py-3 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
+              >
+                Unlock with Full Analysis — $49
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={onActivateDemo}
+                className="inline-flex items-center gap-2 rounded-full border-2 border-indigo-500/50 bg-transparent px-5 py-2.5 text-sm font-medium text-indigo-300 transition-all hover:bg-indigo-500/10 hover:text-indigo-200"
+              >
+                <FileText className="h-4 w-4" />
+                View Full Demo
+              </button>
+            </div>
           </div>
         </div>
       </section>
     </div>
   );
 }
+
+// ===========================================================================
+// DEMO ORG MAP — Alpha Investment Group, full-feature unlocked experience
+// ===========================================================================
+
+type DemoMode = "Leadership" | "Execution" | "Adaptability" | "Stability" | "Risk";
+
+type DemoTone = "green" | "amber" | "red";
+
+interface DemoNode {
+  id: string;
+  name: string;
+  role: string;
+  // 4 dot scores - Leadership, Execution, Adaptability, Stability (constant per person)
+  dots: { L: DemoTone; E: DemoTone; A: DemoTone; S: DemoTone };
+  // tone of the entire node depending on currently active mode
+  modeTone: Record<DemoMode, DemoTone>;
+  // optional badge to display for a particular mode (e.g. "AT RISK" on Risk mode)
+  modeBadge?: Partial<Record<DemoMode, string>>;
+  // persistent badge (always visible regardless of mode)
+  alwaysBadge?: string;
+}
+
+interface DemoBranch {
+  lead: DemoNode;
+  reports: DemoNode[];
+}
+
+const DEMO_MODES: DemoMode[] = [
+  "Leadership",
+  "Execution",
+  "Adaptability",
+  "Stability",
+  "Risk",
+];
+
+const DEMO_MODE_LABELS: Record<DemoMode, string> = {
+  Leadership: "Leadership",
+  Execution: "Execution",
+  Adaptability: "Adaptability",
+  Stability: "Stability",
+  Risk: "Org Risk",
+};
+
+const DEMO_CEO: DemoNode = {
+  id: "wenjing",
+  name: "Wenjing Li",
+  role: "CEO",
+  dots: { L: "green", E: "green", A: "green", S: "green" },
+  modeTone: {
+    Leadership: "green",
+    Execution: "green",
+    Adaptability: "green",
+    Stability: "green",
+    Risk: "green",
+  },
+};
+
+const DEMO_TREE: DemoBranch[] = [
+  {
+    lead: {
+      id: "chifong",
+      name: "Chifong Dong",
+      role: "Head of Investment",
+      dots: { L: "green", E: "green", A: "amber", S: "green" },
+      modeTone: {
+        Leadership: "green",
+        Execution: "green",
+        Adaptability: "amber",
+        Stability: "green",
+        Risk: "green",
+      },
+    },
+    reports: [
+      {
+        id: "yijun",
+        name: "Yijun Sim",
+        role: "Senior Analyst",
+        dots: { L: "amber", E: "green", A: "amber", S: "amber" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "green",
+          Adaptability: "amber",
+          Stability: "amber",
+          Risk: "amber",
+        },
+      },
+      {
+        id: "analyst1",
+        name: "Devina Patel",
+        role: "Investment Analyst",
+        dots: { L: "amber", E: "green", A: "green", S: "amber" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "green",
+          Adaptability: "green",
+          Stability: "amber",
+          Risk: "green",
+        },
+      },
+      {
+        id: "analyst2",
+        name: "Marcus Reid",
+        role: "Investment Analyst",
+        dots: { L: "amber", E: "amber", A: "amber", S: "green" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "amber",
+          Adaptability: "amber",
+          Stability: "green",
+          Risk: "amber",
+        },
+      },
+    ],
+  },
+  {
+    lead: {
+      id: "lili",
+      name: "Lili Mao",
+      role: "Head of Operations",
+      dots: { L: "green", E: "amber", A: "amber", S: "green" },
+      modeTone: {
+        Leadership: "green",
+        Execution: "amber",
+        Adaptability: "amber",
+        Stability: "green",
+        Risk: "amber",
+      },
+    },
+    reports: [
+      {
+        id: "joyce",
+        name: "Joyce Zhang",
+        role: "Operations Lead",
+        dots: { L: "amber", E: "amber", A: "amber", S: "red" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "amber",
+          Adaptability: "amber",
+          Stability: "red",
+          Risk: "amber",
+        },
+        modeBadge: { Risk: "WATCH" },
+      },
+      {
+        id: "yuzhe",
+        name: "Yuzhe Zhao",
+        role: "Operations Specialist",
+        dots: { L: "red", E: "red", A: "red", S: "red" },
+        modeTone: {
+          Leadership: "red",
+          Execution: "red",
+          Adaptability: "red",
+          Stability: "red",
+          Risk: "red",
+        },
+        modeBadge: { Risk: "HIGH RISK" },
+        alwaysBadge: "AT RISK",
+      },
+      {
+        id: "ops_coord",
+        name: "Tom Becker",
+        role: "Ops Coordinator",
+        dots: { L: "amber", E: "amber", A: "amber", S: "amber" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "amber",
+          Adaptability: "amber",
+          Stability: "amber",
+          Risk: "amber",
+        },
+      },
+      {
+        id: "finance_lead",
+        name: "Priya Naidu",
+        role: "Finance Lead",
+        dots: { L: "amber", E: "green", A: "amber", S: "green" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "green",
+          Adaptability: "amber",
+          Stability: "green",
+          Risk: "amber",
+        },
+      },
+    ],
+  },
+  {
+    lead: {
+      id: "eric",
+      name: "Eric Li",
+      role: "Head of Research",
+      dots: { L: "green", E: "green", A: "green", S: "green" },
+      modeTone: {
+        Leadership: "green",
+        Execution: "green",
+        Adaptability: "green",
+        Stability: "green",
+        Risk: "green",
+      },
+    },
+    reports: [
+      {
+        id: "research1",
+        name: "Hana Yamamoto",
+        role: "Senior Researcher",
+        dots: { L: "amber", E: "green", A: "green", S: "green" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "green",
+          Adaptability: "green",
+          Stability: "green",
+          Risk: "green",
+        },
+      },
+      {
+        id: "research2",
+        name: "Daniel Adeyemi",
+        role: "Research Analyst",
+        dots: { L: "amber", E: "green", A: "green", S: "amber" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "green",
+          Adaptability: "green",
+          Stability: "amber",
+          Risk: "green",
+        },
+      },
+      {
+        id: "data_lead",
+        name: "Anya Volkov",
+        role: "Data Lead",
+        dots: { L: "green", E: "green", A: "green", S: "green" },
+        modeTone: {
+          Leadership: "green",
+          Execution: "green",
+          Adaptability: "green",
+          Stability: "green",
+          Risk: "green",
+        },
+      },
+    ],
+  },
+  {
+    lead: {
+      id: "luke",
+      name: "Luke Cai",
+      role: "Head of Product",
+      dots: { L: "amber", E: "green", A: "green", S: "amber" },
+      modeTone: {
+        Leadership: "amber",
+        Execution: "green",
+        Adaptability: "green",
+        Stability: "amber",
+        Risk: "green",
+      },
+    },
+    reports: [
+      {
+        id: "pm1",
+        name: "Maya Iyer",
+        role: "Product Manager",
+        dots: { L: "amber", E: "green", A: "green", S: "amber" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "green",
+          Adaptability: "green",
+          Stability: "amber",
+          Risk: "amber",
+        },
+      },
+      {
+        id: "pm2",
+        name: "Jonas Weber",
+        role: "Product Manager",
+        dots: { L: "amber", E: "amber", A: "green", S: "amber" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "amber",
+          Adaptability: "green",
+          Stability: "amber",
+          Risk: "amber",
+        },
+      },
+      {
+        id: "design_lead",
+        name: "Sarah Kim",
+        role: "Design Lead",
+        dots: { L: "amber", E: "green", A: "green", S: "amber" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "green",
+          Adaptability: "green",
+          Stability: "amber",
+          Risk: "green",
+        },
+      },
+    ],
+  },
+  {
+    lead: {
+      id: "supriya",
+      name: "Supriya Kumar",
+      role: "Head of People",
+      dots: { L: "amber", E: "amber", A: "amber", S: "green" },
+      modeTone: {
+        Leadership: "amber",
+        Execution: "amber",
+        Adaptability: "amber",
+        Stability: "green",
+        Risk: "amber",
+      },
+    },
+    reports: [
+      {
+        id: "hr_bp",
+        name: "Renata Costa",
+        role: "HR Business Partner",
+        dots: { L: "amber", E: "amber", A: "amber", S: "green" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "amber",
+          Adaptability: "amber",
+          Stability: "green",
+          Risk: "amber",
+        },
+      },
+      {
+        id: "talent",
+        name: "James Okonkwo",
+        role: "Talent Lead",
+        dots: { L: "amber", E: "green", A: "amber", S: "amber" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "green",
+          Adaptability: "amber",
+          Stability: "amber",
+          Risk: "amber",
+        },
+      },
+      {
+        id: "culture",
+        name: "Aiko Nakamura",
+        role: "Culture Lead",
+        dots: { L: "amber", E: "amber", A: "green", S: "amber" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "amber",
+          Adaptability: "green",
+          Stability: "amber",
+          Risk: "amber",
+        },
+      },
+    ],
+  },
+];
+
+// Scenario B redesign overrides applied to the demo tree
+const SCENARIO_B_OVERRIDES: Record<
+  string,
+  { addBadge?: string; modeToneOverride?: Partial<Record<DemoMode, DemoTone>> }
+> = {
+  chifong: { addBadge: "REDESIGNED" },
+  lili: { addBadge: "REDESIGNED" },
+  yuzhe: {
+    addBadge: "Redeployed",
+    modeToneOverride: {
+      Leadership: "amber",
+      Execution: "amber",
+      Adaptability: "amber",
+      Stability: "amber",
+      Risk: "amber",
+    },
+  },
+  joyce: {
+    modeToneOverride: {
+      Leadership: "green",
+      Execution: "green",
+      Adaptability: "green",
+      Stability: "amber",
+      Risk: "green",
+    },
+  },
+};
+
+function DemoOrgMap({ onClose }: { onClose: () => void }) {
+  const [activeMode, setActiveMode] = useState<DemoMode>("Leadership");
+  const [scenarioB, setScenarioB] = useState(false);
+
+  return (
+    <div className="-mx-6 -mt-16 md:-mx-10 md:-mt-10">
+      {/* Demo banner — sticky top */}
+      <DemoBanner onClose={onClose} />
+
+      <div className="mx-auto mt-6 max-w-[1400px] px-6 pb-12 md:px-10">
+        {/* Header */}
+        <header className="mb-6 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
+              Lens 1 — Competency Org Map
+            </p>
+            <h1 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
+              Organizational Capability Analysis
+            </h1>
+            <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-400">
+              <span className="inline-flex items-center gap-1.5">
+                <Building2 className="h-3.5 w-3.5 text-indigo-400" />
+                <strong className="text-white">Alpha Investment Group</strong>
+              </span>
+              <span className="text-zinc-700">·</span>
+              <span>30 employees</span>
+              <span className="text-zinc-700">·</span>
+              <span className="inline-flex items-center gap-1.5">
+                <Network className="h-3.5 w-3.5 text-indigo-400" />
+                Investment & Asset Management
+              </span>
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2.5">
+            <button
+              type="button"
+              onClick={onClose}
+              className="inline-flex items-center gap-2 rounded-lg border-2 border-indigo-600 bg-transparent px-5 py-2.5 text-sm font-semibold text-indigo-300 transition-all hover:bg-indigo-600/10 hover:text-indigo-200"
+            >
+              <FileText className="h-4 w-4" />
+              View Full Demo Org Analysis
+            </button>
+            <a
+              href={CHECKOUT_URL}
+              className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-500"
+            >
+              <Sparkles className="h-4 w-4" />
+              Unlock Full Analysis — $49
+            </a>
+          </div>
+        </header>
+
+        {/* Scenario toggle (Current vs Scenario B) */}
+        <div className="mb-5">
+          <p className="mb-2 text-[10px] font-medium uppercase tracking-widest text-zinc-500">
+            Scenario
+          </p>
+          <div className="inline-flex flex-wrap gap-1 rounded-full border border-[rgba(99,102,241,0.15)] bg-[#111118] p-1">
+            <button
+              type="button"
+              onClick={() => setScenarioB(false)}
+              className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium transition-colors duration-200 ${
+                !scenarioB
+                  ? "bg-indigo-500 text-white shadow-[0_0_24px_-6px_rgba(99,102,241,0.7)]"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${!scenarioB ? "bg-white" : "bg-zinc-500"}`}
+              />
+              Current Organization
+            </button>
+            <button
+              type="button"
+              onClick={() => setScenarioB(true)}
+              className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium transition-colors duration-200 ${
+                scenarioB
+                  ? "bg-emerald-500 text-white shadow-[0_0_24px_-6px_rgba(34,197,94,0.7)]"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${scenarioB ? "bg-white" : "bg-zinc-500"}`}
+              />
+              Scenario B — Balanced Redesign
+            </button>
+          </div>
+        </div>
+
+        {/* Mode toggle */}
+        <div className="mb-6">
+          <p className="mb-2 text-[10px] font-medium uppercase tracking-widest text-zinc-500">
+            View by competency
+          </p>
+          <div className="inline-flex flex-wrap gap-1 rounded-full border border-[rgba(99,102,241,0.15)] bg-[#111118] p-1">
+            {DEMO_MODES.map((m) => {
+              const isActive = activeMode === m;
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setActiveMode(m)}
+                  className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors duration-200 ${
+                    isActive
+                      ? "bg-indigo-600 text-white shadow-[0_0_24px_-6px_rgba(99,102,241,0.7)]"
+                      : "border border-zinc-700/40 text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  {DEMO_MODE_LABELS[m]}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Org chart */}
+        <div className="rounded-2xl border border-[rgba(99,102,241,0.15)] bg-[#111118] p-6 md:p-8">
+          {/* CEO */}
+          <div className="flex flex-col items-center">
+            <DemoNodeCard node={DEMO_CEO} mode={activeMode} large />
+            <div className="my-3 h-5 w-px bg-[#1E1E24]" />
+          </div>
+
+          {/* L1 + L2 columns */}
+          <div className="relative">
+            <div className="absolute left-[6%] right-[6%] top-0 hidden h-px bg-[#1E1E24] md:block" />
+            <div className="grid gap-4 md:grid-cols-5">
+              {DEMO_TREE.map((branch) => {
+                const leadOverride = SCENARIO_B_OVERRIDES[branch.lead.id];
+                const leadHasRedesignedBadge =
+                  scenarioB && leadOverride?.addBadge === "REDESIGNED";
+                return (
+                  <div key={branch.lead.id} className="flex flex-col items-center">
+                    <div className="hidden h-3 w-px bg-[#1E1E24] md:block" />
+                    <DemoNodeCard
+                      node={branch.lead}
+                      mode={activeMode}
+                      scenarioB={scenarioB}
+                    />
+                    {leadHasRedesignedBadge && (
+                      <p className="mt-1.5 text-[10px] italic text-emerald-300">
+                        Role expanded — 2 direct reports added
+                      </p>
+                    )}
+                    <div className="my-2 h-3 w-px bg-[#1E1E24]" />
+                    <div className="w-full space-y-2">
+                      {branch.reports.map((p) => (
+                        <DemoNodeCard
+                          key={p.id}
+                          node={p}
+                          mode={activeMode}
+                          scenarioB={scenarioB}
+                          compact
+                        />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Legend */}
+          <div className="mt-8 flex flex-wrap items-center gap-6 border-t border-[#1E1E24] pt-5 text-xs text-zinc-500">
+            <Legend tone="green" label="High" />
+            <Legend tone="amber" label="Medium" />
+            <Legend tone="red" label="Low" />
+            <span className="ml-auto text-[10px] uppercase tracking-widest">
+              Showing:{" "}
+              <span className="text-indigo-300">
+                {DEMO_MODE_LABELS[activeMode]}
+              </span>
+            </span>
+          </div>
+        </div>
+
+        {/* Scenario B summary bar */}
+        {scenarioB && (
+          <div className="mt-5 rounded-xl border border-emerald-500/30 bg-emerald-500/[0.06] p-4">
+            <p className="text-[10px] font-medium uppercase tracking-widest text-emerald-300">
+              Scenario B — Balanced Redesign · Outcomes
+            </p>
+            <div className="mt-2 grid gap-3 text-sm text-zinc-200 md:grid-cols-3">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                <span>
+                  Leadership Coverage{" "}
+                  <strong className="text-emerald-300">+18%</strong>
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                <span>
+                  Execution Stability{" "}
+                  <strong className="text-emerald-300">Medium → Strong</strong>
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                <span>
+                  Risk Level{" "}
+                  <strong className="text-emerald-300">High → Moderate</strong>
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* AI Insights panel */}
+        <section className="mt-12">
+          <p className="text-[10px] font-medium uppercase tracking-widest text-indigo-400">
+            AI Organizational Insights
+          </p>
+          <h2 className="mt-1 text-2xl font-bold tracking-tight text-white">
+            What the data is telling you
+          </h2>
+
+          <div className="mt-5 grid gap-4 md:grid-cols-2">
+            {(scenarioB ? SCENARIO_B_INSIGHTS : DEFAULT_INSIGHTS).map((insight) => (
+              <InsightCard key={insight.title} insight={insight} />
+            ))}
+          </div>
+        </section>
+
+        {/* Bottom CTA */}
+        <section className="mt-14 rounded-2xl border border-indigo-500/30 bg-gradient-to-br from-indigo-500/[0.08] via-[#111118] to-[#0A0A0B] p-8 text-center shadow-[0_0_60px_-15px_rgba(99,102,241,0.4)]">
+          <p className="text-[10px] font-medium uppercase tracking-widest text-indigo-300">
+            This is a demo · Real analysis is built from your team
+          </p>
+          <h3 className="mt-2 text-2xl font-bold tracking-tight text-white">
+            Run the same analysis on your organization
+          </h3>
+          <p className="mx-auto mt-2 max-w-2xl text-sm text-zinc-400">
+            Upload your team&apos;s HUCAMA reports, get back a full
+            organizational capability map, role-fit ranking, and restructuring
+            scenarios — in under 5 minutes.
+          </p>
+          <a
+            href={CHECKOUT_URL}
+            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-500"
+          >
+            <Sparkles className="h-4 w-4" />
+            Unlock Full Analysis — $49
+            <ArrowRight className="h-4 w-4" />
+          </a>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Demo Banner ----------
+function DemoBanner({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="sticky top-0 z-30 w-full bg-indigo-600 text-white shadow-[0_4px_24px_-8px_rgba(79,70,229,0.6)]">
+      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 md:flex-row md:items-center md:justify-between md:px-8">
+        <div className="flex items-start gap-3">
+          <span className="inline-flex h-6 shrink-0 items-center rounded-full bg-white/20 px-2 text-[10px] font-bold uppercase tracking-widest">
+            DEMO
+          </span>
+          <div>
+            <p className="text-sm font-semibold leading-tight">
+              Demo Mode — Organizational Capability Analysis
+            </p>
+            <p className="mt-0.5 text-[11px] leading-snug text-indigo-100/90">
+              Fully unlocked preview · Alpha Investment Group · 30 employees
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <a
+            href={CHECKOUT_URL}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3.5 py-1.5 text-xs font-semibold text-indigo-700 transition-colors hover:bg-indigo-50"
+          >
+            Unlock Full Analysis — $49
+            <ArrowRight className="h-3 w-3" />
+          </a>
+          <button
+            onClick={onClose}
+            aria-label="Exit demo mode"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-white/15 text-white transition-colors hover:bg-white/25"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Demo Node Card ----------
+function DemoNodeCard({
+  node,
+  mode,
+  large,
+  compact,
+  scenarioB,
+}: {
+  node: DemoNode;
+  mode: DemoMode;
+  large?: boolean;
+  compact?: boolean;
+  scenarioB?: boolean;
+}) {
+  const override = SCENARIO_B_OVERRIDES[node.id];
+  const effectiveModeTone =
+    scenarioB && override?.modeToneOverride?.[mode]
+      ? override.modeToneOverride[mode]!
+      : node.modeTone[mode];
+
+  const ringClass =
+    effectiveModeTone === "green"
+      ? "ring-emerald-500/40"
+      : effectiveModeTone === "amber"
+        ? "ring-amber-400/40"
+        : "ring-rose-500/50";
+
+  const bgClass =
+    effectiveModeTone === "green"
+      ? "bg-emerald-500/[0.06]"
+      : effectiveModeTone === "amber"
+        ? "bg-amber-400/[0.06]"
+        : "bg-rose-500/[0.08]";
+
+  const modeBadge = node.modeBadge?.[mode];
+  const persistentBadge = node.alwaysBadge;
+  const scenarioAddBadge =
+    scenarioB && override?.addBadge ? override.addBadge : null;
+
+  return (
+    <div
+      className={`relative w-full max-w-[300px] rounded-xl border border-[#1E1E24] ${bgClass} ${ringClass} ring-1 transition-all duration-200 ${
+        large ? "px-4 py-3" : compact ? "px-3 py-2.5" : "px-3.5 py-3"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p
+            className={`flex flex-wrap items-center gap-1.5 font-semibold text-white ${
+              large ? "text-sm" : compact ? "text-[11.5px]" : "text-xs"
+            }`}
+          >
+            <span className="truncate">{node.name}</span>
+            {persistentBadge && (
+              <span className="rounded-full border border-rose-500/40 bg-rose-500/[0.12] px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-widest text-rose-300">
+                {persistentBadge}
+              </span>
+            )}
+            {modeBadge && (
+              <span className="rounded-full border border-amber-400/40 bg-amber-400/[0.12] px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-widest text-amber-300">
+                {modeBadge}
+              </span>
+            )}
+            {scenarioAddBadge && (
+              <span className="rounded-full border border-emerald-500/40 bg-emerald-500/[0.12] px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-widest text-emerald-300">
+                {scenarioAddBadge}
+              </span>
+            )}
+          </p>
+          <p
+            className={`truncate text-zinc-500 ${
+              large ? "text-[11px]" : "text-[10px]"
+            }`}
+          >
+            {node.role}
+          </p>
+        </div>
+      </div>
+
+      {/* L · E · A · S dots */}
+      <div className="mt-2 flex items-center gap-1.5">
+        <DotPill letter="L" tone={node.dots.L} highlight={mode === "Leadership"} />
+        <DotPill letter="E" tone={node.dots.E} highlight={mode === "Execution"} />
+        <DotPill letter="A" tone={node.dots.A} highlight={mode === "Adaptability"} />
+        <DotPill letter="S" tone={node.dots.S} highlight={mode === "Stability"} />
+      </div>
+    </div>
+  );
+}
+
+function DotPill({
+  letter,
+  tone,
+  highlight,
+}: {
+  letter: string;
+  tone: DemoTone;
+  highlight: boolean;
+}) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-widest transition-all duration-200 ${
+        highlight ? "bg-white/[0.05] ring-1 ring-white/15" : ""
+      }`}
+    >
+      <span className={`h-1.5 w-1.5 rounded-full ${dotBg(tone)}`} />
+      <span className="text-zinc-500">{letter}</span>
+    </span>
+  );
+}
+
+// ---------- Insights ----------
+type Severity = "red" | "amber" | "green";
+
+interface Insight {
+  severity: Severity;
+  emoji: string;
+  title: string;
+  body: string;
+}
+
+const DEFAULT_INSIGHTS: Insight[] = [
+  {
+    severity: "red",
+    emoji: "🔴",
+    title: "Burnout Risk — Operations",
+    body:
+      "Operations team shows low coping and support capacity → high burnout probability under current workload.",
+  },
+  {
+    severity: "amber",
+    emoji: "🟡",
+    title: "Leadership Dependency",
+    body:
+      "Leadership capability concentrated in 3 individuals. Organization is fragile if any single leader departs.",
+  },
+  {
+    severity: "amber",
+    emoji: "🟡",
+    title: "Structural Weakness — Product",
+    body:
+      "Product team is highly adaptive but lacks structural execution discipline. Risk of missed delivery timelines.",
+  },
+  {
+    severity: "red",
+    emoji: "🔴",
+    title: "Execution Bottleneck",
+    body:
+      "Execution bottleneck detected between Research and Operations. Cross-functional handoff failure risk is elevated.",
+  },
+];
+
+const SCENARIO_B_INSIGHTS: Insight[] = [
+  {
+    severity: "green",
+    emoji: "🟢",
+    title: "Burnout Risk Resolved",
+    body:
+      "Operations workload redistributed across Lili Mao's expanded org. Coping capacity returns to safe range.",
+  },
+  {
+    severity: "green",
+    emoji: "🟢",
+    title: "Leadership Coverage Strengthened",
+    body:
+      "Chifong Dong's role expanded with two direct reports. Single-point-of-failure risk reduced from High to Moderate.",
+  },
+  {
+    severity: "amber",
+    emoji: "🟡",
+    title: "Product Team Structure Improving",
+    body:
+      "Cross-functional pairing with Research adds execution discipline. Delivery confidence improving — monitor through next quarter.",
+  },
+  {
+    severity: "green",
+    emoji: "🟢",
+    title: "Execution Bottleneck Eased",
+    body:
+      "Joyce Zhang elevated to Operations Lead, restoring handoff cadence between Research and Operations. Risk: Moderate → Low.",
+  },
+];
+
+function InsightCard({ insight }: { insight: Insight }) {
+  const borderColor =
+    insight.severity === "red"
+      ? "border-l-rose-500"
+      : insight.severity === "amber"
+        ? "border-l-amber-400"
+        : "border-l-emerald-500";
+  const tagText =
+    insight.severity === "red"
+      ? "text-rose-300"
+      : insight.severity === "amber"
+        ? "text-amber-300"
+        : "text-emerald-300";
+  const tagBg =
+    insight.severity === "red"
+      ? "bg-rose-500/[0.08] border-rose-500/30"
+      : insight.severity === "amber"
+        ? "bg-amber-400/[0.08] border-amber-400/30"
+        : "bg-emerald-500/[0.08] border-emerald-500/30";
+  return (
+    <div
+      className={`rounded-2xl border border-[rgba(99,102,241,0.15)] bg-[#111118] p-5 border-l-4 ${borderColor}`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <span className="text-base leading-none">{insight.emoji}</span>
+          <h4 className="text-sm font-semibold text-white">{insight.title}</h4>
+        </div>
+        <span
+          className={`rounded-full border px-2 py-0.5 text-[9.5px] font-medium uppercase tracking-widest ${tagBg} ${tagText}`}
+        >
+          {insight.severity === "red"
+            ? "High"
+            : insight.severity === "amber"
+              ? "Watch"
+              : "Improved"}
+        </span>
+      </div>
+      <p className="mt-2.5 text-sm leading-relaxed text-zinc-300">
+        {insight.body}
+      </p>
+    </div>
+  );
+}
+
+// ===========================================================================
+// SHARED helpers (PersonNode, CompetencyDot, Legend) used by DefaultOrgMap
+// ===========================================================================
 
 function PersonNode({
   person,
@@ -516,14 +1480,6 @@ function PersonNode({
           ? "border-rose-500/40"
           : "border-[#1E1E24]"
       } ${large ? "px-5 py-3.5" : compact ? "px-3 py-2.5" : "px-4 py-3"}`}
-      style={{
-        background: meta.bg.replace(/[\d.]+\)/, (m) =>
-          // softer for non-active, will override below for active
-          m
-        ),
-        backgroundColor: undefined,
-        // overlay tinted background
-      }}
     >
       {/* Tinted overlay for active dim */}
       <div
