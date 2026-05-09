@@ -3,13 +3,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+  AlertTriangle,
   ArrowRight,
   ArrowUpRight,
+  BarChart3,
   Building2,
   Briefcase,
   CheckCircle2,
   ChevronDown,
-  ChevronUp,
   Crown,
   Download,
   FileText,
@@ -21,6 +22,7 @@ import {
   Target,
   TrendingUp,
   Users,
+  X,
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -39,7 +41,7 @@ function AnimatedBar({
   active,
 }: {
   value: number;
-  tone: "green" | "amber" | "red" | "indigo";
+  tone: "green" | "amber" | "red" | "indigo" | "gray";
   delay?: number;
   active: boolean;
 }) {
@@ -58,6 +60,7 @@ function AnimatedBar({
     amber: "bg-gradient-to-r from-amber-500 to-amber-400",
     red: "bg-gradient-to-r from-rose-500 to-rose-400",
     indigo: "bg-gradient-to-r from-indigo-500 to-indigo-400",
+    gray: "bg-gradient-to-r from-zinc-500 to-zinc-400",
   };
 
   return (
@@ -73,14 +76,10 @@ function AnimatedBar({
 // ---------- PAYWALL / UNLOCK STATE HOOK ----------
 function useReportState() {
   const [ready, setReady] = useState(false);
-  const [demoMode, setDemoMode] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
 
   useEffect(() => {
     try {
-      setDemoMode(
-        window.localStorage.getItem("orglens_demo_mode") === "true"
-      );
       setUnlocked(
         window.localStorage.getItem("orglens_report_unlocked") === "true"
       );
@@ -90,16 +89,7 @@ function useReportState() {
     setReady(true);
   }, []);
 
-  function unlock() {
-    try {
-      window.localStorage.setItem("orglens_report_unlocked", "true");
-    } catch {
-      /* ignore */
-    }
-    window.location.reload();
-  }
-
-  return { ready, demoMode, unlocked, unlock };
+  return { ready, unlocked };
 }
 
 // ---------- IN-VIEW HOOK ----------
@@ -129,7 +119,8 @@ function useInView<T extends HTMLElement>(opts?: IntersectionObserverInit) {
 
 // ---------- PAGE ----------
 export default function ReportPage() {
-  const { ready, unlocked, unlock } = useReportState();
+  const { ready, unlocked } = useReportState();
+  const [isDemoMode, setIsDemoMode] = useState(false);
 
   if (!ready) {
     return (
@@ -139,15 +130,67 @@ export default function ReportPage() {
     );
   }
 
+  const showFull = unlocked || isDemoMode;
+
   return (
     <>
       <ReportPrintStyles />
+      {isDemoMode && (
+        <DemoBanner onClose={() => setIsDemoMode(false)} />
+      )}
       <div className="report-root mx-auto max-w-6xl pb-24">
         <ReportHeader />
         <ExecutiveSummary />
-        {unlocked ? <FullReport /> : <LockedTeaser onUnlock={unlock} />}
+        {showFull ? (
+          <FullReport />
+        ) : (
+          <LockedTeaser onDemo={() => setIsDemoMode(true)} />
+        )}
       </div>
     </>
+  );
+}
+
+// ---------- DEMO BANNER ----------
+function DemoBanner({ onClose }: { onClose: () => void }) {
+  const checkoutUrl = getCheckoutUrl();
+  return (
+    <div
+      data-demo-banner
+      className="w-full bg-indigo-900 text-white"
+    >
+      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-3.5 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-start gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/10 text-lg">
+            📊
+          </div>
+          <div>
+            <p className="text-sm font-semibold leading-tight">
+              Demo Mode — Sample Organizational Analysis
+            </p>
+            <p className="mt-0.5 text-xs leading-snug opacity-80">
+              This is a fully unlocked preview. Real analysis costs $49.
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <a
+            href={checkoutUrl}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-500 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-indigo-400"
+          >
+            <Sparkles className="h-3.5 w-3.5" />
+            Unlock Real Analysis — $49
+          </a>
+          <button
+            onClick={onClose}
+            aria-label="Close demo mode"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-white transition-colors hover:bg-white/20"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -253,24 +296,28 @@ function SectionTitle({
 function ExecutiveSummary() {
   const findings = [
     {
-      icon: Crown,
-      tone: "indigo" as const,
-      text: "Top performers (Chifong Dong, Eric Li, Lili Mao) carry disproportionate execution load — 3 individuals account for 40% of leadership output.",
-    },
-    {
       icon: ShieldAlert,
       tone: "rose" as const,
-      text: "Operations team shows critical adaptability and coping gaps — restructuring risk without intervention.",
+      label: "Leadership Gap",
+      text: "Leadership coverage gap in Operations (58% → target 76%).",
     },
     {
-      icon: TrendingUp,
+      icon: AlertTriangle,
       tone: "amber" as const,
-      text: "Investment team is analytically strong but structurally fragile — high evaluation, low support orientation.",
+      label: "Execution Risk",
+      text: "Execution stability: Medium risk under current structure.",
     },
     {
       icon: Users,
-      tone: "cyan" as const,
-      text: "Acting with Consideration is the single largest team-wide competency gap across all departments.",
+      tone: "rose" as const,
+      label: "Role Misalignment",
+      text: "Yuzhe Zhao: role misalignment flagged — below threshold on 6/8 competencies.",
+    },
+    {
+      icon: Crown,
+      tone: "indigo" as const,
+      label: "Talent Concentration",
+      text: "Top 3 performers (Chifong Dong, Eric Li, Lili Mao) covering 40% of critical delivery.",
     },
   ];
 
@@ -324,13 +371,13 @@ function ExecutiveSummary() {
               <dd className="font-mono text-sm font-semibold text-white">30</dd>
             </div>
             <div className="flex justify-between gap-4 border-b border-white/[0.06] pb-3">
-              <dt className="text-xs uppercase tracking-widest text-zinc-500">Industry</dt>
-              <dd className="text-sm font-medium text-zinc-200">Financial Services</dd>
+              <dt className="text-xs uppercase tracking-widest text-zinc-500">Sector</dt>
+              <dd className="text-sm font-medium text-zinc-200">Investment / Finance</dd>
             </div>
             <div className="flex flex-col gap-2">
               <dt className="text-xs uppercase tracking-widest text-zinc-500">Objective</dt>
               <dd className="text-sm leading-relaxed text-zinc-200">
-                Reduce burn while preserving execution capability
+                Reduce burn without destroying execution capability
               </dd>
             </div>
           </dl>
@@ -354,7 +401,7 @@ function ExecutiveSummary() {
                   </div>
                   <div>
                     <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
-                      Finding {i + 1}
+                      Finding {i + 1} · {f.label}
                     </p>
                     <p className="mt-1.5 text-sm leading-relaxed text-zinc-200">
                       {f.text}
@@ -368,12 +415,12 @@ function ExecutiveSummary() {
       </div>
 
       {/* Recommendation banner */}
-      <div className="report-card relative mt-8 overflow-hidden rounded-2xl border border-indigo-500/40 bg-gradient-to-br from-indigo-600/[0.18] via-indigo-700/[0.10] to-[#0f0f14] p-7 shadow-[0_0_60px_-20px_rgba(99,102,241,0.6)]">
-        <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-indigo-500/20 blur-[80px]" />
+      <div className="report-card relative mt-8 overflow-hidden rounded-2xl border border-emerald-500/40 bg-gradient-to-br from-emerald-600/[0.18] via-indigo-700/[0.10] to-[#0f0f14] p-7 shadow-[0_0_60px_-20px_rgba(16,185,129,0.6)]">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-emerald-500/20 blur-[80px]" />
         <div className="relative flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-300">
-              Primary Recommendation
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-emerald-300">
+              Recommended Scenario
             </p>
             <h3 className="mt-2 text-xl font-bold text-white md:text-2xl">
               Scenario B — Balanced Redesign
@@ -383,8 +430,8 @@ function ExecutiveSummary() {
               leadership continuity while removing structural redundancy.
             </p>
           </div>
-          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-indigo-500/30 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-indigo-100 ring-1 ring-inset ring-indigo-400/40">
-            <Sparkles className="h-3 w-3" />
+          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-500/30 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-emerald-100 ring-1 ring-inset ring-emerald-400/40">
+            <CheckCircle2 className="h-3 w-3" />
             High Confidence
           </span>
         </div>
@@ -394,7 +441,8 @@ function ExecutiveSummary() {
 }
 
 // ---------- LOCKED TEASER (sections 2–8 placeholder) ----------
-function LockedTeaser({ onUnlock }: { onUnlock: () => void }) {
+function LockedTeaser({ onDemo }: { onDemo: () => void }) {
+  const checkoutUrl = getCheckoutUrl();
   return (
     <section className="report-section relative mt-12">
       <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0f0f14]">
@@ -430,27 +478,36 @@ function LockedTeaser({ onUnlock }: { onUnlock: () => void }) {
               restructuring roadmap.
             </p>
 
-            <button
-              onClick={onUnlock}
-              className="report-cta mt-8 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-7 py-3.5 text-sm font-semibold text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-400 hover:shadow-[0_0_50px_-5px_rgba(99,102,241,0.9)]"
-            >
-              <Sparkles className="h-4 w-4" />
-              Unlock Full Analysis — $49
-              <ArrowRight className="h-4 w-4" />
-            </button>
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <a
+                href={checkoutUrl}
+                className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-3 font-semibold text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-500 hover:shadow-[0_0_50px_-5px_rgba(99,102,241,0.9)]"
+              >
+                <Sparkles className="h-4 w-4" />
+                Unlock Full Report — $49
+                <ArrowRight className="h-4 w-4" />
+              </a>
+              <button
+                onClick={onDemo}
+                className="inline-flex items-center gap-2 rounded-lg border-2 border-indigo-600 bg-transparent px-5 py-3 font-medium text-indigo-300 transition-all hover:bg-indigo-600/10 hover:text-indigo-200"
+              >
+                <FileText className="h-4 w-4" />
+                View Full Demo Report
+              </button>
+            </div>
             <p className="mt-3 text-xs text-zinc-500">
-              Instant access. One-time payment.
+              Instant access. One-time payment. Or preview with the demo report.
             </p>
 
             <div className="mt-8 grid grid-cols-2 gap-3 text-left text-xs text-zinc-400 sm:grid-cols-4">
               {[
                 "Metrics",
+                "Org Map",
+                "Role Fit",
                 "Scenarios",
                 "Competency Impact",
-                "Role-Fit",
-                "Risk Intelligence",
-                "Recommendation",
-                "Roadmap",
+                "Risk Intel",
+                "Founder Memo",
               ].map((t, i) => (
                 <span
                   key={t}
@@ -473,83 +530,81 @@ function FullReport() {
   return (
     <>
       <Section2Metrics />
-      <Section3Scenarios />
-      <Section4CompetencyImpact />
-      <Section5RoleFit />
-      <Section6RiskIntel />
-      <Section7FinalRecommendation />
-      <Section8NextSteps />
+      <Section3OrgMap />
+      <Section4RoleFit />
+      <Section5Scenarios />
+      <Section6CompetencyImpact />
+      <Section7RiskIntel />
+      <Section8FounderMemo />
     </>
   );
 }
 
-// ---------- SECTION 2 ----------
+// ---------- SECTION 2: ORGANIZATIONAL METRICS ----------
 function Section2Metrics() {
   const rows = [
     {
       metric: "Leadership Coverage",
-      current: "58%",
+      before: "58%",
       after: "76%",
-      change: "+18pp",
-      tone: "up" as const,
+      change: "+18%",
+      direction: "up" as const,
     },
     {
       metric: "Execution Stability",
-      current: "Medium",
+      before: "Medium",
       after: "Strong",
-      change: "↑",
-      tone: "up" as const,
+      change: "Improved",
+      direction: "up" as const,
+    },
+    {
+      metric: "Adaptability Score",
+      before: "6.2 / 10",
+      after: "7.8 / 10",
+      change: "+1.6",
+      direction: "up" as const,
     },
     {
       metric: "Organizational Risk",
-      current: "High",
+      before: "High",
       after: "Moderate",
-      change: "↓",
-      tone: "down-good" as const,
+      change: "Reduced",
+      direction: "down-good" as const,
     },
     {
       metric: "Team Balance Score",
-      current: "6.1 / 10",
-      after: "7.8 / 10",
-      change: "+1.7",
-      tone: "up" as const,
-    },
-    {
-      metric: "Headcount",
-      current: "30",
-      after: "26",
-      change: "−4",
-      tone: "neutral" as const,
-    },
-    {
-      metric: "Monthly Burn Reduction",
-      current: "—",
-      after: "18%",
-      change: "↓",
-      tone: "down-good" as const,
+      before: "54%",
+      after: "71%",
+      change: "+17%",
+      direction: "up" as const,
     },
   ];
-
-  function changeColor(t: string) {
-    if (t === "up" || t === "down-good") return "text-emerald-400";
-    if (t === "down-bad") return "text-rose-400";
-    return "text-zinc-400";
-  }
 
   return (
     <section className="report-section mt-16">
       <SectionTitle
         num="02"
-        title="Key Organizational Metrics"
-        subtitle="Before vs after Scenario B — net organizational deltas"
+        title="Organizational Metrics"
+        subtitle="Before vs After — net deltas under Scenario B (Balanced Redesign)"
       />
 
       <div className="report-card overflow-hidden rounded-xl border border-white/[0.08] bg-[#111116]">
+        {/* Scenario badge */}
+        <div className="flex items-center justify-between border-b border-white/[0.08] bg-emerald-500/[0.06] px-6 py-3">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-300 ring-1 ring-inset ring-emerald-500/30">
+            <CheckCircle2 className="h-3 w-3" />
+            Scenario B Applied
+          </span>
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+            5 metrics tracked
+          </span>
+        </div>
+
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-white/[0.08] bg-white/[0.02] text-left text-[10px] uppercase tracking-widest text-zinc-500">
               <th className="px-6 py-4 font-semibold">Metric</th>
-              <th className="px-6 py-4 font-semibold">Current</th>
+              <th className="px-6 py-4 font-semibold">Before</th>
               <th className="px-6 py-4 font-semibold">After Scenario B</th>
               <th className="px-6 py-4 text-right font-semibold">Change</th>
             </tr>
@@ -563,17 +618,14 @@ function Section2Metrics() {
                 } transition-colors hover:bg-white/[0.02]`}
               >
                 <td className="px-6 py-4 font-medium text-white">{r.metric}</td>
-                <td className="px-6 py-4 font-mono text-zinc-400">{r.current}</td>
+                <td className="px-6 py-4 font-mono text-zinc-400">{r.before}</td>
                 <td className="px-6 py-4 font-mono font-semibold text-indigo-300">
                   {r.after}
                 </td>
-                <td
-                  className={`px-6 py-4 text-right font-mono font-semibold ${changeColor(
-                    r.tone
-                  )}`}
-                >
-                  {r.change} {r.tone === "up" && "↑"}
-                  {r.tone === "down-good" && ""}
+                <td className="px-6 py-4 text-right">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 font-mono text-[11px] font-bold text-emerald-300 ring-1 ring-inset ring-emerald-500/30">
+                    {r.direction === "up" ? "↑" : "↓"} {r.change}
+                  </span>
                 </td>
               </tr>
             ))}
@@ -584,58 +636,610 @@ function Section2Metrics() {
   );
 }
 
-// ---------- SECTION 3 ----------
-function Section3Scenarios() {
+// ---------- SECTION 3: COMPETENCY ORG MAP ----------
+type DotTone = "green" | "amber" | "red";
+
+function CompetencyDots({ dots }: { dots: { label: string; tone: DotTone }[] }) {
+  const toneClass: Record<DotTone, string> = {
+    green: "bg-emerald-500",
+    amber: "bg-amber-500",
+    red: "bg-rose-500",
+  };
+  return (
+    <div className="flex items-center gap-1.5">
+      {dots.map((d) => (
+        <span
+          key={d.label}
+          className="flex items-center gap-0.5 text-[10px] font-mono font-semibold text-zinc-400"
+          title={`${d.label}: ${d.tone}`}
+        >
+          <span className={`h-2 w-2 rounded-full ${toneClass[d.tone]}`} />
+          {d.label}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function OrgNode({
+  name,
+  role,
+  dots,
+  score,
+  atRisk,
+  isCEO,
+}: {
+  name: string;
+  role: string;
+  dots: { label: string; tone: DotTone }[];
+  score?: string;
+  atRisk?: boolean;
+  isCEO?: boolean;
+}) {
+  return (
+    <div
+      className={`flex flex-col gap-2 rounded-lg border bg-[#111116] p-3.5 transition-colors hover:border-indigo-500/30 sm:flex-row sm:items-center sm:justify-between ${
+        atRisk
+          ? "border-rose-500/40 bg-rose-500/[0.05]"
+          : isCEO
+          ? "border-indigo-500/40 bg-indigo-500/[0.06]"
+          : "border-white/[0.08]"
+      }`}
+    >
+      <div className="min-w-0">
+        <div className="flex items-center gap-2">
+          <p className="truncate text-sm font-bold text-white">{name}</p>
+          {isCEO && (
+            <span className="inline-flex items-center rounded-full bg-indigo-500/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-indigo-200 ring-1 ring-inset ring-indigo-500/40">
+              CEO
+            </span>
+          )}
+          {atRisk && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-rose-500/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-rose-200 ring-1 ring-inset ring-rose-500/40">
+              <AlertTriangle className="h-2.5 w-2.5" />
+              At Risk
+            </span>
+          )}
+        </div>
+        <p className="mt-0.5 truncate text-[11px] text-zinc-500">{role}</p>
+      </div>
+      <div className="flex flex-shrink-0 items-center gap-3">
+        <CompetencyDots dots={dots} />
+        {score && (
+          <span
+            className={`shrink-0 rounded-md px-2 py-1 font-mono text-[11px] font-bold ${
+              atRisk
+                ? "bg-rose-500/15 text-rose-300 ring-1 ring-inset ring-rose-500/30"
+                : "bg-emerald-500/15 text-emerald-300 ring-1 ring-inset ring-emerald-500/30"
+            }`}
+          >
+            {score}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function HeatBar({ value, label }: { value: number; label: string }) {
+  const tone = value >= 75 ? "emerald" : value >= 65 ? "amber" : "rose";
+  const toneClasses: Record<string, { bar: string; text: string }> = {
+    emerald: {
+      bar: "bg-gradient-to-r from-emerald-500 to-emerald-400",
+      text: "text-emerald-300",
+    },
+    amber: {
+      bar: "bg-gradient-to-r from-amber-500 to-amber-400",
+      text: "text-amber-300",
+    },
+    rose: {
+      bar: "bg-gradient-to-r from-rose-500 to-rose-400",
+      text: "text-rose-300",
+    },
+  };
+  const t = toneClasses[tone];
+  return (
+    <div>
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+          {label}
+        </span>
+        <span className={`font-mono text-[11px] font-bold ${t.text}`}>
+          {value}%
+        </span>
+      </div>
+      <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.04]">
+        <div className={`h-full ${t.bar}`} style={{ width: `${value}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function Section3OrgMap() {
+  const baseDots = (l: DotTone, e: DotTone, a: DotTone, s: DotTone) => [
+    { label: "L", tone: l },
+    { label: "E", tone: e },
+    { label: "A", tone: a },
+    { label: "S", tone: s },
+  ];
+
+  const teams = [
+    {
+      name: "Investment Team",
+      stats: [
+        { label: "Leadership", value: 89 },
+        { label: "Execution", value: 91 },
+        { label: "Adaptability", value: 87 },
+        { label: "Stability", value: 83 },
+      ],
+      summary: "Strong across all dimensions",
+      tone: "emerald" as const,
+    },
+    {
+      name: "Operations Team",
+      stats: [
+        { label: "Leadership", value: 58 },
+        { label: "Execution", value: 76 },
+        { label: "Adaptability", value: 72 },
+        { label: "Stability", value: 69 },
+      ],
+      summary: "Leadership gap; risk concentration",
+      tone: "rose" as const,
+    },
+    {
+      name: "Research Team",
+      stats: [
+        { label: "Leadership", value: 78 },
+        { label: "Execution", value: 82 },
+        { label: "Adaptability", value: 85 },
+        { label: "Stability", value: 71 },
+      ],
+      summary: "Balanced; mild stability gap",
+      tone: "amber" as const,
+    },
+  ];
+
+  const teamToneClass: Record<"emerald" | "amber" | "rose", string> = {
+    emerald: "border-emerald-500/30 bg-emerald-500/[0.05]",
+    amber: "border-amber-500/30 bg-amber-500/[0.05]",
+    rose: "border-rose-500/30 bg-rose-500/[0.05]",
+  };
+
+  return (
+    <section className="report-section mt-16">
+      <SectionTitle
+        num="03"
+        title="Competency Org Map"
+        subtitle="Leadership · Execution · Adaptability · Stability — visualized across the org"
+      />
+
+      {/* Legend */}
+      <div className="report-card mb-5 flex flex-wrap items-center gap-x-6 gap-y-2 rounded-xl border border-white/[0.08] bg-[#111116] px-5 py-3 text-xs text-zinc-400">
+        <span className="font-semibold uppercase tracking-widest text-zinc-500">
+          Legend
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-emerald-500" />
+          Strong
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-amber-500" />
+          Watch
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-rose-500" />
+          At Risk
+        </span>
+        <span className="ml-auto font-mono text-[10px] tracking-wider text-zinc-500">
+          L = Leadership · E = Execution · A = Adaptability · S = Stability
+        </span>
+      </div>
+
+      {/* Org tree */}
+      <div className="report-card rounded-xl border border-white/[0.08] bg-[#111116] p-5 md:p-7">
+        <div className="space-y-3">
+          {/* CEO */}
+          <OrgNode
+            isCEO
+            name="Wenjing Li"
+            role="Chief Executive Officer"
+            dots={baseDots("green", "green", "green", "green")}
+          />
+
+          {/* Direct reports */}
+          <div className="ml-4 space-y-3 border-l border-white/[0.08] pl-5 md:ml-6 md:pl-7">
+            <OrgNode
+              name="Chifong Dong"
+              role="Investment Director"
+              dots={baseDots("green", "green", "green", "green")}
+              score="9.5/10"
+            />
+
+            <div>
+              <OrgNode
+                name="Lili Mao"
+                role="Operations Lead"
+                dots={baseDots("green", "green", "amber", "green")}
+                score="8.4/10"
+              />
+              <div className="ml-4 mt-3 space-y-3 border-l border-white/[0.08] pl-5 md:ml-6 md:pl-7">
+                <OrgNode
+                  name="Eric Li"
+                  role="Senior Analyst"
+                  dots={baseDots("green", "green", "green", "amber")}
+                  score="9.2/10"
+                />
+                <OrgNode
+                  name="Yijun Sim"
+                  role="Senior Analyst"
+                  dots={baseDots("amber", "green", "green", "green")}
+                  score="9.2/10"
+                />
+                <OrgNode
+                  atRisk
+                  name="Yuzhe Zhao"
+                  role="Analyst"
+                  dots={baseDots("red", "red", "amber", "amber")}
+                  score="4.1/10"
+                />
+              </div>
+            </div>
+
+            <div>
+              <OrgNode
+                name="Supriya Kumar"
+                role="Research Director"
+                dots={baseDots("green", "green", "green", "amber")}
+                score="9.4/10"
+              />
+              <div className="ml-4 mt-3 space-y-3 border-l border-white/[0.08] pl-5 md:ml-6 md:pl-7">
+                <OrgNode
+                  name="Joyce Zhang"
+                  role="Business Development"
+                  dots={baseDots("amber", "amber", "green", "red")}
+                  score="7.2/10"
+                />
+              </div>
+            </div>
+
+            <OrgNode
+              name="Luke Cai"
+              role="Strategy Lead"
+              dots={baseDots("green", "green", "amber", "green")}
+              score="9.0/10"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Team heatmap summary */}
+      <div className="mt-6">
+        <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
+          Team Heatmap Summary
+        </p>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {teams.map((t) => (
+            <div
+              key={t.name}
+              className={`report-card rounded-xl border p-5 ${teamToneClass[t.tone]}`}
+            >
+              <h4 className="text-sm font-bold text-white">{t.name}</h4>
+              <p className="mt-1 text-[11px] text-zinc-400">{t.summary}</p>
+              <div className="mt-4 space-y-3">
+                {t.stats.map((s) => (
+                  <HeatBar key={s.label} value={s.value} label={s.label} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------- SECTION 4: ROLE-COMPETENCY FIT RANKING ----------
+type RoleKey = "investment" | "operations" | "research";
+
+interface DemoCandidate {
+  name: string;
+  fit: number;
+  strengths: string[];
+  gaps: string[];
+  insight: string;
+}
+
+const DEMO_ROLES: Record<RoleKey, { label: string; candidates: DemoCandidate[] }> = {
+  investment: {
+    label: "Investment Lead",
+    candidates: [
+      {
+        name: "Chifong Dong",
+        fit: 95,
+        strengths: ["Strategic Thinking", "Stakeholder Influence"],
+        gaps: ["Acting with Consideration"],
+        insight: "Top investment leadership profile. Dominant analytical and stakeholder posture.",
+      },
+      {
+        name: "Eric Li",
+        fit: 91,
+        strengths: ["Analytical Rigor", "Drive"],
+        gaps: ["Team Leadership"],
+        insight: "Execution-strong deputy candidate. Develop people-leadership for next step.",
+      },
+      {
+        name: "Yijun Sim",
+        fit: 90,
+        strengths: ["Execution Focus", "Structure"],
+        gaps: ["Innovation"],
+        insight: "Highly structured; pair with creative profiles for portfolio breadth.",
+      },
+      {
+        name: "Luke Cai",
+        fit: 84,
+        strengths: ["Strategy", "Communication"],
+        gaps: ["Detail Orientation"],
+        insight: "Strong strategic communicator; better suited to thematic investment lead.",
+      },
+      {
+        name: "Supriya Kumar",
+        fit: 81,
+        strengths: ["Research Depth", "Delivery"],
+        gaps: ["Influence"],
+        insight: "Strong analytical anchor; better aligned to research direction.",
+      },
+    ],
+  },
+  operations: {
+    label: "Operations Lead",
+    candidates: [
+      {
+        name: "Lili Mao",
+        fit: 94,
+        strengths: ["People Leadership", "Delivery", "Standards"],
+        gaps: ["Analytical Depth"],
+        insight: "Highest operational fit. Add analytical support to relieve cognitive load.",
+      },
+      {
+        name: "Supriya Kumar",
+        fit: 88,
+        strengths: ["Planning", "Research"],
+        gaps: ["Team Motivation"],
+        insight: "Strong process leader; pair with energetic culture-builder.",
+      },
+      {
+        name: "Eric Li",
+        fit: 79,
+        strengths: ["Execution", "Drive"],
+        gaps: ["People Development"],
+        insight: "Execution-anchored fallback; better as ops contingency than primary lead.",
+      },
+    ],
+  },
+  research: {
+    label: "Research Director",
+    candidates: [
+      {
+        name: "Supriya Kumar",
+        fit: 96,
+        strengths: ["Depth", "Precision", "Innovation"],
+        gaps: ["Speed"],
+        insight: "Ideal research director. Manage scope to mitigate speed risk.",
+      },
+      {
+        name: "Yijun Sim",
+        fit: 85,
+        strengths: ["Analysis", "Structure"],
+        gaps: ["Research Breadth"],
+        insight: "Strong methodological fit; broaden research scope progressively.",
+      },
+      {
+        name: "Luke Cai",
+        fit: 77,
+        strengths: ["Strategy"],
+        gaps: ["Research Methodology"],
+        insight: "Better suited to thematic research strategy than research operations.",
+      },
+    ],
+  },
+};
+
+function Section4RoleFit() {
+  const [role, setRole] = useState<RoleKey>("investment");
+  const [expanded, setExpanded] = useState<number | null>(0);
+  const data = DEMO_ROLES[role];
+
+  return (
+    <section className="report-section mt-16">
+      <SectionTitle
+        num="04"
+        title="Role–Competency Fit Ranking"
+        subtitle="Top candidates ranked against role-specific competency requirements"
+      />
+
+      {/* Tabs */}
+      <div className="mb-6 inline-flex flex-wrap gap-1 rounded-lg border border-white/[0.08] bg-[#111116] p-1">
+        {(Object.keys(DEMO_ROLES) as RoleKey[]).map((k) => (
+          <button
+            key={k}
+            onClick={() => {
+              setRole(k);
+              setExpanded(0);
+            }}
+            className={`rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors ${
+              role === k
+                ? "bg-indigo-500 text-white shadow-sm"
+                : "text-zinc-400 hover:text-white"
+            }`}
+          >
+            {DEMO_ROLES[k].label}
+          </button>
+        ))}
+      </div>
+
+      <div className="space-y-3">
+        {data.candidates.map((c, i) => {
+          const open = expanded === i;
+          return (
+            <div
+              key={c.name}
+              className="report-card overflow-hidden rounded-xl border border-white/[0.08] bg-[#111116] transition-colors hover:border-indigo-500/30"
+            >
+              <button
+                onClick={() => setExpanded(open ? null : i)}
+                className="flex w-full items-center gap-4 p-5 text-left"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.04] font-mono text-sm font-bold text-zinc-300 ring-1 ring-inset ring-white/[0.06]">
+                  {i + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-base font-bold text-white">{c.name}</p>
+                  <div className="mt-2 flex h-1.5 overflow-hidden rounded-full bg-white/[0.04]">
+                    <div
+                      className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400"
+                      style={{ width: `${c.fit}%` }}
+                    />
+                  </div>
+                  {/* Tags */}
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {c.strengths.slice(0, 2).map((s) => (
+                      <span
+                        key={s}
+                        className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-300 ring-1 ring-inset ring-emerald-500/30"
+                      >
+                        <CheckCircle2 className="h-2.5 w-2.5" />
+                        {s}
+                      </span>
+                    ))}
+                    {c.gaps.slice(0, 2).map((g) => (
+                      <span
+                        key={g}
+                        className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-300 ring-1 ring-inset ring-amber-500/30"
+                      >
+                        <ShieldAlert className="h-2.5 w-2.5" />
+                        {g}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <span
+                  className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-[11px] font-bold ${
+                    c.fit >= 90
+                      ? "bg-emerald-500/15 text-emerald-300 ring-1 ring-inset ring-emerald-500/30"
+                      : "bg-indigo-500/15 text-indigo-300 ring-1 ring-inset ring-indigo-500/30"
+                  }`}
+                >
+                  {c.fit}% Fit
+                </span>
+                <ChevronDown
+                  className={`h-4 w-4 shrink-0 text-zinc-500 transition-transform ${
+                    open ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              {open && (
+                <div className="grid grid-cols-1 gap-5 border-t border-white/[0.06] bg-white/[0.02] p-5 md:grid-cols-3">
+                  <div>
+                    <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-emerald-400">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      Strengths
+                    </p>
+                    <ul className="mt-3 space-y-2">
+                      {c.strengths.map((s) => (
+                        <li
+                          key={s}
+                          className="rounded-md bg-emerald-500/[0.06] px-2.5 py-1.5 text-xs text-zinc-200 ring-1 ring-inset ring-emerald-500/20"
+                        >
+                          {s}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-amber-400">
+                      <ShieldAlert className="h-3.5 w-3.5" />
+                      Gaps
+                    </p>
+                    <ul className="mt-3 space-y-2">
+                      {c.gaps.map((g) => (
+                        <li
+                          key={g}
+                          className="rounded-md bg-amber-500/[0.06] px-2.5 py-1.5 text-xs text-zinc-200 ring-1 ring-inset ring-amber-500/20"
+                        >
+                          {g}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-indigo-400">
+                      <Sparkles className="h-3.5 w-3.5" />
+                      AI Insight
+                    </p>
+                    <p className="mt-3 text-xs leading-relaxed text-zinc-200">
+                      {c.insight}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+// ---------- SECTION 5: SCENARIO COMPARISON ----------
+function Section5Scenarios() {
   const cards = [
     {
       key: "A",
       name: "Lean Efficiency",
-      tone: "amber",
       borderClass: "border-amber-500/40",
       ringClass: "ring-amber-500/20",
       pillClass: "bg-rose-500/15 text-rose-300 ring-rose-500/30",
-      pillLabel: "High Risk",
+      pillLabel: "High Risk ⚠",
       stats: [
-        { label: "Headcount", value: "30 → 22" },
-        { label: "Cost Reduction", value: "30%" },
-        { label: "Execution Impact", value: "−25%" },
+        { label: "Headcount Impact", value: "−4 roles (13% reduction)" },
+        { label: "Cost Reduction", value: "$320K / year" },
+        { label: "Execution Effect", value: "Moderate decline (−15%)" },
       ],
       tradeoff:
-        "Aggressive savings destroy execution bench depth. High fragility risk.",
+        "Removes buffer capacity; increases dependency on top performers.",
       recommended: false,
     },
     {
       key: "B",
       name: "Balanced Redesign",
-      tone: "indigo",
       borderClass: "border-indigo-500/50",
       ringClass: "ring-indigo-500/30",
       pillClass: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
-      pillLabel: "Moderate Risk",
+      pillLabel: "Moderate Risk ✓",
       stats: [
-        { label: "Headcount", value: "30 → 26" },
-        { label: "Cost Reduction", value: "18%" },
-        { label: "Execution Impact", value: "Stable" },
+        { label: "Headcount Impact", value: "−2 roles + 1 redesign" },
+        { label: "Cost Reduction", value: "$180K / year" },
+        { label: "Execution Effect", value: "Stable → Strong (+18%)" },
       ],
       tradeoff:
-        "Optimal balance of savings and capability retention. Recommended path.",
+        "Minor short-term adjustment cost; sustainable long-term capability.",
       recommended: true,
     },
     {
       key: "C",
       name: "AI-Augmented Organization",
-      tone: "cyan",
       borderClass: "border-cyan-500/40",
       ringClass: "ring-cyan-500/20",
-      pillClass: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
-      pillLabel: "Medium Risk",
+      pillClass: "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30",
+      pillLabel: "Low Risk ✓",
       stats: [
-        { label: "Headcount", value: "30 → 25" },
-        { label: "Productivity", value: "+15% projected" },
-        { label: "Execution Impact", value: "Transition-dependent" },
+        { label: "Headcount Impact", value: "−1 role + 2 AI-enhanced roles" },
+        { label: "Cost Reduction", value: "$90K / year" },
+        { label: "Execution Effect", value: "Strong improvement (+32%)" },
       ],
       tradeoff:
-        "High upside if AI adoption succeeds; medium transition risk.",
+        "Requires 60-day tooling transition; high upside if executed.",
       recommended: false,
     },
   ];
@@ -643,8 +1247,8 @@ function Section3Scenarios() {
   return (
     <section className="report-section mt-16">
       <SectionTitle
-        num="03"
-        title="Scenario Analysis"
+        num="05"
+        title="Scenario Comparison"
         subtitle="Three restructuring paths evaluated for cost, risk, and execution impact"
       />
 
@@ -677,25 +1281,25 @@ function Section3Scenarios() {
             </div>
             <h3 className="mt-3 text-lg font-bold text-white">{c.name}</h3>
 
-            <div className="mt-5 space-y-2.5">
+            <div className="mt-5 space-y-3">
               {c.stats.map((s) => (
                 <div
                   key={s.label}
-                  className="flex items-center justify-between border-b border-white/[0.05] pb-2.5 last:border-0 last:pb-0"
+                  className="border-b border-white/[0.05] pb-3 last:border-0 last:pb-0"
                 >
-                  <span className="text-[11px] uppercase tracking-widest text-zinc-500">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
                     {s.label}
-                  </span>
-                  <span className="font-mono text-sm font-semibold text-white">
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-white">
                     {s.value}
-                  </span>
+                  </p>
                 </div>
               ))}
             </div>
 
             <div className="mt-5 rounded-lg bg-white/[0.03] p-3 ring-1 ring-inset ring-white/[0.05]">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
-                Key Trade-off
+                Trade-off
               </p>
               <p className="mt-1.5 text-xs leading-relaxed text-zinc-300">
                 {c.tradeoff}
@@ -708,60 +1312,43 @@ function Section3Scenarios() {
   );
 }
 
-// ---------- SECTION 4 ----------
-function Section4CompetencyImpact() {
+// ---------- SECTION 6: COMPETENCY IMPACT ----------
+function Section6CompetencyImpact() {
   const { ref, inView } = useInView<HTMLDivElement>();
 
   const rows = [
     {
       label: "Leadership Coverage",
       before: 58,
-      beforeTone: "amber" as const,
       after: 76,
-      afterTone: "green" as const,
-      change: "+18pp improvement",
+      insight: "Eric Li promoted to Operations deputy closes the leadership gap.",
     },
     {
-      label: "Execution Stability",
-      before: 52,
-      beforeTone: "amber" as const,
-      after: 71,
-      afterTone: "green" as const,
-      change: "Medium → Strong",
+      label: "Execution Strength",
+      before: 71,
+      after: 84,
+      insight: "Role redesign frees top performers from low-fit allocation.",
     },
     {
-      label: "Adaptability",
-      before: 38,
-      beforeTone: "red" as const,
-      after: 55,
-      afterTone: "amber" as const,
-      change: "Uneven → Balanced",
+      label: "Stability Index",
+      before: 65,
+      after: 72,
+      insight: "Workload redistribution reduces burnout risk in Operations.",
     },
     {
-      label: "Organizational Stability",
-      before: 34,
-      beforeTone: "red" as const,
-      after: 58,
-      afterTone: "amber" as const,
-      change: "Low in Ops → Moderate",
-    },
-    {
-      label: "Risk Score",
-      before: 85,
-      beforeTone: "red" as const,
-      after: 48,
-      afterTone: "amber" as const,
-      change: "−37pp risk reduction",
-      invertChange: true,
+      label: "Adaptability Score",
+      before: 62,
+      after: 78,
+      insight: "BD repositioning unlocks Joyce Zhang's flexible profile.",
     },
   ];
 
   return (
     <section className="report-section mt-16" ref={ref}>
       <SectionTitle
-        num="04"
-        title="Competency Impact — Scenario B: Before vs After"
-        subtitle="Animated competency deltas under the recommended restructuring path"
+        num="06"
+        title="Competency Impact"
+        subtitle="Animated competency deltas under Scenario B (Balanced Redesign)"
       />
 
       <div className="report-card rounded-xl border border-white/[0.08] bg-[#111116] p-6 md:p-8">
@@ -770,6 +1357,9 @@ function Section4CompetencyImpact() {
             <div key={r.label} className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-center">
               <div className="lg:col-span-3">
                 <p className="text-sm font-semibold text-white">{r.label}</p>
+                <p className="mt-1 hidden text-[11px] leading-relaxed text-zinc-500 lg:block">
+                  {r.insight}
+                </p>
               </div>
 
               <div className="lg:col-span-7 space-y-2">
@@ -780,7 +1370,7 @@ function Section4CompetencyImpact() {
                   <div className="flex-1">
                     <AnimatedBar
                       value={r.before}
-                      tone={r.beforeTone}
+                      tone="gray"
                       delay={i * 80}
                       active={inView}
                     />
@@ -796,7 +1386,7 @@ function Section4CompetencyImpact() {
                   <div className="flex-1">
                     <AnimatedBar
                       value={r.after}
-                      tone={r.afterTone}
+                      tone="indigo"
                       delay={i * 80 + 200}
                       active={inView}
                     />
@@ -809,432 +1399,109 @@ function Section4CompetencyImpact() {
 
               <div className="lg:col-span-2 lg:text-right">
                 <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-inset ring-emerald-500/30">
-                  {r.invertChange ? (
-                    <ChevronDown className="h-3 w-3" />
-                  ) : (
-                    <ChevronUp className="h-3 w-3" />
-                  )}
-                  {r.change}
+                  ↑ +{r.after - r.before}pp
                 </span>
               </div>
+
+              <p className="text-[11px] leading-relaxed text-zinc-500 lg:hidden">
+                {r.insight}
+              </p>
             </div>
           ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
-// ---------- SECTION 5 ----------
-type Role = "investment" | "operations" | "research";
-
-interface Candidate {
-  name: string;
-  fit: number;
-  strengths: { competency: string; score: number }[];
-  gaps: { competency: string; level: string }[];
-  insight: string;
-}
-
-interface RoleConfig {
-  label: string;
-  required: { competency: string; level: string }[];
-  candidates: Candidate[];
-}
-
-const ROLE_DATA: Record<Role, RoleConfig> = {
-  investment: {
-    label: "Investment Lead",
-    required: [
-      { competency: "Evaluating Information", level: "High (8+)" },
-      { competency: "Driving Success", level: "High (8+)" },
-      { competency: "Creating Solutions", level: "High (7+)" },
-      { competency: "Interacting with People", level: "Medium (6+)" },
-    ],
-    candidates: [
-      {
-        name: "Chifong Dong",
-        fit: 95,
-        strengths: [
-          { competency: "Evaluating Information", score: 9 },
-          { competency: "Driving Success", score: 9 },
-          { competency: "Creating Solutions", score: 8 },
-        ],
-        gaps: [{ competency: "Supporting Individuals", level: "moderate" }],
-        insight:
-          "Dominant analytical and achievement profile. Ideal investment leadership candidate.",
-      },
-      {
-        name: "Eric Li",
-        fit: 91,
-        strengths: [
-          { competency: "Driving Success", score: 8 },
-          { competency: "Creating Solutions", score: 8 },
-          { competency: "Coping with Pressure", score: 8 },
-        ],
-        gaps: [{ competency: "Interacting with People", level: "moderate" }],
-        insight:
-          "Execution-oriented with strong resilience. Solid deputy or co-lead profile.",
-      },
-      {
-        name: "Yijun Sim",
-        fit: 90,
-        strengths: [
-          { competency: "Evaluating Information", score: 8 },
-          { competency: "Coping with Pressure", score: 8 },
-          { competency: "Structuring Work", score: 8 },
-        ],
-        gaps: [{ competency: "Exerting Influence", level: "moderate" }],
-        insight:
-          "Strong analytical and structural capability. Well-suited for senior research or analysis lead.",
-      },
-      {
-        name: "Luke Cai",
-        fit: 88,
-        strengths: [
-          { competency: "Creating Solutions", score: 8 },
-          { competency: "Interacting with People", score: 8 },
-          { competency: "Driving Success", score: 8 },
-        ],
-        gaps: [{ competency: "Exerting Influence", level: "developing" }],
-        insight:
-          "High innovation energy with strong interpersonal skills. Best fit for innovation-led investment roles.",
-      },
-    ],
-  },
-  operations: {
-    label: "Operations Manager",
-    required: [
-      { competency: "Structuring Work", level: "High (8+)" },
-      { competency: "Supporting Individuals", level: "High (7+)" },
-      { competency: "Coping with Pressure", level: "High (8+)" },
-      { competency: "Exerting Influence", level: "Medium (6+)" },
-    ],
-    candidates: [
-      {
-        name: "Lili Mao",
-        fit: 94,
-        strengths: [
-          { competency: "Supporting Individuals", score: 8.67 },
-          { competency: "Coping with Pressure", score: 8.52 },
-          { competency: "Structuring Work", score: 8.42 },
-        ],
-        gaps: [{ competency: "Exerting Influence", level: "moderate" }],
-        insight:
-          "Highest-fit Operations leader. Balances structure with people-orientation under pressure.",
-      },
-      {
-        name: "Supriya Kumar",
-        fit: 89,
-        strengths: [
-          { competency: "Structuring Work", score: 8.2 },
-          { competency: "Supporting Individuals", score: 8.0 },
-          { competency: "Coping with Pressure", score: 7.8 },
-        ],
-        gaps: [{ competency: "Exerting Influence", level: "developing" }],
-        insight:
-          "Strong cross-functional structural fit. Pairs well as co-lead or operations chief of staff.",
-      },
-      {
-        name: "Luke Cai",
-        fit: 82,
-        strengths: [
-          { competency: "Supporting Individuals", score: 8.1 },
-          { competency: "Interacting with People", score: 8.0 },
-          { competency: "Creating Solutions", score: 7.5 },
-        ],
-        gaps: [{ competency: "Structuring Work", level: "developing" }],
-        insight:
-          "People-strong, structurally developing. Better suited for ops culture or program ownership.",
-      },
-      {
-        name: "Eric Li",
-        fit: 79,
-        strengths: [
-          { competency: "Driving Success", score: 8.0 },
-          { competency: "Coping with Pressure", score: 8.0 },
-          { competency: "Creating Solutions", score: 8.0 },
-        ],
-        gaps: [{ competency: "Supporting Individuals", level: "moderate" }],
-        insight:
-          "Execution-anchored fallback. Less suited for people-leadership but strong contingency.",
-      },
-    ],
-  },
-  research: {
-    label: "Research Analyst",
-    required: [
-      { competency: "Evaluating Information", level: "High (8+)" },
-      { competency: "Creating Solutions", level: "High (7+)" },
-      { competency: "Structuring Work", level: "High (7+)" },
-      { competency: "Coping with Pressure", level: "Medium" },
-    ],
-    candidates: [
-      {
-        name: "Chifong Dong",
-        fit: 97,
-        strengths: [
-          { competency: "Evaluating Information", score: 9 },
-          { competency: "Creating Solutions", score: 8 },
-          { competency: "Structuring Work", score: 8 },
-        ],
-        gaps: [{ competency: "Supporting Individuals", level: "moderate" }],
-        insight:
-          "Top analytical profile. Ideal research lead candidate.",
-      },
-      {
-        name: "Yijun Sim",
-        fit: 93,
-        strengths: [
-          { competency: "Evaluating Information", score: 8 },
-          { competency: "Structuring Work", score: 8 },
-          { competency: "Coping with Pressure", score: 8 },
-        ],
-        gaps: [{ competency: "Exerting Influence", level: "moderate" }],
-        insight:
-          "Excellent structural-analytical balance. Strong senior analyst.",
-      },
-      {
-        name: "Eric Li",
-        fit: 88,
-        strengths: [
-          { competency: "Creating Solutions", score: 8 },
-          { competency: "Driving Success", score: 8 },
-          { competency: "Coping with Pressure", score: 8 },
-        ],
-        gaps: [{ competency: "Structuring Work", level: "moderate" }],
-        insight:
-          "Pragmatic, solution-oriented analyst. Best suited for applied research.",
-      },
-      {
-        name: "Supriya Kumar",
-        fit: 84,
-        strengths: [
-          { competency: "Structuring Work", score: 8 },
-          { competency: "Supporting Individuals", score: 8 },
-          { competency: "Coping with Pressure", score: 7.5 },
-        ],
-        gaps: [{ competency: "Evaluating Information", level: "developing" }],
-        insight:
-          "Strong organizational fit. Best paired with senior analytical leads.",
-      },
-    ],
-  },
-};
-
-function Section5RoleFit() {
-  const [role, setRole] = useState<Role>("investment");
-  const [expanded, setExpanded] = useState<number | null>(0);
-  const data = ROLE_DATA[role];
-
-  return (
-    <section className="report-section mt-16">
-      <SectionTitle
-        num="05"
-        title="Role–Competency Fit Analysis"
-        subtitle="Top 4 candidates ranked against role-specific competency requirements"
-      />
-
-      {/* Tabs */}
-      <div className="mb-6 inline-flex rounded-lg border border-white/[0.08] bg-[#111116] p-1">
-        {(Object.keys(ROLE_DATA) as Role[]).map((k) => (
-          <button
-            key={k}
-            onClick={() => {
-              setRole(k);
-              setExpanded(0);
-            }}
-            className={`rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors ${
-              role === k
-                ? "bg-indigo-500 text-white shadow-sm"
-                : "text-zinc-400 hover:text-white"
-            }`}
-          >
-            {ROLE_DATA[k].label}
-          </button>
-        ))}
-      </div>
-
-      {/* Required competencies + ranking grid */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        <div className="report-card lg:col-span-4 rounded-xl border border-white/[0.08] bg-[#111116] p-5">
-          <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
-            <Target className="h-3.5 w-3.5" />
-            Required Competencies
-          </p>
-          <h4 className="mt-2 text-base font-bold text-white">{data.label}</h4>
-          <ul className="mt-5 space-y-3">
-            {data.required.map((r) => (
-              <li
-                key={r.competency}
-                className="flex items-center justify-between border-b border-white/[0.05] pb-2.5 last:border-0 last:pb-0"
-              >
-                <span className="text-sm text-zinc-200">{r.competency}</span>
-                <span className="font-mono text-[11px] font-semibold text-indigo-300">
-                  {r.level}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="lg:col-span-8 space-y-3">
-          {data.candidates.map((c, i) => {
-            const open = expanded === i;
-            return (
-              <div
-                key={c.name}
-                className="report-card overflow-hidden rounded-xl border border-white/[0.08] bg-[#111116] transition-colors hover:border-indigo-500/30"
-              >
-                <button
-                  onClick={() => setExpanded(open ? null : i)}
-                  className="flex w-full items-center gap-4 p-5 text-left"
-                >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.04] font-mono text-sm font-bold text-zinc-300 ring-1 ring-inset ring-white/[0.06]">
-                    {i + 1}
-                  </span>
-                  <div className="flex-1">
-                    <p className="text-base font-bold text-white">{c.name}</p>
-                    <div className="mt-2 flex h-1.5 overflow-hidden rounded-full bg-white/[0.04]">
-                      <div
-                        className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400"
-                        style={{ width: `${c.fit}%` }}
-                      />
-                    </div>
-                  </div>
-                  <span
-                    className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-[11px] font-bold ${
-                      c.fit >= 90
-                        ? "bg-emerald-500/15 text-emerald-300 ring-1 ring-inset ring-emerald-500/30"
-                        : "bg-indigo-500/15 text-indigo-300 ring-1 ring-inset ring-indigo-500/30"
-                    }`}
-                  >
-                    {c.fit}% Fit
-                  </span>
-                  <ChevronDown
-                    className={`h-4 w-4 shrink-0 text-zinc-500 transition-transform ${
-                      open ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-
-                {open && (
-                  <div className="grid grid-cols-1 gap-5 border-t border-white/[0.06] bg-white/[0.02] p-5 md:grid-cols-3">
-                    <div>
-                      <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-emerald-400">
-                        <CheckCircle2 className="h-3.5 w-3.5" />
-                        Strengths
-                      </p>
-                      <ul className="mt-3 space-y-2">
-                        {c.strengths.map((s) => (
-                          <li
-                            key={s.competency}
-                            className="flex items-center justify-between rounded-md bg-emerald-500/[0.06] px-2.5 py-1.5 ring-1 ring-inset ring-emerald-500/20"
-                          >
-                            <span className="text-xs text-zinc-200">
-                              {s.competency}
-                            </span>
-                            <span className="font-mono text-[11px] font-bold text-emerald-300">
-                              {s.score.toFixed(s.score % 1 === 0 ? 0 : 2)}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-amber-400">
-                        <ShieldAlert className="h-3.5 w-3.5" />
-                        Gaps
-                      </p>
-                      <ul className="mt-3 space-y-2">
-                        {c.gaps.map((g) => (
-                          <li
-                            key={g.competency}
-                            className="flex items-center justify-between rounded-md bg-amber-500/[0.06] px-2.5 py-1.5 ring-1 ring-inset ring-amber-500/20"
-                          >
-                            <span className="text-xs text-zinc-200">
-                              {g.competency}
-                            </span>
-                            <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-amber-300">
-                              {g.level}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-indigo-400">
-                        <Sparkles className="h-3.5 w-3.5" />
-                        AI Insight
-                      </p>
-                      <p className="mt-3 text-xs leading-relaxed text-zinc-200">
-                        {c.insight}
-                      </p>
-                    </div>
-                  </div>
-                )}
+          {/* Organizational Fragility — categorical row */}
+          <div className="grid grid-cols-1 gap-4 border-t border-white/[0.05] pt-6 lg:grid-cols-12 lg:items-center">
+            <div className="lg:col-span-3">
+              <p className="text-sm font-semibold text-white">
+                Organizational Fragility
+              </p>
+              <p className="mt-1 hidden text-[11px] leading-relaxed text-zinc-500 lg:block">
+                Risk concentration drops as leadership distributes.
+              </p>
+            </div>
+            <div className="lg:col-span-7 grid grid-cols-2 gap-3">
+              <div className="rounded-lg border border-rose-500/30 bg-rose-500/[0.06] p-3">
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+                  Before
+                </p>
+                <p className="mt-1 font-mono text-base font-bold text-rose-300">
+                  HIGH
+                </p>
               </div>
-            );
-          })}
+              <div className="rounded-lg border border-amber-500/30 bg-amber-500/[0.06] p-3">
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+                  After
+                </p>
+                <p className="mt-1 font-mono text-base font-bold text-amber-300">
+                  MODERATE
+                </p>
+              </div>
+            </div>
+            <div className="lg:col-span-2 lg:text-right">
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-inset ring-emerald-500/30">
+                ↓ Reduced
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-// ---------- SECTION 6 ----------
-function Section6RiskIntel() {
+// ---------- SECTION 7: ORGANIZATIONAL RISK INTELLIGENCE ----------
+function Section7RiskIntel() {
   const risks = [
     {
-      title: "Leadership Dependency Risk",
-      severity: "HIGH",
-      severityClass: "bg-rose-500/15 text-rose-300 ring-rose-500/30",
-      borderClass: "border-l-rose-500",
-      team: "All departments",
-      detail:
-        "Only 2–3 individuals (Chifong Dong, Lili Mao, Supriya Kumar) carry critical decision-making load across 4 departments. Single points of failure.",
-      action:
-        "Promote 2 high-fit candidates to distributed leadership roles. Implement leadership succession planning.",
-    },
-    {
-      title: "Operations Fragility",
+      title: "Leadership Dependency",
       severity: "HIGH",
       severityClass: "bg-rose-500/15 text-rose-300 ring-rose-500/30",
       borderClass: "border-l-rose-500",
       team: "Operations",
       detail:
-        "Low coping with pressure and low supporting competencies detected in Operations team. Under stress conditions, this team is most likely to degrade first.",
+        "40% of delivery capability concentrated in 2 people (Chifong Dong, Lili Mao). No succession depth.",
       action:
-        "Reassign Lili Mao to Operations oversight. Redesign team structure to reduce single-person dependency.",
+        "Develop Eric Li as Operations deputy. Cross-train Yijun Sim on stakeholder management.",
+    },
+    {
+      title: "Burnout Risk",
+      severity: "MEDIUM",
+      severityClass: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
+      borderClass: "border-l-amber-500",
+      team: "Operations, Research",
+      detail:
+        "Lili Mao's 360 feedback shows impatience signals and urgency pressure passed to team. Sustained high load for 12+ months.",
+      action:
+        "Redistribute 2 direct reports. Add structured recovery protocols.",
     },
     {
       title: "Execution Imbalance",
       severity: "MEDIUM",
       severityClass: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
       borderClass: "border-l-amber-500",
-      team: "Investment + Research",
+      team: "Business Development",
       detail:
-        "High creativity scores across Investment and Research teams, but structuring capability is below threshold. Ideas generate without delivery infrastructure.",
+        "Joyce Zhang (Influencer/Networker type) in delivery-heavy role. Low Implementer score creates execution gaps.",
       action:
-        "Pair creative profiles (Joyce Zhang) with execution-anchored managers. Add structured delivery checkpoints.",
+        "Redesign role toward BD/partnerships. Pair with execution-strong Analyst.",
     },
     {
-      title: "Team Conflict Risk",
-      severity: "MEDIUM",
-      severityClass: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
-      borderClass: "border-l-amber-500",
-      team: "Investment Team",
+      title: "Role Misalignment",
+      severity: "HIGH",
+      severityClass: "bg-rose-500/15 text-rose-300 ring-rose-500/30",
+      borderClass: "border-l-rose-500",
+      team: "Operations",
       detail:
-        "High influence concentration in Investment team (Joyce Zhang: Influencer 9.68, Networker 9.66). High-dominance profiles without moderating structure create decision conflict risk.",
+        "Yuzhe Zhao scoring below threshold on 6/8 Great 8 competencies. Role fit score: 34%. Exit or reassignment risk.",
       action:
-        "Introduce structured decision protocols. Ensure Achiever and Implementer profiles balance the team composition.",
+        "Performance review with structured support plan. Consider role redesign or transition plan.",
     },
   ];
 
   return (
     <section className="report-section mt-16">
       <SectionTitle
-        num="06"
+        num="07"
         title="Organizational Risk Intelligence"
         subtitle="Critical risks identified through behavioral and structural signals"
       />
@@ -1275,137 +1542,252 @@ function Section6RiskIntel() {
   );
 }
 
-// ---------- SECTION 7 ----------
-function Section7FinalRecommendation() {
-  const reasons = [
-    {
-      icon: TrendingUp,
-      title: "Sustainable cost reduction",
-      text: "18% burn reduction without destroying execution bench",
-    },
-    {
-      icon: Crown,
-      title: "Improved execution capability",
-      text: "Leadership coverage from 58% to 76%",
-    },
-    {
-      icon: Users,
-      title: "Stronger leadership distribution",
-      text: "Reduces single-point-of-failure risk",
-    },
-    {
-      icon: ShieldAlert,
-      title: "Reduced organizational fragility",
-      text: "Ops risk drops from High to Moderate",
-    },
-  ];
-
-  return (
-    <section className="report-section mt-16">
-      <SectionTitle num="07" title="Final Recommendation" />
-
-      <div className="report-card relative overflow-hidden rounded-2xl border border-indigo-500/40 bg-gradient-to-br from-indigo-600/[0.18] via-[#0f0f14] to-[#0f0f14] p-8 md:p-12 shadow-[0_0_80px_-30px_rgba(99,102,241,0.7)]">
-        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-indigo-500/20 blur-[100px]" />
-        <div className="pointer-events-none absolute -left-24 -bottom-24 h-72 w-72 rounded-full bg-cyan-500/10 blur-[100px]" />
-
-        <div className="relative">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-300">
-            Primary Decision
-          </p>
-          <h3 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl">
-            Proceed with Scenario B —<br className="hidden md:block" />{" "}
-            <span className="text-indigo-300">Balanced Redesign</span>
-          </h3>
-
-          <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {reasons.map((r) => {
-              const Icon = r.icon;
-              return (
-                <div
-                  key={r.title}
-                  className="rounded-xl border border-white/[0.08] bg-[#0a0a0f]/60 p-5 backdrop-blur-sm"
-                >
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-500/15 ring-1 ring-inset ring-indigo-500/30">
-                    <Icon className="h-4 w-4 text-indigo-300" />
-                  </div>
-                  <p className="mt-4 text-sm font-bold text-white">{r.title}</p>
-                  <p className="mt-1.5 text-xs leading-relaxed text-zinc-400">
-                    {r.text}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="mt-10 flex gap-4 rounded-xl border-l-2 border-indigo-400 bg-white/[0.03] p-6">
-            <Quote className="h-6 w-6 shrink-0 text-indigo-400" />
-            <p className="text-sm leading-relaxed text-zinc-200 md:text-base">
-              <span className="font-semibold text-white">OrgLens AI</span>{" "}
-              identifies Scenario B as the highest-confidence path for Alpha
-              Investment Group — preserving the execution capability needed to
-              maintain operations through a restructuring period while
-              achieving meaningful cost reduction.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ---------- SECTION 8 ----------
-function Section8NextSteps() {
-  const steps = [
-    {
-      week: "Week 1",
-      title: "Leadership Promotion",
-      text: "Identify and confirm top 4 candidates for leadership promotion: Chifong Dong (Investment), Lili Mao (Operations oversight), Supriya Kumar (cross-functional), Eric Li (execution anchor).",
-    },
-    {
-      week: "Week 2",
-      title: "Ops Restructure",
-      text: "Redesign Operations structure. Reduce single-person dependency. Assign structured role ownership to 2 leads.",
-    },
-    {
-      week: "Week 3",
-      title: "Role Reassignment",
-      text: "Reassign high-fit individuals to critical roles per Role–Competency Fit rankings. Brief affected employees on new scope.",
-    },
-    {
-      week: "Week 4",
-      title: "Monitor + Iterate",
-      text: "Deploy monitoring checkpoints for team stability, workload balance, and competency utilization. Run follow-up OrgLens analysis in 90 days.",
-    },
-  ];
+// ---------- SECTION 8: FOUNDER MEMO ----------
+function Section8FounderMemo() {
+  const today = useMemo(() => {
+    const d = new Date();
+    return d.toLocaleDateString("en-US", {
+      month: "long",
+      year: "numeric",
+    });
+  }, []);
 
   const checkoutUrl = getCheckoutUrl();
 
+  const findings = [
+    {
+      title: "LEADERSHIP GAP IN OPERATIONS",
+      body: "Current leadership coverage in Operations stands at 58% — below the 70% threshold required for sustainable execution at your growth stage. The primary risk is over-reliance on Lili Mao as a single point of leadership with insufficient succession depth.",
+    },
+    {
+      title: "ROLE MISALIGNMENT — YUZHE ZHAO",
+      body: "Yuzhe Zhao's competency profile scores below role requirements on 6 of 8 Great 8 dimensions. Continuation in the current role creates drag on the Operations team. Immediate intervention recommended.",
+    },
+    {
+      title: "TALENT CONCENTRATION RISK",
+      body: "Chifong Dong and Eric Li together account for approximately 40% of the firm's high-execution delivery capacity. Loss of either would materially impact client delivery timelines.",
+    },
+    {
+      title: "JOYCE ZHANG — MISAPPLIED TALENT",
+      body: "Zhang's psychometric profile (Influencer 9.7, Networker 9.7, Pioneer 7.6) positions her as an exceptional relationship and alignment driver. The current role under-utilizes this profile. Redesigning toward business development or strategic partnerships would deliver higher returns.",
+    },
+  ];
+
+  const priorities = [
+    {
+      label: "Priority 1",
+      window: "Immediate — 0–30 days",
+      items: [
+        "Initiate Yuzhe Zhao performance review with structured support plan",
+        "Begin Eric Li leadership development track",
+        "Redistribute 1–2 direct reports from Lili Mao",
+      ],
+    },
+    {
+      label: "Priority 2",
+      window: "Short-term — 30–60 days",
+      items: [
+        "Redesign Joyce Zhang's role toward BD/Partnerships",
+        "Implement cross-training: Yijun Sim on stakeholder management",
+        "Document Chifong Dong's institutional knowledge (succession risk mitigation)",
+      ],
+    },
+    {
+      label: "Priority 3",
+      window: "Structural — 60–90 days",
+      items: [
+        "Implement Scenario B: Balanced Redesign",
+        "Introduce 2 new role definitions aligned to AI-augmented workflow",
+        "Re-run OrgLens analysis post-restructuring to measure improvement",
+      ],
+    },
+  ];
+
   return (
     <section className="report-section mt-16">
-      <SectionTitle
-        num="08"
-        title="Next Steps"
-        subtitle="4-week implementation roadmap for Scenario B"
-      />
+      <SectionTitle num="08" title="Founder Memo" />
 
-      <ol className="relative space-y-6 border-l border-white/[0.08] pl-8 md:pl-10">
-        {steps.map((s, i) => (
-          <li key={s.week} className="report-card relative">
-            <span className="absolute -left-[42px] flex h-8 w-8 items-center justify-center rounded-full border border-indigo-500/40 bg-[#0f0f14] font-mono text-xs font-bold text-indigo-300 ring-4 ring-[#0a0a0f] md:-left-[50px]">
-              {i + 1}
-            </span>
-            <div className="rounded-xl border border-white/[0.08] bg-[#111116] p-5">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-indigo-400">
-                {s.week}
+      <article className="report-card overflow-hidden rounded-2xl border border-white/[0.08] bg-white text-zinc-900 shadow-[0_0_60px_-20px_rgba(99,102,241,0.4)]">
+        {/* Memo Header — dark navy */}
+        <header className="bg-[#0a0e27] px-7 py-6 text-white md:px-10 md:py-8">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-indigo-500/20 ring-1 ring-inset ring-indigo-500/40">
+                <FileText className="h-5 w-5 text-indigo-300" />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-indigo-300">
+                  Confidential — Founder Memo
+                </p>
+                <p className="mt-1 text-sm font-semibold tracking-wide text-white">
+                  Alpha Investment Group
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-[11px] uppercase tracking-widest text-zinc-400">
+              <span>OrgLens AI</span>
+              <span className="text-zinc-700">·</span>
+              <span>{today}</span>
+            </div>
+          </div>
+          <div className="mt-6 grid grid-cols-1 gap-4 border-t border-white/[0.08] pt-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+                To
               </p>
-              <h3 className="mt-1.5 text-lg font-bold text-white">{s.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-300">
-                {s.text}
+              <p className="mt-1 text-sm font-semibold text-white">
+                Wenjing Li, CEO
               </p>
             </div>
-          </li>
-        ))}
-      </ol>
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+                From
+              </p>
+              <p className="mt-1 text-sm font-semibold text-white">
+                OrgLens AI Organizational Intelligence
+              </p>
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+                Re
+              </p>
+              <p className="mt-1 text-sm font-semibold text-white">
+                Organizational Restructuring Assessment
+              </p>
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+                Classification
+              </p>
+              <p className="mt-1 text-sm font-semibold text-white">
+                Confidential
+              </p>
+            </div>
+          </div>
+        </header>
+
+        {/* Memo Body */}
+        <div className="space-y-10 px-7 py-10 md:px-12 md:py-12">
+          {/* Executive Summary */}
+          <section>
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.28em] text-indigo-600">
+              Executive Summary
+            </h3>
+            <p className="mt-3 text-sm leading-relaxed text-zinc-700 md:text-base">
+              Alpha Investment Group presents a strong competency foundation
+              with identifiable execution risk concentrated in the Operations
+              function. This memo outlines our findings, recommended
+              restructuring path, and priority actions for Q2 2025.
+            </p>
+          </section>
+
+          {/* Key Findings */}
+          <section>
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.28em] text-indigo-600">
+              Key Findings
+            </h3>
+            <ol className="mt-4 space-y-5">
+              {findings.map((f, i) => (
+                <li key={f.title} className="flex gap-4">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-100 font-mono text-xs font-bold text-indigo-700">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <p className="text-sm font-bold uppercase tracking-wider text-zinc-900">
+                      {f.title}
+                    </p>
+                    <p className="mt-1.5 text-sm leading-relaxed text-zinc-700">
+                      {f.body}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          {/* Recommended Actions */}
+          <section>
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.28em] text-indigo-600">
+              Recommended Actions (Priority Order)
+            </h3>
+            <div className="mt-4 space-y-4">
+              {priorities.map((p, i) => (
+                <div
+                  key={p.label}
+                  className="rounded-lg border border-zinc-200 bg-zinc-50/60 p-5"
+                >
+                  <div className="flex flex-wrap items-baseline gap-3">
+                    <span className="inline-flex items-center rounded-full bg-indigo-600 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white">
+                      {p.label}
+                    </span>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                      {p.window}
+                    </p>
+                  </div>
+                  <ul className="mt-4 space-y-2">
+                    {p.items.map((item, idx) => (
+                      <li
+                        key={idx}
+                        className="flex items-start gap-2.5 text-sm leading-relaxed text-zinc-800"
+                      >
+                        <span className="mt-1 text-indigo-600">→</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Restructuring Guidance */}
+          <section>
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.28em] text-indigo-600">
+              Restructuring Guidance
+            </h3>
+            <p className="mt-3 text-sm leading-relaxed text-zinc-700 md:text-base">
+              Scenario B (Balanced Redesign) is recommended as the
+              risk-adjusted optimal path. It achieves $180K in annual cost
+              reduction while improving leadership coverage from 58% to 76% and
+              execution stability from Medium to Strong. Unlike Scenario A
+              (Lean Efficiency), it does not create execution fragility. Unlike
+              Scenario C (AI-Augmented), it does not require a 60-day tooling
+              transition.
+            </p>
+          </section>
+
+          {/* Conclusion */}
+          <section>
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.28em] text-indigo-600">
+              Conclusion
+            </h3>
+            <p className="mt-3 text-sm leading-relaxed text-zinc-700 md:text-base">
+              The organization has strong talent at the senior layer. The
+              priority is structural — not performance. Addressing role
+              misalignment, leadership succession depth, and talent
+              misapplication will unlock execution capacity without additional
+              headcount cost.
+            </p>
+            <p className="mt-3 text-sm italic leading-relaxed text-zinc-600 md:text-base">
+              OrgLens AI recommends re-analysis in 90 days to measure
+              competency movement post-restructuring.
+            </p>
+          </section>
+
+          {/* Signature line */}
+          <div className="flex items-center gap-4 border-t border-zinc-200 pt-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-indigo-100">
+              <Sparkles className="h-5 w-5 text-indigo-600" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-zinc-900">OrgLens AI</p>
+              <p className="text-xs text-zinc-500">
+                Organizational Decision Intelligence
+              </p>
+            </div>
+          </div>
+        </div>
+      </article>
 
       {/* Bottom CTA */}
       <div className="report-card report-cta mt-12 overflow-hidden rounded-2xl border border-indigo-500/30 bg-gradient-to-b from-indigo-500/[0.08] to-[#0f0f14] p-10 text-center shadow-[0_0_60px_-20px_rgba(99,102,241,0.5)]">
