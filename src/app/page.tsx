@@ -6,6 +6,9 @@ import { useEffect, useRef, useState } from "react";
 const CHECKOUT_URL =
   "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
 
+const HERO_BG_IMAGE =
+  "https://grandiose-goshawk-617.convex.cloud/api/storage/9cfc9d9b-c341-4f81-9bd8-bc31d6c256c2";
+
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-white text-slate-900 antialiased font-sans">
@@ -69,6 +72,22 @@ export default function HomePage() {
 function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-[#0F172A] text-white">
+      {/* Hero background image */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-0 opacity-40"
+        style={{
+          backgroundImage: `url(${HERO_BG_IMAGE})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      {/* Dark overlay so text remains legible */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-0 bg-[#0F172A]/80"
+      />
+
       <div className="pointer-events-none absolute inset-0 -z-0">
         <div className="absolute left-1/3 top-0 h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-indigo-500/15 blur-[140px]" />
         <div className="absolute right-1/4 bottom-0 h-[400px] w-[500px] rounded-full bg-indigo-700/10 blur-[120px]" />

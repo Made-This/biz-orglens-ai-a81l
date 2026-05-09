@@ -10,21 +10,36 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const OG_IMAGE_URL =
+  "https://grandiose-goshawk-617.convex.cloud/api/storage/9cfc9d9b-c341-4f81-9bd8-bc31d6c256c2";
+const SITE_URL = "https://orglens-ai.madethis.app";
+const OG_TITLE = "OrgLens AI — Organizational Intelligence for Founders";
+const OG_DESCRIPTION =
+  "Map competencies, rank role fit, and make restructuring decisions in 5 minutes. Powered by HUCAMA psychometrics.";
+
 export const metadata: Metadata = {
-  title: "OrgLens AI — Organizational Decision Intelligence for Founders",
-  description:
-    "AI-powered competency intelligence. Compare restructuring scenarios, rank role-fit, and understand organizational capability — in minutes.",
+  metadataBase: new URL(SITE_URL),
+  title: OG_TITLE,
+  description: OG_DESCRIPTION,
   openGraph: {
-    title: "OrgLens AI — Organizational Decision Intelligence for Founders",
-    description:
-      "AI-powered competency intelligence. Compare restructuring scenarios, rank role-fit, and understand organizational capability — in minutes.",
+    title: OG_TITLE,
+    description: OG_DESCRIPTION,
+    url: SITE_URL,
     type: "website",
+    images: [
+      {
+        url: OG_IMAGE_URL,
+        width: 1200,
+        height: 630,
+        alt: "OrgLens AI — Organizational Intelligence dashboard",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "OrgLens AI — Organizational Decision Intelligence for Founders",
-    description:
-      "AI-powered competency intelligence. Compare restructuring scenarios, rank role-fit, and understand organizational capability — in minutes.",
+    title: OG_TITLE,
+    description: OG_DESCRIPTION,
+    images: [OG_IMAGE_URL],
   },
 };
 
