@@ -52,7 +52,7 @@ export default function HomePage() {
               Sign in
             </Link>
             <Link
-              href="/sign-up"
+              href="/sign-in"
               className="rounded-full bg-indigo-500 px-4 py-2 text-sm font-medium text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400 hover:shadow-[0_0_30px_-5px_rgba(99,102,241,0.9)]"
             >
               Analyze My Organization
@@ -74,7 +74,7 @@ export default function HomePage() {
             <div className="lg:col-span-6">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#1E1E24] bg-[#111113] px-3 py-1 text-xs font-medium uppercase tracking-widest text-indigo-400">
                 <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
-                Decision intelligence
+                Organizational Intelligence Platform
               </div>
 
               <h1 className="mt-6 text-5xl font-bold leading-[1.05] tracking-tight text-white md:text-6xl lg:text-7xl">
@@ -93,18 +93,18 @@ export default function HomePage() {
 
               <div className="mt-10 flex flex-col gap-3 sm:flex-row">
                 <Link
-                  href="/sign-up"
+                  href="/sign-in"
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-indigo-500 px-6 py-3 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400 hover:shadow-[0_0_40px_-5px_rgba(99,102,241,0.9)]"
                 >
                   Analyze My Organization
                   <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link
-                  href="/app"
+                <a
+                  href="#demo"
                   className="inline-flex items-center justify-center rounded-full border border-[#1E1E24] bg-[#111113] px-6 py-3 text-sm font-medium text-white transition-colors hover:border-zinc-700 hover:bg-[#16161A]"
                 >
-                  View Demo Scenario
-                </Link>
+                  View Demo
+                </a>
               </div>
 
               <div className="mt-12 flex items-center gap-6 text-xs text-zinc-500">
@@ -444,7 +444,7 @@ export default function HomePage() {
 
           <div className="mt-10 flex justify-center">
             <Link
-              href="/sign-up"
+              href="/sign-in"
               className="inline-flex items-center gap-2 rounded-full bg-indigo-500 px-6 py-3 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
             >
               Run This Analysis on Your Organization
@@ -531,10 +531,10 @@ export default function HomePage() {
           </p>
           <div className="mt-10">
             <Link
-              href="/sign-up"
+              href="/sign-in"
               className="inline-flex items-center gap-2 rounded-full bg-indigo-500 px-7 py-3.5 text-base font-medium text-white shadow-[0_0_50px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-400 hover:shadow-[0_0_50px_-5px_rgba(99,102,241,1)]"
             >
-              Start Your Analysis
+              Analyze My Organization
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -561,6 +561,12 @@ export default function HomePage() {
                 Features
               </a>
               <a
+                href="#demo"
+                className="text-sm text-zinc-400 hover:text-white"
+              >
+                Demo
+              </a>
+              <a
                 href="#pricing"
                 className="text-sm text-zinc-400 hover:text-white"
               >
@@ -571,12 +577,6 @@ export default function HomePage() {
                 className="text-sm text-zinc-400 hover:text-white"
               >
                 Sign In
-              </Link>
-              <Link
-                href="/sign-up"
-                className="text-sm text-zinc-400 hover:text-white"
-              >
-                Sign Up
               </Link>
             </div>
             <div className="md:text-right">

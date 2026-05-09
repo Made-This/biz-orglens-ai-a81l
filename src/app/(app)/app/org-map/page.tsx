@@ -1,56 +1,90 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { Lock, ArrowRight, AlertTriangle } from "lucide-react";
+
+const CHECKOUT_URL =
+  "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
 
 type Dimension = "Leadership" | "Execution" | "Adaptability" | "Risk";
 
 interface Person {
   name: string;
+  role: string;
   scores: Record<Dimension, number>;
 }
 
-interface Team {
-  name: string;
-  people: Person[];
+interface VPGroup {
+  vp: Person;
+  reports: Person[];
+  team: string;
 }
 
-// Representative scoring (1–9 scale) drawn from the Hillhouse dataset
-const teams: Team[] = [
+const ceo: Person = {
+  name: "Wenjing Li",
+  role: "CEO",
+  scores: { Leadership: 50, Execution: 48, Adaptability: 47, Risk: 49 },
+};
+
+const orgTree: VPGroup[] = [
   {
-    name: "Investment",
-    people: [
-      { name: "Chifong D.", scores: { Leadership: 8, Execution: 7, Adaptability: 7, Risk: 7 } },
-      { name: "Supriya K.", scores: { Leadership: 8, Execution: 8, Adaptability: 7, Risk: 8 } },
-      { name: "Eric L.", scores: { Leadership: 7, Execution: 7, Adaptability: 6, Risk: 7 } },
-      { name: "Yijun S.", scores: { Leadership: 6, Execution: 7, Adaptability: 7, Risk: 7 } },
+    team: "Engineering",
+    vp: {
+      name: "Chifong Dong",
+      role: "VP Engineering",
+      scores: { Leadership: 50, Execution: 49, Adaptability: 46, Risk: 48 },
+    },
+    reports: [
+      {
+        name: "Yijun Sim",
+        role: "Engineering Lead",
+        scores: { Leadership: 46, Execution: 47, Adaptability: 44, Risk: 45 },
+      },
+      {
+        name: "Luke Cai",
+        role: "Senior Engineer",
+        scores: { Leadership: 45, Execution: 47, Adaptability: 42, Risk: 44 },
+      },
     ],
   },
   {
-    name: "Operations",
-    people: [
-      { name: "Luke C.", scores: { Leadership: 5, Execution: 7, Adaptability: 4, Risk: 6 } },
-      { name: "Yuzhe Z.", scores: { Leadership: 2, Execution: 3, Adaptability: 2, Risk: 3 } },
-      { name: "Jerry Y.", scores: { Leadership: 4, Execution: 5, Adaptability: 4, Risk: 5 } },
-      { name: "Marcus T.", scores: { Leadership: 5, Execution: 6, Adaptability: 5, Risk: 5 } },
+    team: "Product",
+    vp: {
+      name: "Supriya Kumar",
+      role: "VP Product",
+      scores: { Leadership: 47, Execution: 45, Adaptability: 48, Risk: 46 },
+    },
+    reports: [
+      {
+        name: "Patrick Wang",
+        role: "Senior PM",
+        scores: { Leadership: 41, Execution: 43, Adaptability: 45, Risk: 42 },
+      },
+      {
+        name: "Mei Tanaka",
+        role: "Product Designer",
+        scores: { Leadership: 40, Execution: 42, Adaptability: 47, Risk: 43 },
+      },
     ],
   },
   {
-    name: "Strategy & Research",
-    people: [
-      { name: "Yujin C.", scores: { Leadership: 5, Execution: 5, Adaptability: 6, Risk: 5 } },
-      { name: "Ravi P.", scores: { Leadership: 6, Execution: 6, Adaptability: 7, Risk: 6 } },
-      { name: "Aisha N.", scores: { Leadership: 7, Execution: 6, Adaptability: 6, Risk: 7 } },
-      { name: "Lin H.", scores: { Leadership: 5, Execution: 5, Adaptability: 6, Risk: 5 } },
-      { name: "Daniel K.", scores: { Leadership: 5, Execution: 6, Adaptability: 5, Risk: 5 } },
-    ],
-  },
-  {
-    name: "Support",
-    people: [
-      { name: "Priya S.", scores: { Leadership: 4, Execution: 5, Adaptability: 4, Risk: 5 } },
-      { name: "Tom W.", scores: { Leadership: 4, Execution: 4, Adaptability: 4, Risk: 4 } },
-      { name: "Mei L.", scores: { Leadership: 6, Execution: 6, Adaptability: 6, Risk: 6 } },
-      { name: "Sam B.", scores: { Leadership: 3, Execution: 4, Adaptability: 3, Risk: 4 } },
+    team: "Operations",
+    vp: {
+      name: "Eric Li",
+      role: "VP Operations",
+      scores: { Leadership: 46, Execution: 46, Adaptability: 44, Risk: 45 },
+    },
+    reports: [
+      {
+        name: "Yuzhe Zhao",
+        role: "Operations Analyst",
+        scores: { Leadership: 28, Execution: 31, Adaptability: 26, Risk: 30 },
+      },
+      {
+        name: "Jun Park",
+        role: "Operations Manager",
+        scores: { Leadership: 39, Execution: 41, Adaptability: 38, Risk: 40 },
+      },
     ],
   },
 ];
@@ -62,28 +96,28 @@ const dimensions: Dimension[] = [
   "Risk",
 ];
 
-function scoreColor(score: number) {
-  if (score >= 7) return "#10B981"; // green
-  if (score >= 4) return "#F59E0B"; // yellow
-  return "#EF4444"; // red
+function scoreTone(score: number): "green" | "amber" | "red" {
+  if (score >= 45) return "green";
+  if (score >= 35) return "amber";
+  return "red";
 }
 
-function teamAvg(team: Team, dim: Dimension) {
-  const sum = team.people.reduce((a, p) => a + p.scores[dim], 0);
-  return Math.round((sum / team.people.length) * 10) / 10;
+function toneDot(t: "green" | "amber" | "red") {
+  if (t === "green") return "bg-emerald-500";
+  if (t === "amber") return "bg-amber-400";
+  return "bg-rose-500";
 }
 
-function bucketCounts(team: Team, dim: Dimension) {
-  let green = 0,
-    yellow = 0,
-    red = 0;
-  for (const p of team.people) {
-    const s = p.scores[dim];
-    if (s >= 7) green++;
-    else if (s >= 4) yellow++;
-    else red++;
-  }
-  return { green, yellow, red };
+function toneText(t: "green" | "amber" | "red") {
+  if (t === "green") return "text-emerald-300";
+  if (t === "amber") return "text-amber-300";
+  return "text-rose-300";
+}
+
+function teamAvg(group: VPGroup, dim: Dimension) {
+  const all = [group.vp, ...group.reports];
+  const sum = all.reduce((a, p) => a + p.scores[dim], 0);
+  return Math.round((sum / all.length) * 10) / 10;
 }
 
 export default function OrgMapPage() {
@@ -91,37 +125,45 @@ export default function OrgMapPage() {
 
   const teamSummaries = useMemo(
     () =>
-      teams.map((t) => ({
-        name: t.name,
-        avg: teamAvg(t, active),
-        ...bucketCounts(t, active),
-      })),
+      orgTree.map((g) => {
+        const avg = teamAvg(g, active);
+        return {
+          team: g.team,
+          avg,
+          tone: scoreTone(avg) as "green" | "amber" | "red",
+        };
+      }),
     [active]
   );
 
   return (
     <div className="mx-auto max-w-[1400px]">
+      {/* Header */}
       <header className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-[#111827] md:text-3xl">
+        <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
+          Org Map
+        </p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
           Organizational Capability Map
         </h1>
-        <p className="mt-2 text-sm text-gray-500">
-          Visual overview of your team&apos;s competency distribution
+        <p className="mt-2 text-sm text-zinc-400">
+          Visualize leadership, execution, adaptability, and team resilience
+          across your company.
         </p>
       </header>
 
-      {/* Toolbar */}
-      <div className="mb-8 flex flex-wrap gap-2 rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] p-2">
+      {/* Toggle bar */}
+      <div className="mb-8 inline-flex flex-wrap gap-1 rounded-full border border-[#1E1E24] bg-[#111113] p-1">
         {dimensions.map((d) => (
           <button
             key={d}
             type="button"
             onClick={() => setActive(d)}
             className={
-              "rounded-md px-4 py-2 text-sm font-medium transition-colors " +
+              "rounded-full px-4 py-1.5 text-sm font-medium transition-colors " +
               (active === d
-                ? "bg-[#4F46E5] text-white"
-                : "bg-white text-[#111827] border border-[#E5E7EB] hover:border-gray-300")
+                ? "bg-indigo-500 text-white shadow-[0_0_20px_-5px_rgba(99,102,241,0.6)]"
+                : "text-zinc-400 hover:text-white")
             }
           >
             {d}
@@ -130,122 +172,228 @@ export default function OrgMapPage() {
       </div>
 
       {/* Org chart */}
-      <div className="rounded-xl border border-[#E5E7EB] bg-white p-8">
-        {/* Root node */}
+      <div className="rounded-2xl border border-[#1E1E24] bg-[#111113] p-8">
+        {/* CEO */}
         <div className="flex flex-col items-center">
-          <div className="rounded-lg bg-[#111827] px-6 py-3 text-center text-sm font-semibold text-white shadow-sm">
-            Hillhouse Investment
-            <p className="mt-1 text-[10px] font-normal uppercase tracking-wider text-gray-300">
-              30 people · {active}
-            </p>
-          </div>
-          <div className="h-6 w-px bg-[#E5E7EB]" />
+          <PersonNode person={ceo} dim={active} large />
+          <div className="my-4 h-6 w-px bg-[#1E1E24]" />
         </div>
 
-        {/* Team row */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {teams.map((team) => {
-            const avg = teamAvg(team, active);
-            return (
-              <div key={team.name} className="flex flex-col">
-                {/* Team node */}
-                <div className="flex items-center gap-3 rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3">
-                  <span
-                    className="inline-block h-3 w-3 rounded-full"
-                    style={{ backgroundColor: scoreColor(avg) }}
-                  />
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-[#111827]">
-                      {team.name}
-                    </p>
-                    <p className="text-[11px] text-gray-500">
-                      avg {avg.toFixed(1)} · {team.people.length} people
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mx-auto h-4 w-px bg-[#E5E7EB]" />
-
-                {/* People nodes */}
-                <div className="space-y-2">
-                  {team.people.map((p) => {
-                    const s = p.scores[active];
-                    const c = scoreColor(s);
-                    return (
-                      <div
-                        key={p.name}
-                        className="flex items-center justify-between rounded-md border border-[#E5E7EB] bg-white px-3 py-2"
-                      >
-                        <div className="flex items-center gap-2">
-                          <span
-                            className="inline-flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold text-white"
-                            style={{ backgroundColor: c }}
-                          >
-                            {s}
-                          </span>
-                          <span className="text-sm text-[#111827]">
-                            {p.name}
-                          </span>
-                        </div>
-                        <span
-                          className="text-[10px] font-medium uppercase tracking-wider"
-                          style={{ color: c }}
-                        >
-                          {s >= 7 ? "Strong" : s >= 4 ? "Develop" : "Risk"}
-                        </span>
-                      </div>
-                    );
-                  })}
+        {/* VPs row with connectors */}
+        <div className="relative">
+          <div className="absolute left-[10%] right-[10%] top-0 hidden h-px bg-[#1E1E24] md:block" />
+          <div className="grid gap-6 md:grid-cols-3">
+            {orgTree.map((group) => (
+              <div key={group.team} className="flex flex-col items-center">
+                <div className="hidden h-4 w-px bg-[#1E1E24] md:block" />
+                <PersonNode person={group.vp} dim={active} />
+                <div className="my-3 h-4 w-px bg-[#1E1E24]" />
+                <div className="w-full space-y-2">
+                  {group.reports.map((p) => (
+                    <PersonNode
+                      key={p.name}
+                      person={p}
+                      dim={active}
+                      compact
+                    />
+                  ))}
                 </div>
               </div>
-            );
-          })}
+            ))}
+          </div>
+        </div>
+
+        {/* Legend */}
+        <div className="mt-8 flex flex-wrap items-center gap-6 border-t border-[#1E1E24] pt-5 text-xs text-zinc-500">
+          <Legend tone="green" label="High capability (45+)" />
+          <Legend tone="amber" label="Development needed (35–44)" />
+          <Legend tone="red" label="Execution risk (under 35)" />
         </div>
       </div>
 
-      {/* Legend */}
-      <div className="mt-6 flex flex-wrap items-center gap-6 rounded-lg border border-[#E5E7EB] bg-white px-5 py-4 text-sm">
-        <div className="flex items-center gap-2">
-          <span className="inline-block h-3 w-3 rounded-full bg-[#10B981]" />
-          <span className="text-[#111827]">High Capability (7–9)</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="inline-block h-3 w-3 rounded-full bg-[#F59E0B]" />
-          <span className="text-[#111827]">Development Needed (4–6)</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="inline-block h-3 w-3 rounded-full bg-[#EF4444]" />
-          <span className="text-[#111827]">Execution Risk (1–3)</span>
-        </div>
-      </div>
+      {/* Team Risk Summary */}
+      <section className="mt-12">
+        <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
+          Team Risk Summary
+        </p>
+        <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
+          Where the gaps are
+        </h2>
 
-      {/* Team summary bar */}
-      <div className="mt-6 grid gap-3 md:grid-cols-4">
-        {teamSummaries.map((t) => (
-          <div
-            key={t.name}
-            className="rounded-lg border border-[#E5E7EB] bg-white px-4 py-3"
-          >
-            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-              {t.name}
-            </p>
-            <div className="mt-2 flex items-center gap-3 text-sm">
-              <span className="flex items-center gap-1 text-[#10B981]">
-                <span className="inline-block h-2 w-2 rounded-full bg-[#10B981]" />
-                {t.green}
-              </span>
-              <span className="flex items-center gap-1 text-[#F59E0B]">
-                <span className="inline-block h-2 w-2 rounded-full bg-[#F59E0B]" />
-                {t.yellow}
-              </span>
-              <span className="flex items-center gap-1 text-[#EF4444]">
-                <span className="inline-block h-2 w-2 rounded-full bg-[#EF4444]" />
-                {t.red}
-              </span>
+        <div className="mt-6 grid gap-3 md:grid-cols-3">
+          {teamSummaries.map((t) => (
+            <div
+              key={t.team}
+              className="rounded-2xl border border-[#1E1E24] bg-[#111113] p-5"
+            >
+              <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-500">
+                {t.team}
+              </p>
+              <div className="mt-2 flex items-baseline justify-between">
+                <span
+                  className={`text-2xl font-semibold ${toneText(t.tone)}`}
+                >
+                  {t.avg.toFixed(1)}
+                </span>
+                <span
+                  className={`rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest ${
+                    t.tone === "green"
+                      ? "border-emerald-500/30 bg-emerald-500/[0.08] text-emerald-300"
+                      : t.tone === "amber"
+                        ? "border-amber-400/30 bg-amber-400/[0.08] text-amber-300"
+                        : "border-rose-500/30 bg-rose-500/[0.08] text-rose-300"
+                  }`}
+                >
+                  {t.tone === "green"
+                    ? "Stable"
+                    : t.tone === "amber"
+                      ? "Watch"
+                      : "Risk"}
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-zinc-500">
+                Average {active.toLowerCase()} score
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Warning card */}
+        <div className="mt-6 rounded-2xl border border-rose-500/30 bg-rose-500/[0.06] p-6">
+          <div className="flex items-start gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-rose-500/30 bg-rose-500/10 text-rose-300">
+              <AlertTriangle className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-[10px] font-medium uppercase tracking-widest text-rose-300">
+                Critical insight
+              </p>
+              <h3 className="mt-1 text-base font-semibold text-white">
+                Acting with Consideration — team-wide gap
+              </h3>
+              <p className="mt-2 text-sm text-zinc-400">
+                Cross-team behavioral analysis shows weak cooperative
+                signaling. This pattern correlates with execution friction
+                during high-pressure restructuring windows.
+              </p>
             </div>
           </div>
-        ))}
+        </div>
+      </section>
+
+      {/* Paywall */}
+      <section className="relative mt-12">
+        {/* Blurred preview content */}
+        <div className="pointer-events-none select-none rounded-2xl border border-[#1E1E24] bg-[#111113] p-8 blur-sm">
+          <p className="text-xs font-medium uppercase tracking-widest text-zinc-500">
+            Behavioral signal map · locked
+          </p>
+          <div className="mt-6 grid grid-cols-4 gap-2">
+            {Array.from({ length: 32 }).map((_, i) => (
+              <div
+                key={i}
+                className={`aspect-square rounded ${
+                  i % 5 === 0
+                    ? "bg-rose-500/60"
+                    : i % 3 === 0
+                      ? "bg-amber-400/60"
+                      : "bg-emerald-500/60"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Overlay */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-full max-w-xl rounded-3xl border border-indigo-500/30 bg-gradient-to-b from-[#111113]/95 to-[#0A0A0B]/95 p-8 text-center shadow-[0_0_60px_-15px_rgba(99,102,241,0.5)] backdrop-blur">
+            <div className="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300">
+              <Lock className="h-4 w-4" />
+            </div>
+            <h3 className="mt-4 text-xl font-bold tracking-tight text-white">
+              Full capability map locked
+            </h3>
+            <p className="mx-auto mt-2 max-w-md text-sm text-zinc-400">
+              Unlock the complete behavioral signal map, every node-level
+              score, and team-wide risk highlights.
+            </p>
+            <a
+              href={CHECKOUT_URL}
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-6 py-3 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
+            >
+              Unlock Full Analysis — $49
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function PersonNode({
+  person,
+  dim,
+  large,
+  compact,
+}: {
+  person: Person;
+  dim: Dimension;
+  large?: boolean;
+  compact?: boolean;
+}) {
+  const score = person.scores[dim];
+  const tone = scoreTone(score);
+  return (
+    <div
+      className={
+        "flex w-full items-center justify-between rounded-xl border border-[#1E1E24] bg-[#0A0A0B] " +
+        (large
+          ? "max-w-[260px] px-5 py-4"
+          : compact
+            ? "px-3 py-2"
+            : "px-4 py-3")
+      }
+    >
+      <div className="flex min-w-0 items-center gap-3">
+        <span className={`h-2 w-2 shrink-0 rounded-full ${toneDot(tone)}`} />
+        <div className="min-w-0">
+          <p
+            className={`truncate font-medium text-white ${
+              large ? "text-sm" : compact ? "text-xs" : "text-sm"
+            }`}
+          >
+            {person.name}
+          </p>
+          <p
+            className={`truncate text-zinc-500 ${
+              large ? "text-xs" : "text-[10px]"
+            }`}
+          >
+            {person.role}
+          </p>
+        </div>
       </div>
+      <span
+        className={`ml-3 shrink-0 font-mono text-xs ${toneText(tone)}`}
+      >
+        {score}
+      </span>
+    </div>
+  );
+}
+
+function Legend({
+  tone,
+  label,
+}: {
+  tone: "green" | "amber" | "red";
+  label: string;
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className={`h-1.5 w-1.5 rounded-full ${toneDot(tone)}`} />
+      <span>{label}</span>
     </div>
   );
 }

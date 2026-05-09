@@ -8,25 +8,17 @@ import {
   LayoutGrid,
   Network,
   Target,
-  Settings,
-  Building2,
   ArrowLeft,
   Menu,
   X,
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 
 const navItems = [
-  { href: "/app", label: "Scenarios", icon: LayoutGrid },
+  { href: "/app", label: "Overview", icon: LayoutGrid },
   { href: "/app/org-map", label: "Org Map", icon: Network },
   { href: "/app/role-fit", label: "Role Fit", icon: Target },
-];
-
-const secondaryNav = [
-  { href: "/app/settings", label: "Settings", icon: Settings },
 ];
 
 export function AppSidebar() {
@@ -42,24 +34,21 @@ export function AppSidebar() {
   }
 
   const sidebarContent = (
-    <div className="flex h-full flex-col bg-[#F9FAFB]">
-      {/* App name */}
-      <div className="px-5 py-5">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#4F46E5] text-white">
-            <Building2 className="h-4 w-4" />
-          </div>
-          <h2 className="truncate text-base font-semibold text-[#111827]">
-            OrgLens AI
-          </h2>
-        </div>
-        <p className="mt-1 text-xs text-gray-500">Decision Intelligence</p>
+    <div className="flex h-full flex-col border-r border-[#1E1E24] bg-[#0A0A0B]">
+      {/* Logo */}
+      <div className="px-5 py-6">
+        <Link href="/app" className="flex items-center gap-2">
+          <span className="text-base font-bold tracking-tight text-white">
+            OrgLens<span className="text-indigo-400">.</span>AI
+          </span>
+        </Link>
+        <p className="mt-1 text-[10px] font-medium uppercase tracking-widest text-zinc-500">
+          Decision Intelligence
+        </p>
       </div>
 
-      <Separator />
-
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="flex-1 space-y-1 px-3 py-2">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
@@ -72,8 +61,8 @@ export function AppSidebar() {
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 active
-                  ? "bg-[#4F46E5] text-white"
-                  : "text-gray-600 hover:bg-white hover:text-[#111827]"
+                  ? "bg-indigo-500/10 text-indigo-300 ring-1 ring-inset ring-indigo-500/30"
+                  : "text-zinc-400 hover:bg-[#16161A] hover:text-white"
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
@@ -83,52 +72,24 @@ export function AppSidebar() {
         })}
       </nav>
 
-      <Separator />
-
-      {/* Secondary nav */}
-      <div className="space-y-1 px-3 py-3">
-        {secondaryNav.map((item) => {
-          const Icon = item.icon;
-          const active = isActive(item.href);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setMobileOpen(false)}
-              className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                active
-                  ? "bg-white text-[#111827] shadow-sm"
-                  : "text-gray-600 hover:bg-white hover:text-[#111827]"
-              )}
-            >
-              <Icon className="h-4 w-4 shrink-0" />
-              {item.label}
-            </Link>
-          );
-        })}
-      </div>
-
-      <Separator />
-
       {/* Bottom actions */}
-      <div className="space-y-1 px-3 py-4">
+      <div className="space-y-1 border-t border-[#1E1E24] px-3 py-4">
         <Link
           href="/"
           onClick={() => setMobileOpen(false)}
-          className="flex items-center gap-2 rounded-md px-3 py-2 text-xs text-gray-500 transition-colors hover:bg-white hover:text-[#111827]"
+          className="flex items-center gap-2 rounded-md px-3 py-2 text-xs text-zinc-500 transition-colors hover:bg-[#16161A] hover:text-white"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
-          Back to Site
+          Back to site
         </Link>
         <button
           onClick={() => void signOut()}
-          className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-gray-500 transition-colors hover:bg-white hover:text-[#111827]"
+          className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-zinc-500 transition-colors hover:bg-[#16161A] hover:text-white"
         >
           <LogOut className="h-3.5 w-3.5" />
-          Sign Out
+          Sign out
         </button>
-        <p className="px-3 pt-3 text-[10px] uppercase tracking-wider text-gray-400">
+        <p className="px-3 pt-3 text-[10px] uppercase tracking-widest text-zinc-600">
           Built with MadeThis
         </p>
       </div>
@@ -138,19 +99,18 @@ export function AppSidebar() {
   return (
     <>
       {/* Mobile toggle button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="fixed left-4 top-4 z-50 md:hidden"
+      <button
+        className="fixed left-4 top-4 z-50 inline-flex h-9 w-9 items-center justify-center rounded-md border border-[#1E1E24] bg-[#0A0A0B] text-zinc-300 md:hidden"
         onClick={() => setMobileOpen(!mobileOpen)}
+        aria-label="Toggle menu"
       >
         {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-      </Button>
+      </button>
 
       {/* Mobile overlay */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          className="fixed inset-0 z-40 bg-black/70 md:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}
@@ -158,7 +118,7 @@ export function AppSidebar() {
       {/* Sidebar — mobile (slide-over) */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 w-64 border-r border-[#E5E7EB] transition-transform md:hidden",
+          "fixed inset-y-0 left-0 z-40 w-64 transition-transform md:hidden",
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -166,7 +126,7 @@ export function AppSidebar() {
       </aside>
 
       {/* Sidebar — desktop (static) */}
-      <aside className="hidden w-[280px] shrink-0 border-r border-[#E5E7EB] md:block">
+      <aside className="hidden w-[260px] shrink-0 md:block">
         {sidebarContent}
       </aside>
     </>

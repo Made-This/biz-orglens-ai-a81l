@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { CheckCircle2, Loader2, ArrowRight } from "lucide-react";
 
 interface OrderInfo {
   productName?: string;
@@ -52,104 +52,117 @@ function SuccessInner() {
   }, [sessionId]);
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center px-6 py-12 text-center">
-      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100">
-        <CheckCircle2 className="h-7 w-7 text-[#10B981]" />
-      </div>
-      <h1 className="mt-6 text-2xl font-bold text-[#111827] md:text-3xl">
-        Your analysis is unlocked.
-      </h1>
-      <p className="mt-2 text-sm text-gray-500">
-        Thanks for unlocking the full OrgLens AI analysis. You now have access
-        to the complete competency map and role-fit rankings.
-      </p>
-
-      <div className="mt-8 w-full rounded-xl border border-[#E5E7EB] bg-white p-6 text-left">
-        {loading ? (
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Loading order details…
-          </div>
-        ) : error ? (
-          <p className="text-sm text-gray-500">
-            We couldn&apos;t load order details right now, but your access is
-            active.
-          </p>
-        ) : order ? (
-          <dl className="space-y-2 text-sm">
-            {order.productName && (
-              <div className="flex justify-between">
-                <dt className="text-gray-500">Product</dt>
-                <dd className="font-medium text-[#111827]">
-                  {order.productName}
-                </dd>
-              </div>
-            )}
-            {typeof order.amount === "number" && (
-              <div className="flex justify-between">
-                <dt className="text-gray-500">Amount</dt>
-                <dd className="font-medium text-[#111827]">
-                  {(order.amount / 100).toLocaleString("en-US", {
-                    style: "currency",
-                    currency: (order.currency ?? "USD").toUpperCase(),
-                  })}
-                </dd>
-              </div>
-            )}
-            {order.status && (
-              <div className="flex justify-between">
-                <dt className="text-gray-500">Status</dt>
-                <dd className="font-medium capitalize text-[#111827]">
-                  {order.status}
-                </dd>
-              </div>
-            )}
-            {order.email && (
-              <div className="flex justify-between">
-                <dt className="text-gray-500">Receipt sent to</dt>
-                <dd className="font-medium text-[#111827]">{order.email}</dd>
-              </div>
-            )}
-            {sessionId && (
-              <div className="flex justify-between gap-3">
-                <dt className="text-gray-500">Session</dt>
-                <dd className="truncate font-mono text-xs text-gray-500">
-                  {sessionId}
-                </dd>
-              </div>
-            )}
-          </dl>
-        ) : (
-          <p className="text-sm text-gray-500">
-            No session id provided — but your access is active.
-          </p>
-        )}
+    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 py-16 text-center">
+      <div className="pointer-events-none absolute inset-0 -z-0">
+        <div className="absolute left-1/2 top-1/2 h-[500px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-500/[0.08] blur-[140px]" />
       </div>
 
-      <Link
-        href="/app"
-        className="mt-8 inline-flex w-full max-w-md items-center justify-center rounded-md bg-[#4F46E5] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#4338CA]"
-      >
-        Go to Full Analysis
-      </Link>
+      <div className="relative w-full max-w-xl">
+        <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300">
+          <CheckCircle2 className="h-7 w-7" />
+        </div>
 
-      <p className="mt-6 text-[11px] uppercase tracking-wider text-gray-400">
-        Built with MadeThis
-      </p>
+        <p className="mt-6 text-xs font-medium uppercase tracking-widest text-indigo-400">
+          Payment confirmed
+        </p>
+        <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl">
+          Analysis Unlocked
+        </h1>
+        <p className="mx-auto mt-3 max-w-md text-sm text-zinc-400">
+          Your full OrgLens AI analysis is now available — the complete
+          competency org map, role-fit ranking, and founder memo.
+        </p>
+
+        <div className="mt-10 rounded-2xl border border-[#1E1E24] bg-[#111113] p-6 text-left">
+          {loading ? (
+            <div className="flex items-center gap-2 text-sm text-zinc-400">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Loading order details…
+            </div>
+          ) : error ? (
+            <p className="text-sm text-zinc-400">
+              We couldn&apos;t load order details right now, but your access
+              is active.
+            </p>
+          ) : order ? (
+            <dl className="space-y-3 text-sm">
+              {order.productName && (
+                <div className="flex justify-between border-b border-[#1E1E24] pb-3">
+                  <dt className="text-zinc-500">Product</dt>
+                  <dd className="font-medium text-white">
+                    {order.productName}
+                  </dd>
+                </div>
+              )}
+              {typeof order.amount === "number" && (
+                <div className="flex justify-between border-b border-[#1E1E24] pb-3">
+                  <dt className="text-zinc-500">Amount</dt>
+                  <dd className="font-medium text-white">
+                    {(order.amount / 100).toLocaleString("en-US", {
+                      style: "currency",
+                      currency: (order.currency ?? "USD").toUpperCase(),
+                    })}
+                  </dd>
+                </div>
+              )}
+              {order.status && (
+                <div className="flex justify-between border-b border-[#1E1E24] pb-3">
+                  <dt className="text-zinc-500">Status</dt>
+                  <dd className="font-medium capitalize text-emerald-300">
+                    {order.status}
+                  </dd>
+                </div>
+              )}
+              {order.email && (
+                <div className="flex justify-between border-b border-[#1E1E24] pb-3">
+                  <dt className="text-zinc-500">Receipt sent to</dt>
+                  <dd className="font-medium text-white">{order.email}</dd>
+                </div>
+              )}
+              {sessionId && (
+                <div className="flex justify-between gap-3">
+                  <dt className="text-zinc-500">Session</dt>
+                  <dd className="truncate font-mono text-xs text-zinc-500">
+                    {sessionId}
+                  </dd>
+                </div>
+              )}
+            </dl>
+          ) : (
+            <p className="text-sm text-zinc-400">
+              No session id provided — but your access is active.
+            </p>
+          )}
+        </div>
+
+        <Link
+          href="/app"
+          className="mt-8 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-7 py-3.5 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400 hover:shadow-[0_0_40px_-5px_rgba(99,102,241,0.9)]"
+        >
+          Open Full Analysis
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+
+        <p className="mt-8 text-[10px] uppercase tracking-widest text-zinc-600">
+          Built with MadeThis
+        </p>
+      </div>
     </div>
   );
 }
 
 export default function CheckoutSuccessPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex min-h-screen items-center justify-center text-sm text-gray-500">
-          Loading…
-        </div>
-      }
-    >
-      <SuccessInner />
-    </Suspense>
+    <div className="dark min-h-screen bg-[#0A0A0B] text-zinc-100">
+      <Suspense
+        fallback={
+          <div className="flex min-h-screen items-center justify-center text-sm text-zinc-400">
+            Loading…
+          </div>
+        }
+      >
+        <SuccessInner />
+      </Suspense>
+    </div>
   );
 }

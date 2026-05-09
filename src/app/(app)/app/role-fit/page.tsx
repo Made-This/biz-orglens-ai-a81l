@@ -1,387 +1,474 @@
 "use client";
 
 import { useState } from "react";
+import { Lock, ArrowRight } from "lucide-react";
+
+const CHECKOUT_URL =
+  "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
 
 type Role =
-  | "Investment Director"
+  | "CTO"
+  | "VP Engineering"
+  | "VP Product"
   | "Head of Operations"
-  | "Strategy Lead"
-  | "Analytics Manager";
-
-type ActionLabel =
-  | "Strong fit"
-  | "Good fit"
-  | "Develop first"
-  | "Not recommended";
+  | "Lead Engineer";
 
 interface Candidate {
+  rank: number;
   name: string;
   fit: number;
   strengths: string;
   gaps: string;
-  action: ActionLabel;
 }
 
 interface RoleProfile {
   role: Role;
-  required: { label: string; level: "High" | "Medium" | "Low" }[];
+  required: { label: string; level: "high" | "medium" }[];
   candidates: Candidate[];
 }
 
-const roles: RoleProfile[] = [
+const roleProfiles: RoleProfile[] = [
   {
-    role: "Investment Director",
+    role: "VP Engineering",
     required: [
-      { label: "Drive", level: "High" },
-      { label: "Leadership", level: "High" },
-      { label: "Execution", level: "Medium" },
-      { label: "Stability", level: "Medium" },
+      { label: "Leading/Deciding", level: "high" },
+      { label: "Analyzing/Interpreting", level: "high" },
+      { label: "Organizing/Executing", level: "medium" },
     ],
     candidates: [
       {
+        rank: 1,
+        name: "Luke Cai",
+        fit: 92,
+        strengths: "Leading/Deciding, Supporting/Cooperating",
+        gaps: "Enterprising/Performing",
+      },
+      {
+        rank: 2,
         name: "Chifong Dong",
-        fit: 94,
-        strengths: "Drive, Execution",
-        gaps: "Minor: Adaptability",
-        action: "Strong fit",
+        fit: 89,
+        strengths: "Organizing/Executing, Analyzing/Interpreting",
+        gaps: "Adapting/Coping",
       },
       {
-        name: "Supriya Kumar",
-        fit: 88,
-        strengths: "Leadership, Drive",
-        gaps: "Minor: Stability",
-        action: "Strong fit",
-      },
-      {
+        rank: 3,
         name: "Eric Li",
-        fit: 82,
-        strengths: "Execution, Structure",
-        gaps: "Gap: Influence",
-        action: "Good fit",
+        fit: 85,
+        strengths: "Analyzing/Interpreting, Creating/Conceptualizing",
+        gaps: "Interacting/Presenting",
       },
       {
+        rank: 4,
         name: "Yijun Sim",
         fit: 79,
-        strengths: "Resilience, Drive",
-        gaps: "Gap: Leadership breadth",
-        action: "Good fit",
+        strengths: "Supporting/Cooperating, Organizing/Executing",
+        gaps: "Leading/Deciding",
       },
       {
+        rank: 5,
+        name: "Supriya Kumar",
+        fit: 76,
+        strengths: "Creating/Conceptualizing, Adapting/Coping",
+        gaps: "Organizing/Executing",
+      },
+    ],
+  },
+  {
+    role: "CTO",
+    required: [
+      { label: "Leading/Deciding", level: "high" },
+      { label: "Creating/Conceptualizing", level: "high" },
+      { label: "Analyzing/Interpreting", level: "medium" },
+    ],
+    candidates: [
+      {
+        rank: 1,
+        name: "Chifong Dong",
+        fit: 91,
+        strengths: "Leading/Deciding, Analyzing/Interpreting",
+        gaps: "Adapting/Coping",
+      },
+      {
+        rank: 2,
         name: "Luke Cai",
+        fit: 84,
+        strengths: "Leading/Deciding, Organizing/Executing",
+        gaps: "Creating/Conceptualizing",
+      },
+      {
+        rank: 3,
+        name: "Eric Li",
+        fit: 80,
+        strengths: "Analyzing/Interpreting, Creating/Conceptualizing",
+        gaps: "Interacting/Presenting",
+      },
+      {
+        rank: 4,
+        name: "Supriya Kumar",
+        fit: 73,
+        strengths: "Creating/Conceptualizing, Adapting/Coping",
+        gaps: "Organizing/Executing",
+      },
+      {
+        rank: 5,
+        name: "Yijun Sim",
+        fit: 68,
+        strengths: "Organizing/Executing, Supporting/Cooperating",
+        gaps: "Leading/Deciding",
+      },
+    ],
+  },
+  {
+    role: "VP Product",
+    required: [
+      { label: "Creating/Conceptualizing", level: "high" },
+      { label: "Adapting/Coping", level: "high" },
+      { label: "Interacting/Presenting", level: "medium" },
+    ],
+    candidates: [
+      {
+        rank: 1,
+        name: "Supriya Kumar",
+        fit: 93,
+        strengths: "Creating/Conceptualizing, Adapting/Coping",
+        gaps: "Organizing/Executing",
+      },
+      {
+        rank: 2,
+        name: "Eric Li",
+        fit: 82,
+        strengths: "Analyzing/Interpreting, Creating/Conceptualizing",
+        gaps: "Interacting/Presenting",
+      },
+      {
+        rank: 3,
+        name: "Chifong Dong",
+        fit: 78,
+        strengths: "Analyzing/Interpreting, Leading/Deciding",
+        gaps: "Adapting/Coping",
+      },
+      {
+        rank: 4,
+        name: "Yijun Sim",
         fit: 71,
-        strengths: "Execution",
-        gaps: "Gaps: Leadership, Influence",
-        action: "Develop first",
+        strengths: "Supporting/Cooperating, Adapting/Coping",
+        gaps: "Leading/Deciding",
       },
       {
-        name: "Yujin Chen",
-        fit: 58,
-        strengths: "Stability",
-        gaps: "Gaps: Drive, Leadership",
-        action: "Not recommended",
-      },
-      {
-        name: "Jerry Yen",
-        fit: 51,
-        strengths: "Support",
-        gaps: "Gaps: Drive, Execution",
-        action: "Not recommended",
+        rank: 5,
+        name: "Luke Cai",
+        fit: 64,
+        strengths: "Organizing/Executing, Leading/Deciding",
+        gaps: "Creating/Conceptualizing",
       },
     ],
   },
   {
     role: "Head of Operations",
     required: [
-      { label: "Execution", level: "High" },
-      { label: "Structure", level: "High" },
-      { label: "Leadership", level: "Medium" },
-      { label: "Stability", level: "Medium" },
+      { label: "Organizing/Executing", level: "high" },
+      { label: "Analyzing/Interpreting", level: "high" },
+      { label: "Supporting/Cooperating", level: "medium" },
     ],
     candidates: [
       {
+        rank: 1,
         name: "Eric Li",
-        fit: 91,
-        strengths: "Execution, Structure",
-        gaps: "Minor: Adaptability",
-        action: "Strong fit",
+        fit: 90,
+        strengths: "Analyzing/Interpreting, Organizing/Executing",
+        gaps: "Interacting/Presenting",
       },
       {
-        name: "Supriya Kumar",
+        rank: 2,
+        name: "Chifong Dong",
         fit: 86,
-        strengths: "Leadership, Structure",
-        gaps: "Minor: Stability",
-        action: "Strong fit",
+        strengths: "Organizing/Executing, Leading/Deciding",
+        gaps: "Adapting/Coping",
       },
       {
-        name: "Luke Cai",
-        fit: 78,
-        strengths: "Execution, Reliability",
-        gaps: "Gap: Leadership breadth",
-        action: "Good fit",
-      },
-      {
-        name: "Chifong Dong",
-        fit: 74,
-        strengths: "Drive, Execution",
-        gaps: "Gap: Process orientation",
-        action: "Good fit",
-      },
-      {
-        name: "Yujin Chen",
-        fit: 62,
-        strengths: "Stability, Support",
-        gaps: "Gaps: Drive, Decisiveness",
-        action: "Develop first",
-      },
-      {
-        name: "Yuzhe Zhao",
-        fit: 38,
-        strengths: "—",
-        gaps: "Gaps: Execution, Stability",
-        action: "Not recommended",
-      },
-    ],
-  },
-  {
-    role: "Strategy Lead",
-    required: [
-      { label: "Drive", level: "High" },
-      { label: "Adaptability", level: "High" },
-      { label: "Leadership", level: "Medium" },
-      { label: "Execution", level: "Medium" },
-    ],
-    candidates: [
-      {
-        name: "Supriya Kumar",
-        fit: 92,
-        strengths: "Leadership, Drive",
-        gaps: "Minor: Stability",
-        action: "Strong fit",
-      },
-      {
-        name: "Yijun Sim",
-        fit: 84,
-        strengths: "Resilience, Adaptability",
-        gaps: "Minor: Influence",
-        action: "Strong fit",
-      },
-      {
-        name: "Chifong Dong",
-        fit: 80,
-        strengths: "Drive, Execution",
-        gaps: "Gap: Adaptability",
-        action: "Good fit",
-      },
-      {
-        name: "Eric Li",
-        fit: 70,
-        strengths: "Structure, Execution",
-        gaps: "Gap: Adaptability",
-        action: "Develop first",
-      },
-      {
-        name: "Yujin Chen",
-        fit: 55,
-        strengths: "Stability",
-        gaps: "Gaps: Drive, Adaptability",
-        action: "Not recommended",
-      },
-    ],
-  },
-  {
-    role: "Analytics Manager",
-    required: [
-      { label: "Execution", level: "High" },
-      { label: "Adaptability", level: "Medium" },
-      { label: "Drive", level: "Medium" },
-      { label: "Collaboration", level: "Medium" },
-    ],
-    candidates: [
-      {
-        name: "Eric Li",
-        fit: 89,
-        strengths: "Structure, Execution",
-        gaps: "Minor: Influence",
-        action: "Strong fit",
-      },
-      {
+        rank: 3,
         name: "Yijun Sim",
         fit: 81,
-        strengths: "Adaptability, Drive",
-        gaps: "Minor: Leadership",
-        action: "Strong fit",
+        strengths: "Organizing/Executing, Supporting/Cooperating",
+        gaps: "Leading/Deciding",
       },
       {
+        rank: 4,
         name: "Luke Cai",
-        fit: 73,
-        strengths: "Execution",
-        gaps: "Gap: Adaptability",
-        action: "Good fit",
+        fit: 74,
+        strengths: "Organizing/Executing, Leading/Deciding",
+        gaps: "Adapting/Coping",
       },
       {
-        name: "Jerry Yen",
-        fit: 54,
-        strengths: "Support",
-        gaps: "Gaps: Drive, Execution",
-        action: "Not recommended",
+        rank: 5,
+        name: "Supriya Kumar",
+        fit: 65,
+        strengths: "Creating/Conceptualizing, Adapting/Coping",
+        gaps: "Organizing/Executing",
+      },
+    ],
+  },
+  {
+    role: "Lead Engineer",
+    required: [
+      { label: "Organizing/Executing", level: "high" },
+      { label: "Analyzing/Interpreting", level: "high" },
+      { label: "Adapting/Coping", level: "medium" },
+    ],
+    candidates: [
+      {
+        rank: 1,
+        name: "Luke Cai",
+        fit: 88,
+        strengths: "Organizing/Executing, Leading/Deciding",
+        gaps: "Adapting/Coping",
+      },
+      {
+        rank: 2,
+        name: "Yijun Sim",
+        fit: 84,
+        strengths: "Organizing/Executing, Adapting/Coping",
+        gaps: "Leading/Deciding",
+      },
+      {
+        rank: 3,
+        name: "Chifong Dong",
+        fit: 80,
+        strengths: "Analyzing/Interpreting, Organizing/Executing",
+        gaps: "Adapting/Coping",
+      },
+      {
+        rank: 4,
+        name: "Eric Li",
+        fit: 73,
+        strengths: "Analyzing/Interpreting, Creating/Conceptualizing",
+        gaps: "Interacting/Presenting",
+      },
+      {
+        rank: 5,
+        name: "Supriya Kumar",
+        fit: 60,
+        strengths: "Creating/Conceptualizing, Adapting/Coping",
+        gaps: "Organizing/Executing",
       },
     ],
   },
 ];
 
-function fitColor(fit: number) {
-  if (fit > 80) return "#10B981";
-  if (fit >= 60) return "#F59E0B";
-  return "#EF4444";
+const roleOrder: Role[] = [
+  "CTO",
+  "VP Engineering",
+  "VP Product",
+  "Head of Operations",
+  "Lead Engineer",
+];
+
+function fitTone(fit: number): "green" | "amber" | "red" {
+  if (fit >= 80) return "green";
+  if (fit >= 60) return "amber";
+  return "red";
 }
 
-function actionStyles(a: ActionLabel) {
-  switch (a) {
-    case "Strong fit":
-      return "bg-emerald-50 text-[#047857] border border-emerald-100";
-    case "Good fit":
-      return "bg-blue-50 text-[#1D4ED8] border border-blue-100";
-    case "Develop first":
-      return "bg-amber-50 text-[#B45309] border border-amber-100";
-    case "Not recommended":
-    default:
-      return "bg-gray-100 text-gray-600 border border-gray-200";
-  }
+function toneBg(t: "green" | "amber" | "red") {
+  if (t === "green") return "bg-emerald-500";
+  if (t === "amber") return "bg-amber-400";
+  return "bg-rose-500";
 }
 
-function levelChipColor(level: "High" | "Medium" | "Low") {
-  if (level === "High") return "bg-[#EEF2FF] text-[#4F46E5]";
-  if (level === "Medium") return "bg-amber-50 text-amber-700";
-  return "bg-gray-100 text-gray-600";
+function toneText(t: "green" | "amber" | "red") {
+  if (t === "green") return "text-emerald-300";
+  if (t === "amber") return "text-amber-300";
+  return "text-rose-300";
 }
 
 export default function RoleFitPage() {
-  const [selected, setSelected] = useState<Role>("Investment Director");
-  const profile = roles.find((r) => r.role === selected) ?? roles[0];
+  const [selected, setSelected] = useState<Role>("VP Engineering");
+  const profile =
+    roleProfiles.find((r) => r.role === selected) ?? roleProfiles[0];
 
   return (
     <div className="mx-auto max-w-[1400px]">
+      {/* Header */}
       <header className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-[#111827] md:text-3xl">
+        <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
+          Role Fit
+        </p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
           Role Fit & Talent Ranking
         </h1>
-        <p className="mt-2 text-sm text-gray-500">
-          Identify who is best positioned for each role in your restructured org
+        <p className="mt-2 text-sm text-zinc-400">
+          Identify the best-fit team members for critical roles using
+          competency-based ranking from the Great 8 model.
         </p>
       </header>
 
-      {/* Role tabs */}
-      <div className="mb-6 flex flex-wrap gap-2 rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] p-2">
-        {roles.map((r) => (
-          <button
-            key={r.role}
-            type="button"
-            onClick={() => setSelected(r.role)}
-            className={
-              "rounded-md px-4 py-2 text-sm font-medium transition-colors " +
-              (selected === r.role
-                ? "bg-[#4F46E5] text-white"
-                : "bg-white text-[#111827] border border-[#E5E7EB] hover:border-gray-300")
-            }
+      {/* Role selector */}
+      <div className="mb-8">
+        <label
+          htmlFor="role"
+          className="block text-[10px] font-medium uppercase tracking-widest text-zinc-500"
+        >
+          Select role
+        </label>
+        <div className="relative mt-2 max-w-sm">
+          <select
+            id="role"
+            value={selected}
+            onChange={(e) => setSelected(e.target.value as Role)}
+            className="w-full appearance-none rounded-full border border-[#1E1E24] bg-[#111113] px-4 py-2.5 pr-10 text-sm text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
           >
-            {r.role}
-          </button>
-        ))}
-      </div>
-
-      {/* Required competencies */}
-      <div className="mb-8 flex flex-wrap items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-4 py-3">
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">
-          Required
-        </span>
-        {profile.required.map((r) => (
-          <span
-            key={r.label}
-            className={
-              "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium " +
-              levelChipColor(r.level)
-            }
-          >
-            {r.label}: {r.level}
+            {roleOrder.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
+          <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-zinc-500">
+            ▾
           </span>
-        ))}
+        </div>
       </div>
 
-      {/* Talent table */}
-      <div className="overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB] text-left">
-              <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                Name
-              </th>
-              <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                Fit Score
-              </th>
-              <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                Key Strengths
-              </th>
-              <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                Gaps
-              </th>
-              <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {profile.candidates.map((c) => {
-              const color = fitColor(c.fit);
+      <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+        {/* Talent table with paywall */}
+        <section className="relative">
+          <div className="overflow-hidden rounded-2xl border border-[#1E1E24] bg-[#111113]">
+            <div className="grid grid-cols-[40px_1.4fr_1.6fr_1.6fr_1.4fr] gap-4 border-b border-[#1E1E24] bg-[#0A0A0B] px-5 py-3 text-[10px] font-medium uppercase tracking-widest text-zinc-500">
+              <span>#</span>
+              <span>Name</span>
+              <span>Fit Score</span>
+              <span>Key Strengths</span>
+              <span>Gaps</span>
+            </div>
+
+            {profile.candidates.map((c, idx) => {
+              const tone = fitTone(c.fit);
+              const locked = idx >= 2;
               return (
-                <tr
+                <div
                   key={c.name}
-                  className="border-b border-[#E5E7EB] last:border-b-0 hover:bg-[#FAFAFB]"
+                  className={`relative grid grid-cols-[40px_1.4fr_1.6fr_1.6fr_1.4fr] items-center gap-4 border-b border-[#1E1E24] px-5 py-4 last:border-0 ${
+                    locked ? "select-none" : ""
+                  }`}
                 >
-                  <td className="px-5 py-4 font-medium text-[#111827]">
-                    {c.name}
-                  </td>
-                  <td className="px-5 py-4">
+                  <div className={locked ? "pointer-events-none blur-sm" : ""}>
+                    <span className="font-mono text-xs text-zinc-500">
+                      {c.rank}
+                    </span>
+                  </div>
+                  <div className={locked ? "pointer-events-none blur-sm" : ""}>
+                    <p className="text-sm font-medium text-white">{c.name}</p>
+                  </div>
+                  <div className={locked ? "pointer-events-none blur-sm" : ""}>
                     <div className="flex items-center gap-3">
-                      <div className="h-2 w-32 overflow-hidden rounded-full bg-gray-100">
+                      <div className="h-1.5 w-32 overflow-hidden rounded-full bg-[#1E1E24]">
                         <div
-                          className="h-full rounded-full"
-                          style={{
-                            width: `${c.fit}%`,
-                            backgroundColor: color,
-                          }}
+                          className={`h-full ${toneBg(tone)}`}
+                          style={{ width: `${c.fit}%` }}
                         />
                       </div>
                       <span
-                        className="text-sm font-semibold"
-                        style={{ color }}
+                        className={`font-mono text-sm ${toneText(tone)}`}
                       >
                         {c.fit}%
                       </span>
                     </div>
-                  </td>
-                  <td className="px-5 py-4 text-[#374151]">{c.strengths}</td>
-                  <td className="px-5 py-4 text-gray-500">{c.gaps}</td>
-                  <td className="px-5 py-4">
-                    <span
-                      className={
-                        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium " +
-                        actionStyles(c.action)
-                      }
-                    >
-                      {c.action}
-                    </span>
-                  </td>
-                </tr>
+                  </div>
+                  <div
+                    className={
+                      locked
+                        ? "pointer-events-none truncate text-xs text-zinc-400 blur-sm"
+                        : "truncate text-xs text-zinc-300"
+                    }
+                  >
+                    {c.strengths}
+                  </div>
+                  <div
+                    className={
+                      locked
+                        ? "pointer-events-none truncate text-xs text-zinc-500 blur-sm"
+                        : "truncate text-xs text-zinc-500"
+                    }
+                  >
+                    {c.gaps}
+                  </div>
+                </div>
               );
             })}
-          </tbody>
-        </table>
-      </div>
+          </div>
 
-      <p className="mt-4 text-xs text-gray-500">
-        Fit scores combine drive, leadership, execution, adaptability, stability,
-        and collaboration signals from the team&apos;s competency profile.
-      </p>
+          {/* Paywall overlay anchored to locked rows */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[280px]">
+            <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/80 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 flex justify-center pb-8">
+              <div className="pointer-events-auto w-full max-w-md rounded-3xl border border-indigo-500/30 bg-gradient-to-b from-[#111113] to-[#0A0A0B] p-6 text-center shadow-[0_0_60px_-15px_rgba(99,102,241,0.5)]">
+                <div className="mx-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300">
+                  <Lock className="h-4 w-4" />
+                </div>
+                <h3 className="mt-3 text-base font-semibold text-white">
+                  Unlock the full ranking
+                </h3>
+                <p className="mt-1 text-xs text-zinc-400">
+                  See every candidate, fit score, and gap analysis.
+                </p>
+                <a
+                  href={CHECKOUT_URL}
+                  className="mt-4 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-5 py-2.5 text-sm font-medium text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
+                >
+                  Unlock Full Analysis — $49
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Role requirements */}
+        <aside className="space-y-6 lg:sticky lg:top-10 lg:self-start">
+          <div className="rounded-2xl border border-[#1E1E24] bg-[#111113] p-6">
+            <p className="text-[10px] font-medium uppercase tracking-widest text-indigo-400">
+              Selected Role
+            </p>
+            <h3 className="mt-2 text-lg font-semibold text-white">
+              {profile.role}
+            </h3>
+
+            <div className="mt-6 space-y-3 border-t border-[#1E1E24] pt-5">
+              <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-500">
+                Required Competencies
+              </p>
+              {profile.required.map((r) => (
+                <div
+                  key={r.label}
+                  className="flex items-center justify-between"
+                >
+                  <span className="text-sm text-zinc-300">{r.label}</span>
+                  <span
+                    className={`rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest ${
+                      r.level === "high"
+                        ? "border-indigo-500/30 bg-indigo-500/[0.08] text-indigo-300"
+                        : "border-amber-400/30 bg-amber-400/[0.08] text-amber-300"
+                    }`}
+                  >
+                    {r.level}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-[#1E1E24] bg-[#111113] p-6">
+            <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-500">
+              Methodology
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-zinc-400">
+              Fit scores are computed against the Great 8 competency model
+              using HUCAMA psychometric inputs and behavioral signal analysis
+              across the team.
+            </p>
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }
