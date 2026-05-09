@@ -8,7 +8,9 @@ import {
 import { jwtVerify } from "jose";
 
 const isSignInPage = createRouteMatcher(["/sign-in", "/sign-up"]);
-const isProtectedRoute = createRouteMatcher(["/app(.*)"]);
+// /app(.*) protection is handled client-side in src/app/(app)/layout.tsx so
+// that demo mode (a localStorage flag, unavailable to middleware) can pass
+// through. Settings pages still rely on Convex auth and short-circuit there.
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 
 async function handleAdminAuth(request: NextRequest): Promise<NextResponse | null> {
@@ -74,10 +76,8 @@ export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
     return nextjsMiddlewareRedirect(request, "/app");
   }
 
-  // Redirect unauthenticated users away from protected routes
-  if (isProtectedRoute(request) && !(await convexAuth.isAuthenticated())) {
-    return nextjsMiddlewareRedirect(request, "/sign-in");
-  }
+  // Note: /app(.*) is intentionally not protected here — guarded client-side
+  // so the demo-mode localStorage flag can let guests pass through.
 });
 
 export const config = {

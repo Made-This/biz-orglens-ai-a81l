@@ -1,17 +1,35 @@
 "use client";
 
 import { useAuthActions } from "@convex-dev/auth/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { ArrowRight, Sparkles, ChevronDown } from "lucide-react";
 
 export default function SignInPage() {
   const { signIn } = useAuthActions();
   const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const formRef = useRef<HTMLDivElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+
+  function handleStartDemo() {
+    try {
+      window.localStorage.setItem("orglens_demo_mode", "true");
+    } catch {
+      // localStorage might be blocked in rare configurations — push anyway.
+    }
+    router.push("/app");
+  }
+
+  function handleScrollToForm() {
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Give the scroll a moment, then focus.
+    setTimeout(() => emailRef.current?.focus(), 400);
+  }
 
   return (
     <div className="relative flex min-h-[80vh] items-center justify-center overflow-hidden px-4 py-16">
@@ -20,19 +38,58 @@ export default function SignInPage() {
       </div>
 
       <div className="relative w-full max-w-md">
+        {/* Demo / no-login CTA section */}
         <div className="text-center">
-          <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
-            Welcome back
-          </p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-white">
-            Sign in to OrgLens AI
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-[10px] font-medium uppercase tracking-widest text-indigo-300">
+            <Sparkles className="h-3 w-3" />
+            Live demo
+          </span>
+          <h1 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            Try OrgLens AI —
+            <br />
+            <span className="bg-gradient-to-r from-indigo-300 to-indigo-500 bg-clip-text text-transparent">
+              No Account Needed
+            </span>
           </h1>
-          <p className="mt-2 text-sm text-zinc-500">
-            Continue your organizational analysis.
+          <p className="mt-3 text-sm text-zinc-400">
+            Explore the full product with sample HUCAMA-backed company data.
+            No sign-up, no credit card.
           </p>
         </div>
 
-        <div className="mt-10 rounded-2xl border border-[#1E1E24] bg-[#111113] p-8 shadow-2xl shadow-black/40">
+        <div className="mt-8 space-y-3">
+          <button
+            type="button"
+            onClick={handleStartDemo}
+            className="group flex w-full items-center justify-center gap-2 rounded-full bg-indigo-500 px-6 py-3.5 text-sm font-semibold text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-400 hover:shadow-[0_0_60px_-5px_rgba(99,102,241,0.9)]"
+          >
+            Try Demo — No Login Required
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </button>
+          <button
+            type="button"
+            onClick={handleScrollToForm}
+            className="flex w-full items-center justify-center gap-1.5 rounded-full border border-[#1E1E24] bg-transparent px-6 py-2.5 text-xs font-medium text-zinc-400 transition-colors hover:border-zinc-600 hover:text-white"
+          >
+            Continue with Sign In
+            <ChevronDown className="h-3.5 w-3.5" />
+          </button>
+        </div>
+
+        {/* Visual separator */}
+        <div className="mt-10 flex items-center gap-4">
+          <span className="h-px flex-1 bg-[#1E1E24]" />
+          <span className="text-[10px] font-medium uppercase tracking-widest text-zinc-600">
+            or sign in with your account
+          </span>
+          <span className="h-px flex-1 bg-[#1E1E24]" />
+        </div>
+
+        {/* Existing sign-in form */}
+        <div
+          ref={formRef}
+          className="mt-6 scroll-mt-8 rounded-2xl border border-[#1E1E24] bg-[#111113] p-8 shadow-2xl shadow-black/40"
+        >
           <form
             className="space-y-5"
             onSubmit={async (e) => {
@@ -55,6 +112,7 @@ export default function SignInPage() {
                 Email
               </Label>
               <Input
+                ref={emailRef}
                 id="email"
                 name="email"
                 type="email"
