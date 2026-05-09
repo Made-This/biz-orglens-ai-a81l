@@ -7,12 +7,12 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col">
-      <SiteHeader productName="My SaaS" />
+    <div className="dark flex min-h-screen flex-col bg-[#0A0A0B] text-zinc-100">
+      <SiteHeader productName="OrgLens AI" />
       <main className="flex-1">{children}</main>
       <SiteFooter
-        productName="My SaaS"
-        footerText="The smarter way to grow your business"
+        productName="OrgLens AI"
+        footerText="Organizational intelligence for founders."
       />
     </div>
   );

@@ -3,10 +3,8 @@
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 
 export default function SignUpPage() {
@@ -16,17 +14,27 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
 
   return (
-    <div className="flex min-h-[60vh] items-center justify-center px-4 py-16">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Get Started</CardTitle>
-          <CardDescription>
-            Create an account to get started
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+    <div className="relative flex min-h-[80vh] items-center justify-center overflow-hidden px-4 py-16">
+      <div className="pointer-events-none absolute inset-0 -z-0">
+        <div className="absolute left-1/2 top-1/2 h-[500px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-500/[0.08] blur-[140px]" />
+      </div>
+
+      <div className="relative w-full max-w-md">
+        <div className="text-center">
+          <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
+            Get started
+          </p>
+          <h1 className="mt-3 text-3xl font-bold tracking-tight text-white">
+            Analyze your organization
+          </h1>
+          <p className="mt-2 text-sm text-zinc-500">
+            Decision intelligence for founders. Results in minutes.
+          </p>
+        </div>
+
+        <div className="mt-10 rounded-2xl border border-[#1E1E24] bg-[#111113] p-8 shadow-2xl shadow-black/40">
           <form
-            className="space-y-4"
+            className="space-y-5"
             onSubmit={async (e) => {
               e.preventDefault();
               setError("");
@@ -36,57 +44,73 @@ export default function SignUpPage() {
                 await signIn("password", formData);
                 router.push("/app");
               } catch {
-                setError("Could not create account. The email may already be in use.");
+                setError(
+                  "Could not create account. The email may already be in use."
+                );
               } finally {
                 setLoading(false);
               }
             }}
           >
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name" className="text-zinc-300">
+                Name
+              </Label>
               <Input
                 id="name"
                 name="name"
                 type="text"
                 placeholder="Your name"
+                className="border-[#1E1E24] bg-[#0A0A0B] text-white placeholder:text-zinc-600 focus-visible:border-indigo-500 focus-visible:ring-indigo-500/30"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-zinc-300">
+                Email
+              </Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
                 placeholder="you@example.com"
                 required
+                className="border-[#1E1E24] bg-[#0A0A0B] text-white placeholder:text-zinc-600 focus-visible:border-indigo-500 focus-visible:ring-indigo-500/30"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-zinc-300">
+                Password
+              </Label>
               <Input
                 id="password"
                 name="password"
                 type="password"
                 placeholder="Choose a password"
                 required
+                className="border-[#1E1E24] bg-[#0A0A0B] text-white placeholder:text-zinc-600 focus-visible:border-indigo-500 focus-visible:ring-indigo-500/30"
               />
             </div>
             <input name="flow" type="hidden" value="signUp" />
-            {error && (
-              <p className="text-sm text-destructive">{error}</p>
-            )}
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Creating account..." : "Get Started"}
-            </Button>
+            {error && <p className="text-sm text-rose-400">{error}</p>}
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex w-full items-center justify-center rounded-full bg-indigo-500 px-4 py-2.5 text-sm font-medium text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400 disabled:opacity-50"
+            >
+              {loading ? "Creating account..." : "Create account"}
+            </button>
           </form>
-          <p className="mt-4 text-center text-sm text-muted-foreground">
+          <p className="mt-6 text-center text-sm text-zinc-500">
             Already have an account?{" "}
-            <Link href="/sign-in" className="font-medium text-primary hover:underline">
-              Sign In
+            <Link
+              href="/sign-in"
+              className="font-medium text-indigo-400 hover:text-indigo-300"
+            >
+              Sign in
             </Link>
           </p>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

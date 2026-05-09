@@ -11,8 +11,21 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "OrgLens AI",
-  description: "AI-powered organizational intelligence for startup founders and SMEs. Parse psychometric reports, map competencies, score role-fit, and generate McKinsey-style founder memos.",
+  title: "OrgLens AI — Organizational Decision Intelligence for Founders",
+  description:
+    "AI-powered competency intelligence. Compare restructuring scenarios, rank role-fit, and understand organizational capability — in minutes.",
+  openGraph: {
+    title: "OrgLens AI — Organizational Decision Intelligence for Founders",
+    description:
+      "AI-powered competency intelligence. Compare restructuring scenarios, rank role-fit, and understand organizational capability — in minutes.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OrgLens AI — Organizational Decision Intelligence for Founders",
+    description:
+      "AI-powered competency intelligence. Compare restructuring scenarios, rank role-fit, and understand organizational capability — in minutes.",
+  },
 };
 
 export default function RootLayout({

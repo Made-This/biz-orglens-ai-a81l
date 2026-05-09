@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useConvexAuth } from "convex/react";
 
@@ -14,13 +13,14 @@ interface SiteHeaderProps {
 }
 
 const navLinks = [
+  { label: "Features", href: "/#features" },
+  { label: "Demo", href: "/#demo" },
   { label: "Pricing", href: "/pricing" },
-  { label: "Blog", href: "/blog" },
   { label: "About", href: "/about" },
 ];
 
 export function SiteHeader({
-  productName = "SaaS App",
+  productName,
   logoUrl,
   className,
 }: SiteHeaderProps) {
@@ -30,57 +30,65 @@ export function SiteHeader({
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+        "sticky top-0 z-50 w-full border-b border-[#1E1E24] bg-[#0A0A0B]/80 backdrop-blur-xl",
         className
       )}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Logo / Product Name */}
+        {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           {logoUrl ? (
-            <img
-              src={logoUrl}
-              alt={productName}
-              className="h-8 w-auto"
-            />
+            <img src={logoUrl} alt={productName ?? "OrgLens AI"} className="h-8 w-auto" />
           ) : (
-            <span className="text-xl font-bold text-foreground">
-              {productName}
+            <span className="text-lg font-bold tracking-tight text-white">
+              OrgLens<span className="text-indigo-400">.</span>AI
             </span>
           )}
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className="text-sm text-zinc-400 transition-colors hover:text-white"
             >
               {link.label}
             </Link>
           ))}
-          {isAuthenticated ? (
-            <Button size="sm" asChild>
-              <Link href="/app">Dashboard</Link>
-            </Button>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/sign-in">Sign In</Link>
-              </Button>
-              <Button size="sm" asChild>
-                <Link href="/sign-up">Get Started</Link>
-              </Button>
-            </div>
-          )}
         </nav>
+
+        <div className="hidden items-center gap-3 md:flex">
+          {isAuthenticated ? (
+            <Link
+              href="/app"
+              className="rounded-full bg-indigo-500 px-4 py-2 text-sm font-medium text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
+            >
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/sign-in"
+                className="text-sm text-zinc-400 transition-colors hover:text-white"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/sign-up"
+                className="rounded-full bg-indigo-500 px-4 py-2 text-sm font-medium text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
+              >
+                Analyze My Organization
+              </Link>
+            </>
+          )}
+        </div>
 
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-foreground md:hidden"
+          className="inline-flex items-center justify-center rounded-md p-2 text-zinc-400 hover:bg-[#16161A] hover:text-white md:hidden"
           aria-label="Toggle menu"
         >
           {mobileMenuOpen ? (
@@ -93,14 +101,14 @@ export function SiteHeader({
 
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="border-t border-border md:hidden">
+        <div className="border-t border-[#1E1E24] md:hidden">
           <nav className="mx-auto max-w-7xl space-y-1 px-4 py-3 sm:px-6 lg:px-8">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-md px-3 py-2 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                className="block rounded-md px-3 py-2 text-base font-medium text-zinc-400 transition-colors hover:bg-[#16161A] hover:text-white"
               >
                 {link.label}
               </Link>
@@ -109,7 +117,7 @@ export function SiteHeader({
               <Link
                 href="/app"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-md px-3 py-2 text-base font-medium text-primary transition-colors hover:bg-accent"
+                className="block rounded-md px-3 py-2 text-base font-medium text-indigo-400 transition-colors hover:bg-[#16161A]"
               >
                 Dashboard
               </Link>
@@ -118,16 +126,16 @@ export function SiteHeader({
                 <Link
                   href="/sign-in"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md px-3 py-2 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                  className="block rounded-md px-3 py-2 text-base font-medium text-zinc-400 transition-colors hover:bg-[#16161A] hover:text-white"
                 >
-                  Sign In
+                  Sign in
                 </Link>
                 <Link
                   href="/sign-up"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md px-3 py-2 text-base font-medium text-primary transition-colors hover:bg-accent"
+                  className="block rounded-md px-3 py-2 text-base font-medium text-indigo-400 transition-colors hover:bg-[#16161A]"
                 >
-                  Get Started
+                  Analyze My Organization
                 </Link>
               </>
             )}

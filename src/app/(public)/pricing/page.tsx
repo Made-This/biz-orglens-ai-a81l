@@ -1,191 +1,143 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Check, X as XIcon } from "lucide-react";
 import Link from "next/link";
+import { Check, ArrowRight } from "lucide-react";
 
-const plans = [
-  {
-    name: "Free",
-    price: "$0",
-    period: "/month",
-    description: "For individuals getting started",
-    features: [
-      { name: "1 workspace", included: true },
-      { name: "Up to 3 team members", included: true },
-      { name: "Basic analytics", included: true },
-      { name: "Community support", included: true },
-      { name: "Custom branding", included: false },
-      { name: "Priority support", included: false },
-      { name: "SSO & SAML", included: false },
-      { name: "SLA guarantee", included: false },
-    ],
-    cta: "Get Started",
-    ctaVariant: "outline" as const,
-    popular: false,
-  },
-  {
-    name: "Pro",
-    price: "$29",
-    period: "/month",
-    description: "For growing teams",
-    features: [
-      { name: "Unlimited workspaces", included: true },
-      { name: "Up to 20 team members", included: true },
-      { name: "Advanced analytics", included: true },
-      { name: "Priority support", included: true },
-      { name: "Custom branding", included: true },
-      { name: "API access", included: true },
-      { name: "SSO & SAML", included: false },
-      { name: "SLA guarantee", included: false },
-    ],
-    cta: "Start Free Trial",
-    ctaVariant: "default" as const,
-    popular: true,
-  },
-  {
-    name: "Enterprise",
-    price: "$99",
-    period: "/month",
-    description: "For large organizations",
-    features: [
-      { name: "Everything in Pro", included: true },
-      { name: "Unlimited team members", included: true },
-      { name: "Advanced analytics", included: true },
-      { name: "Dedicated support", included: true },
-      { name: "Custom branding", included: true },
-      { name: "API access", included: true },
-      { name: "SSO & SAML", included: true },
-      { name: "SLA guarantee", included: true },
-    ],
-    cta: "Contact Sales",
-    ctaVariant: "outline" as const,
-    popular: false,
-  },
+const CHECKOUT_URL =
+  "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
+
+const features = [
+  "Competency org map",
+  "Role-fit ranking for all team members",
+  "3 AI-generated restructuring scenarios",
+  "Organizational risk assessment",
+  "Founder decision memo export",
+  "Unlimited viewing after purchase",
 ];
 
 const faqs = [
   {
-    question: "Can I try before I buy?",
+    question: "Is this a subscription?",
     answer:
-      "Absolutely! Every plan comes with a 14-day free trial. No credit card required to start.",
+      "No. OrgLens AI is a one-time, $49 analysis. You pay per organizational analysis — no recurring fees, no surprise bills.",
   },
   {
-    question: "What happens when my trial ends?",
+    question: "Who is this built for?",
     answer:
-      "Your workspace will be downgraded to the Free plan. All your data will be preserved, but some features will be limited.",
+      "Founders, COOs, and operating partners at Series A startups and PE-backed SMEs who need to make organizational decisions under pressure — restructuring, hiring, role design, board prep.",
   },
   {
-    question: "Can I change plans at any time?",
+    question: "How long does an analysis take?",
     answer:
-      "Yes! Upgrade or downgrade anytime. Plan changes take effect immediately. We prorate all billing adjustments.",
+      "Most analyses complete in under 10 minutes. Upload your team data, define your roles, and OrgLens AI generates the competency map, role-fit ranking, and three restructuring scenarios.",
   },
   {
-    question: "Do you offer annual billing?",
+    question: "Can I run multiple analyses?",
     answer:
-      "Yes, we offer annual billing with a 20% discount. Contact sales for enterprise annual pricing.",
-  },
-  {
-    question: "What payment methods do you accept?",
-    answer:
-      "We accept all major credit cards (Visa, MasterCard, American Express) through our secure payment processor.",
+      "Yes. Each analysis is $49. Run one before a board meeting, another after a key hire, another when planning a restructure. Pay only for what you use.",
   },
 ];
 
 export default function PricingPage() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-      {/* Header */}
-      <div className="text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Pricing
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-          Choose the plan that fits your needs. Start free, upgrade when
-          you&apos;re ready.
-        </p>
+    <div className="relative overflow-hidden">
+      {/* Background glow */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 -z-0 h-[500px]">
+        <div className="absolute left-1/2 top-0 h-[400px] w-[700px] -translate-x-1/2 rounded-full bg-indigo-500/[0.08] blur-[140px]" />
       </div>
 
-      {/* Plan Cards */}
-      <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
-        {plans.map((plan) => (
-          <Card
-            key={plan.name}
-            className={
-              plan.popular ? "relative border-primary shadow-lg" : "relative"
-            }
-          >
-            {plan.popular && (
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <Badge>Most Popular</Badge>
-              </div>
-            )}
-            <CardContent className="p-8">
-              <h3 className="text-xl font-semibold">{plan.name}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {plan.description}
-              </p>
-              <p className="mt-6">
-                <span className="text-4xl font-bold">{plan.price}</span>
-                <span className="text-muted-foreground">{plan.period}</span>
-              </p>
+      <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+        {/* Header */}
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
+            Pricing
+          </p>
+          <h1 className="mt-4 text-4xl font-bold tracking-tight text-white md:text-6xl">
+            Pay per analysis. No subscriptions.
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-zinc-400">
+            One organizational analysis, one fixed price. No seats, no monthly
+            invoices, no upsells.
+          </p>
+        </div>
 
-              <ul className="mt-8 space-y-3">
-                {plan.features.map((feature) => (
-                  <li
-                    key={feature.name}
-                    className="flex items-start gap-2 text-sm"
-                  >
-                    {feature.included ? (
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                    ) : (
-                      <XIcon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/40" />
-                    )}
-                    <span
-                      className={
-                        feature.included ? "" : "text-muted-foreground/60"
-                      }
-                    >
-                      {feature.name}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+        {/* Pricing card */}
+        <div className="mx-auto mt-16 max-w-xl">
+          <div className="relative overflow-hidden rounded-3xl border border-indigo-500/30 bg-gradient-to-b from-indigo-500/[0.08] to-[#111113] p-10 shadow-[0_0_80px_-15px_rgba(99,102,241,0.5)]">
+            <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-indigo-500/20 blur-[80px]" />
 
-              <Button
-                asChild
-                variant={plan.ctaVariant}
-                className="mt-8 w-full"
+            <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
+              Starter Analysis
+            </p>
+            <div className="mt-4 flex items-baseline gap-2">
+              <span className="text-6xl font-bold tracking-tight text-white">
+                $49
+              </span>
+              <span className="text-sm text-zinc-500">USD</span>
+            </div>
+            <p className="mt-2 text-sm text-zinc-500">
+              One-time. No subscription.
+            </p>
+
+            <ul className="mt-8 space-y-3 text-sm text-zinc-300">
+              {features.map((feature) => (
+                <li key={feature} className="flex items-start gap-3">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href={CHECKOUT_URL}
+              className="mt-10 flex w-full items-center justify-center gap-2 rounded-full bg-indigo-500 px-6 py-3.5 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400 hover:shadow-[0_0_40px_-5px_rgba(99,102,241,0.9)]"
+            >
+              Analyze My Organization — $49
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+
+          <p className="mt-8 text-center text-sm text-zinc-500">
+            Trusted by founders at Series A startups and PE-backed SMEs.
+          </p>
+        </div>
+
+        {/* FAQ */}
+        <div className="mx-auto mt-24 max-w-3xl">
+          <h2 className="text-center text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            Pricing questions
+          </h2>
+          <div className="mt-10 space-y-4">
+            {faqs.map((faq) => (
+              <div
+                key={faq.question}
+                className="rounded-2xl border border-[#1E1E24] bg-[#111113] p-6"
               >
-                <Link href="/sign-up">{plan.cta}</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* FAQ */}
-      <div className="mx-auto mt-24 max-w-3xl">
-        <h2 className="text-center text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-          Pricing FAQ
-        </h2>
-        <div className="mt-8">
-          <Accordion type="single" collapsible className="w-full">
-            {faqs.map((faq, i) => (
-              <AccordionItem key={i} value={`faq-${i}`}>
-                <AccordionTrigger>{faq.question}</AccordionTrigger>
-                <AccordionContent>{faq.answer}</AccordionContent>
-              </AccordionItem>
+                <h3 className="text-base font-semibold text-white">
+                  {faq.question}
+                </h3>
+                <p className="mt-2 text-sm text-zinc-400">{faq.answer}</p>
+              </div>
             ))}
-          </Accordion>
+          </div>
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="mx-auto mt-20 max-w-3xl text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
+            Run your first analysis today.
+          </h2>
+          <p className="mt-4 text-lg text-zinc-400">
+            See where your organization stands — before your next board
+            meeting.
+          </p>
+          <div className="mt-8">
+            <Link
+              href="/sign-up"
+              className="inline-flex items-center gap-2 rounded-full bg-indigo-500 px-6 py-3 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
+            >
+              Start Your Analysis
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </div>
     </div>

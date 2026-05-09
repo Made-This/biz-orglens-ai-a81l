@@ -9,9 +9,9 @@ interface SiteFooterProps {
 }
 
 export function SiteFooter({
-  productName = "SaaS App",
+  productName = "OrgLens AI",
   supportEmail,
-  footerText,
+  footerText = "Organizational intelligence for founders.",
   className,
 }: SiteFooterProps) {
   const currentYear = new Date().getFullYear();
@@ -19,82 +19,96 @@ export function SiteFooter({
   return (
     <footer
       className={cn(
-        "border-t border-border bg-background",
+        "border-t border-[#1E1E24] bg-[#0A0A0B] text-zinc-400",
         className
       )}
     >
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-8 md:grid-cols-4">
+        <div className="grid gap-8 md:grid-cols-3">
           {/* Brand */}
-          <div className="md:col-span-2">
-            <p className="text-lg font-semibold text-foreground">
-              {productName}
+          <div>
+            <p className="text-lg font-bold tracking-tight text-white">
+              OrgLens<span className="text-indigo-400">.</span>AI
             </p>
-            {footerText && (
-              <p className="mt-2 max-w-md text-sm text-muted-foreground">
-                {footerText}
-              </p>
+            <p className="mt-2 text-sm text-zinc-500">{footerText}</p>
+          </div>
+
+          {/* Center links */}
+          <div className="flex flex-col gap-2 md:items-center">
+            <Link
+              href="/#features"
+              className="text-sm text-zinc-400 transition-colors hover:text-white"
+            >
+              Features
+            </Link>
+            <Link
+              href="/pricing"
+              className="text-sm text-zinc-400 transition-colors hover:text-white"
+            >
+              Pricing
+            </Link>
+            <Link
+              href="/sign-in"
+              className="text-sm text-zinc-400 transition-colors hover:text-white"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/sign-up"
+              className="text-sm text-zinc-400 transition-colors hover:text-white"
+            >
+              Sign Up
+            </Link>
+            {supportEmail && (
+              <a
+                href={`mailto:${supportEmail}`}
+                className="text-sm text-zinc-400 transition-colors hover:text-white"
+              >
+                {supportEmail}
+              </a>
             )}
           </div>
 
-          {/* Product */}
-          <div>
-            <p className="text-sm font-semibold text-foreground">Product</p>
-            <nav className="mt-3 space-y-2">
-              <Link
-                href="/pricing"
-                className="block text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                Pricing
-              </Link>
-              <Link
-                href="/blog"
-                className="block text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                Blog
-              </Link>
-              <Link
-                href="/about"
-                className="block text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                About
-              </Link>
-            </nav>
-          </div>
-
-          {/* Support */}
-          <div>
-            <p className="text-sm font-semibold text-foreground">Support</p>
-            <nav className="mt-3 space-y-2">
-              {supportEmail && (
-                <a
-                  href={`mailto:${supportEmail}`}
-                  className="block text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  {supportEmail}
-                </a>
-              )}
-              <Link
-                href="/sign-in"
-                className="block text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                Sign In
-              </Link>
-            </nav>
+          {/* Right tagline */}
+          <div className="md:text-right">
+            <p className="text-sm text-zinc-500">
+              Built for founders who make hard decisions.
+            </p>
           </div>
         </div>
 
         {/* Copyright */}
-        <div className="mt-8 flex flex-col items-center justify-between gap-2 border-t border-border pt-8 text-center sm:flex-row">
-          <p className="text-xs text-muted-foreground">
-            &copy; {currentYear} {productName}. All rights reserved.
+        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-[#1E1E24] pt-6 sm:flex-row">
+          <p className="text-xs text-zinc-600">
+            © {currentYear} {productName}. All rights reserved.
           </p>
+          <p className="text-xs text-zinc-600">
+            Competency science, made accessible.
+          </p>
+        </div>
+
+        {/* Built with MadeThis */}
+        <div className="text-center py-3 pb-2 opacity-50 text-xs">
           <a
             href="https://madethis.com"
             target="_blank"
-            rel="noreferrer"
-            className="text-xs uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
+            rel="noopener noreferrer"
+            className="text-current no-underline inline-flex items-center gap-1 hover:opacity-75 transition-opacity"
           >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+              <path d="M2 17l10 5 10-5" />
+              <path d="M2 12l10 5 10-5" />
+            </svg>
             Built with MadeThis
           </a>
         </div>

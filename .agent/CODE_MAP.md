@@ -24,7 +24,9 @@ Auto-generated project analysis.
 - `/admin/settings`
 - `/admin/users`
 - `/admin/workspaces`
+- `/app/org-map`
 - `/app`
+- `/app/role-fit`
 - `/app/settings/billing`
 - `/app/settings`
 - `/app/settings/team`
@@ -34,7 +36,7 @@ Auto-generated project analysis.
 - `/pricing`
 - `/sign-in`
 - `/sign-up`
-- `/`
+- `/checkout/canceled`
 
 ## Directory Structure
 - convex/
