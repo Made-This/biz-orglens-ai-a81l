@@ -1,662 +1,909 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowRight, Sparkles, TrendingUp, AlertTriangle, ShieldCheck, Zap } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  ArrowRight,
+  Sparkles,
+  AlertTriangle,
+  CheckCircle2,
+  XCircle,
+  Cpu,
+} from "lucide-react";
 
 const CHECKOUT_URL =
   "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
 
-type RiskTone = "green" | "amber" | "red";
-type Accent = "amber" | "indigo" | "cyan";
+type ScenarioKey = "A" | "B" | "C";
+type Tone = "green" | "amber" | "red" | "cyan";
 
-interface CompetencyMetric {
-  label: string;
-  value: number;
-  note?: string;
-}
-
-interface Scenario {
-  letter: string;
+interface ScenarioMeta {
+  key: ScenarioKey;
   name: string;
   tagline: string;
-  headcountChange: string;
-  headcountDetail: string;
-  monthlySavings: string;
-  speed: string;
-  risk: string;
-  riskTone: RiskTone;
-  accent: Accent;
-  metrics: CompetencyMetric[];
-  tradeoffs: string;
-  insight: string;
+  accentHex: string;
+  accentText: string;
+  accentBorder: string;
+  accentBg: string;
+  accentBar: string;
   recommended?: boolean;
 }
 
-const scenarios: Scenario[] = [
-  {
-    letter: "A",
-    name: "Lean Efficiency Restructure",
-    tagline: "Cut cost, preserve core execution",
-    headcountChange: "−18%",
-    headcountDetail: "45 → 37 employees",
-    monthlySavings: "$81,000",
-    speed: "Slower short-term (−2 wk ramp)",
-    risk: "Medium",
-    riskTone: "amber",
-    accent: "amber",
-    metrics: [
-      { label: "Leadership", value: 72 },
-      { label: "Execution", value: 68 },
-      { label: "Adaptability", value: 55, note: "gap — loses 3 adaptability leads" },
-      { label: "Stability", value: 80 },
-    ],
-    tradeoffs:
-      "Removes 3 mid-tier execution roles. Preserves Chifong Dong (top scorer, 50), Eric Li (46), Luke Cai (45). Exits Yuzhe Zhao (near-all-red). Risk: adaptability gap could slow product iteration.",
-    insight:
-      "\"Acts with Consideration\" remains a team-wide gap post-restructure.",
+const scenarios: Record<ScenarioKey, ScenarioMeta> = {
+  A: {
+    key: "A",
+    name: "Lean Efficiency",
+    tagline: "Aggressive cost reduction · removes management layers",
+    accentHex: "#f59e0b",
+    accentText: "text-amber-300",
+    accentBorder: "border-amber-500/40",
+    accentBg: "bg-amber-500/[0.08]",
+    accentBar: "bg-gradient-to-r from-amber-500 to-amber-300",
   },
-  {
-    letter: "B",
+  B: {
+    key: "B",
     name: "Balanced Redesign",
-    tagline: "Rebalance execution with leadership clarity",
-    headcountChange: "−9%",
-    headcountDetail: "45 → 41 employees",
-    monthlySavings: "$40,500",
-    speed: "Maintained",
-    risk: "Low",
-    riskTone: "green",
-    accent: "indigo",
+    tagline: "Balances cost reduction with organizational resilience",
+    accentHex: "#6366f1",
+    accentText: "text-indigo-300",
+    accentBorder: "border-indigo-500/40",
+    accentBg: "bg-indigo-500/[0.08]",
+    accentBar: "bg-gradient-to-r from-indigo-500 to-indigo-300",
     recommended: true,
-    metrics: [
-      { label: "Leadership", value: 88 },
-      { label: "Execution", value: 85 },
-      { label: "Adaptability", value: 78 },
-      { label: "Stability", value: 82 },
-    ],
-    tradeoffs:
-      "Exits 4 low-fit individuals. Promotes Supriya Kumar (47) to expanded scope. Retains all top-5 performers. Adds 2 senior IC hires in AI/ML execution. Lowest disruption to team cohesion.",
-    insight:
-      "Closes the \"Acting with Consideration\" gap — Supriya Kumar and Lili Mao anchor people leadership.",
   },
-  {
-    letter: "C",
-    name: "AI-Native Organization",
-    tagline: "Restructure for AI-speed execution",
-    headcountChange: "−27%",
-    headcountDetail: "45 → 33 employees",
-    monthlySavings: "$135,000",
-    speed: "Faster long-term (+40% post-90d)",
-    risk: "High",
-    riskTone: "red",
-    accent: "cyan",
-    metrics: [
-      { label: "Leadership", value: 65 },
-      { label: "Execution", value: 70, note: "AI-augmented roles" },
-      { label: "Adaptability", value: 90, note: "high-adaptability bias" },
-      { label: "Stability", value: 45, note: "major disruption risk" },
-    ],
-    tradeoffs:
-      "Deep restructure. Retains only highest-scoring adaptability/execution profiles. Exits 12 roles. Joyce Zhang profile (Influencer/Networker/Pioneer) ideal for this scenario — she can drive change momentum. Significant morale risk during 90-day transition.",
-    insight:
-      "Yuzhe Zhao (near-all-red) must be exited in this scenario. Luke Cai and Yijun Sim become critical stabilizing nodes.",
-  },
-];
-
-const competencyImpact: Array<{
-  label: string;
-  status: string;
-  description: string;
-  tone: RiskTone;
-}> = [
-  {
-    label: "Leadership",
-    status: "Maintained",
-    description: "Core leadership depth preserved across product and ops.",
-    tone: "green",
-  },
-  {
-    label: "Execution",
-    status: "Reduced",
-    description: "Execution velocity dips during transition window.",
-    tone: "amber",
-  },
-  {
-    label: "Adaptability",
-    status: "Stretched",
-    description: "Remaining team absorbs broader scope; monitor closely.",
-    tone: "amber",
-  },
-  {
-    label: "Stability",
-    status: "Maintained",
-    description: "Tenured operators retained. Low attrition risk.",
-    tone: "green",
-  },
-];
-
-function toneBg(t: RiskTone) {
-  if (t === "green") return "bg-emerald-500";
-  if (t === "amber") return "bg-amber-400";
-  return "bg-rose-500";
-}
-
-function toneText(t: RiskTone) {
-  if (t === "green") return "text-emerald-300";
-  if (t === "amber") return "text-amber-300";
-  return "text-rose-300";
-}
-
-function toneRing(t: RiskTone) {
-  if (t === "green") return "border-emerald-500/30 bg-emerald-500/[0.08]";
-  if (t === "amber") return "border-amber-400/30 bg-amber-400/[0.08]";
-  return "border-rose-500/30 bg-rose-500/[0.08]";
-}
-
-const ACCENT_STYLES: Record<
-  Accent,
-  {
-    hex: string;
-    text: string;
-    softBg: string;
-    softBorder: string;
-    bar: string;
-    glow: string;
-    chip: string;
-    button: string;
-    buttonOutline: string;
-  }
-> = {
-  amber: {
-    hex: "#f59e0b",
-    text: "text-amber-300",
-    softBg: "bg-amber-500/[0.06]",
-    softBorder: "border-amber-500/30",
-    bar: "bg-gradient-to-r from-amber-500 to-amber-300",
-    glow: "shadow-[0_0_60px_-15px_rgba(245,158,11,0.6)]",
-    chip: "bg-amber-500/15 text-amber-300 border-amber-500/30",
-    button:
-      "bg-amber-500/10 text-amber-200 border border-amber-500/40 hover:bg-amber-500/20 hover:border-amber-400/60",
-    buttonOutline:
-      "bg-transparent text-amber-200 border border-amber-500/40 hover:bg-amber-500/10",
-  },
-  indigo: {
-    hex: "#6366f1",
-    text: "text-indigo-300",
-    softBg: "bg-indigo-500/[0.08]",
-    softBorder: "border-indigo-500/40",
-    bar: "bg-gradient-to-r from-indigo-500 to-indigo-300",
-    glow: "shadow-[0_0_60px_-15px_rgba(99,102,241,0.65)]",
-    chip: "bg-indigo-500/15 text-indigo-200 border-indigo-500/40",
-    button:
-      "bg-indigo-500 text-white border border-indigo-400 hover:bg-indigo-400 shadow-[0_0_30px_-5px_rgba(99,102,241,0.7)]",
-    buttonOutline:
-      "bg-indigo-500 text-white border border-indigo-400 hover:bg-indigo-400 shadow-[0_0_30px_-5px_rgba(99,102,241,0.7)]",
-  },
-  cyan: {
-    hex: "#06b6d4",
-    text: "text-cyan-300",
-    softBg: "bg-cyan-500/[0.06]",
-    softBorder: "border-cyan-500/30",
-    bar: "bg-gradient-to-r from-cyan-500 to-cyan-300",
-    glow: "shadow-[0_0_60px_-15px_rgba(6,182,212,0.6)]",
-    chip: "bg-cyan-500/15 text-cyan-300 border-cyan-500/30",
-    button:
-      "bg-cyan-500/10 text-cyan-200 border border-cyan-500/40 hover:bg-cyan-500/20 hover:border-cyan-400/60",
-    buttonOutline:
-      "bg-transparent text-cyan-200 border border-cyan-500/40 hover:bg-cyan-500/10",
+  C: {
+    key: "C",
+    name: "AI-Augmented",
+    tagline: "Workflows redesigned for AI-handled operational work",
+    accentHex: "#06b6d4",
+    accentText: "text-cyan-300",
+    accentBorder: "border-cyan-500/40",
+    accentBg: "bg-cyan-500/[0.08]",
+    accentBar: "bg-gradient-to-r from-cyan-500 to-cyan-300",
   },
 };
 
+interface ScenarioOverview {
+  headcount: { from: number; to: number; deltaPct: string };
+  primaryStat: { label: string; value: string };
+  secondaryStat: { label: string; value: string; tone: Tone };
+  description: string;
+}
+
+const overviews: Record<ScenarioKey, ScenarioOverview> = {
+  A: {
+    headcount: { from: 45, to: 31, deltaPct: "−31%" },
+    primaryStat: { label: "Burn reduction", value: "↓ 35%" },
+    secondaryStat: { label: "Execution risk", value: "HIGH", tone: "red" },
+    description:
+      "Aggressive cost reduction. Removes management layers. Higher execution fragility.",
+  },
+  B: {
+    headcount: { from: 45, to: 36, deltaPct: "−20%" },
+    primaryStat: { label: "Burn reduction", value: "↓ 22%" },
+    secondaryStat: {
+      label: "Execution stability",
+      value: "STRONG",
+      tone: "green",
+    },
+    description:
+      "Balances cost reduction with organizational resilience. Preserves top performers.",
+  },
+  C: {
+    headcount: { from: 45, to: 38, deltaPct: "−16%" },
+    primaryStat: { label: "Productivity (post 90d)", value: "↑ 40%" },
+    secondaryStat: {
+      label: "Transition risk",
+      value: "MEDIUM",
+      tone: "amber",
+    },
+    description:
+      "Redesigns workflows assuming AI handles repetitive operational work.",
+  },
+};
+
+interface OrgNode {
+  name: string;
+  role: string;
+  tone: "green" | "amber" | "red";
+  badge?: "PROMOTED" | "EXIT" | "AI-AUGMENTED" | "NEW ROLE";
+  ai?: boolean;
+}
+
+interface OrgGroup {
+  parent: OrgNode;
+  children: OrgNode[];
+}
+
+interface OrgChart {
+  ceo: OrgNode;
+  groups: OrgGroup[];
+  exits: string[];
+  label?: string;
+}
+
+const orgCharts: Record<ScenarioKey, OrgChart> = {
+  A: {
+    ceo: { name: "Wenjing Li", role: "CEO", tone: "green" },
+    label: "Management layers removed",
+    groups: [
+      {
+        parent: {
+          name: "Chifong Dong",
+          role: "CTO · Product",
+          tone: "green",
+        },
+        children: [
+          { name: "Eric Li", role: "Engineering Lead", tone: "green" },
+          { name: "Luke Cai", role: "Product Manager", tone: "green" },
+        ],
+      },
+      {
+        parent: { name: "Supriya Kumar", role: "Sales Lead", tone: "amber" },
+        children: [
+          { name: "Patrick Wang", role: "Account Executive", tone: "amber" },
+        ],
+      },
+      {
+        parent: { name: "Lili Mao", role: "Ops Lead", tone: "amber" },
+        children: [{ name: "Support", role: "Support", tone: "amber" }],
+      },
+    ],
+    exits: [
+      "Yuzhe Zhao",
+      "Jun Park",
+      "Mei Tanaka",
+      "+11 redundant roles cut across teams",
+    ],
+  },
+  B: {
+    ceo: { name: "Wenjing Li", role: "CEO", tone: "green" },
+    groups: [
+      {
+        parent: { name: "Chifong Dong", role: "CTO · Product", tone: "green" },
+        children: [
+          { name: "Eric Li", role: "Engineering Lead", tone: "green" },
+          { name: "Luke Cai", role: "Product Manager", tone: "green" },
+          { name: "Designer", role: "Designer", tone: "amber" },
+        ],
+      },
+      {
+        parent: {
+          name: "Supriya Kumar",
+          role: "VP Sales",
+          tone: "green",
+          badge: "PROMOTED",
+        },
+        children: [
+          { name: "Patrick Wang", role: "Account Executive", tone: "amber" },
+          { name: "Mei Tanaka", role: "SDR", tone: "amber" },
+        ],
+      },
+      {
+        parent: {
+          name: "Lili Mao",
+          role: "Head of Ops",
+          tone: "green",
+          badge: "NEW ROLE",
+        },
+        children: [
+          { name: "Ops Manager", role: "Ops Manager", tone: "amber" },
+          { name: "Support", role: "Support", tone: "amber" },
+        ],
+      },
+    ],
+    exits: ["Yuzhe Zhao", "2 redundant support roles", "1 middle manager"],
+  },
+  C: {
+    ceo: { name: "Wenjing Li", role: "CEO", tone: "green" },
+    label: "AI-augmented workflows",
+    groups: [
+      {
+        parent: {
+          name: "Chifong Dong",
+          role: "CTO · Product",
+          tone: "green",
+          badge: "AI-AUGMENTED",
+          ai: true,
+        },
+        children: [
+          {
+            name: "Eric Li",
+            role: "Engineering Lead",
+            tone: "green",
+            badge: "AI-AUGMENTED",
+            ai: true,
+          },
+          { name: "Luke Cai", role: "Product Manager", tone: "green" },
+        ],
+      },
+      {
+        parent: {
+          name: "Supriya Kumar",
+          role: "VP Sales",
+          tone: "green",
+          badge: "AI-AUGMENTED",
+          ai: true,
+        },
+        children: [
+          { name: "Patrick Wang", role: "AE", tone: "amber" },
+        ],
+      },
+      {
+        parent: {
+          name: "Lili Mao",
+          role: "Head of Ops",
+          tone: "green",
+          badge: "AI-AUGMENTED",
+          ai: true,
+        },
+        children: [
+          { name: "AI Ops Layer", role: "Automation", tone: "green", ai: true },
+        ],
+      },
+    ],
+    exits: [
+      "Yuzhe Zhao",
+      "Mei Tanaka",
+      "Jun Park",
+      "+4 ops roles replaced by AI",
+    ],
+  },
+};
+
+interface ImpactRow {
+  dimension: string;
+  before: string;
+  after: string;
+  change: string;
+  delta: number; // 0..100 progress for the After bar
+  tone: "green" | "amber" | "red";
+}
+
+const competencyImpact: Record<ScenarioKey, ImpactRow[]> = {
+  A: [
+    {
+      dimension: "Leadership Coverage",
+      before: "58%",
+      after: "41%",
+      change: "▼ −17%",
+      delta: 41,
+      tone: "red",
+    },
+    {
+      dimension: "Execution Stability",
+      before: "Medium",
+      after: "Weak",
+      change: "▼ Reduced",
+      delta: 38,
+      tone: "red",
+    },
+    {
+      dimension: "Adaptability",
+      before: "Low in Ops",
+      after: "Reduced",
+      change: "▼ Reduced",
+      delta: 44,
+      tone: "amber",
+    },
+    {
+      dimension: "Org Fragility",
+      before: "High",
+      after: "Severe",
+      change: "▼ Worse",
+      delta: 30,
+      tone: "red",
+    },
+  ],
+  B: [
+    {
+      dimension: "Leadership Coverage",
+      before: "58%",
+      after: "74%",
+      change: "▲ +16%",
+      delta: 74,
+      tone: "green",
+    },
+    {
+      dimension: "Execution Stability",
+      before: "Medium",
+      after: "Strong",
+      change: "▲ Improved",
+      delta: 82,
+      tone: "green",
+    },
+    {
+      dimension: "Adaptability",
+      before: "Low in Ops",
+      after: "Balanced",
+      change: "▲ Improved",
+      delta: 70,
+      tone: "green",
+    },
+    {
+      dimension: "Org Fragility",
+      before: "High",
+      after: "Reduced",
+      change: "▲ Improved",
+      delta: 68,
+      tone: "green",
+    },
+  ],
+  C: [
+    {
+      dimension: "Leadership Coverage",
+      before: "58%",
+      after: "62%",
+      change: "▲ +4%",
+      delta: 62,
+      tone: "amber",
+    },
+    {
+      dimension: "Execution Stability",
+      before: "Medium",
+      after: "Medium",
+      change: "= Maintained",
+      delta: 58,
+      tone: "amber",
+    },
+    {
+      dimension: "Adaptability",
+      before: "Low in Ops",
+      after: "High (AI)",
+      change: "▲ Improved",
+      delta: 88,
+      tone: "green",
+    },
+    {
+      dimension: "Org Fragility",
+      before: "High",
+      after: "Transition risk",
+      change: "= Shifted",
+      delta: 50,
+      tone: "amber",
+    },
+  ],
+};
+
+interface AIInsight {
+  tone: "good" | "warn" | "bad";
+  text: string;
+}
+
+const aiInsights: Record<ScenarioKey, { items: AIInsight[]; why: string }> = {
+  A: {
+    items: [
+      { tone: "warn", text: "High execution risk — 3 critical roles lost" },
+      { tone: "bad", text: "Leadership coverage drops to 41%" },
+      { tone: "bad", text: "Operations fragility increases significantly" },
+    ],
+    why: "Lean Efficiency hits the burn target fast but at the cost of execution depth. Three critical product/ops roles are removed, and leadership coverage falls below the safe threshold.",
+  },
+  B: {
+    items: [
+      {
+        tone: "good",
+        text: "Leadership continuity maintained — Supriya Kumar elevated to VP Sales",
+      },
+      {
+        tone: "good",
+        text: "Execution reliability improved — Core product team preserved",
+      },
+      {
+        tone: "warn",
+        text: "Moderate adaptability gaps remain in Operations",
+      },
+      {
+        tone: "warn",
+        text: "Acting with Consideration is still a team-wide development gap",
+      },
+    ],
+    why: "Balanced Redesign preserves high-performing execution teams (Chifong, Eric, Luke, Lili Mao) while reducing structural redundancy and improving leadership coverage. Supriya Kumar's promotion closes a key succession gap.",
+  },
+  C: {
+    items: [
+      { tone: "good", text: "Highest productivity potential at 90-day mark" },
+      {
+        tone: "warn",
+        text: "Highest transition risk — requires AI tooling adoption",
+      },
+      { tone: "warn", text: "4 roles restructured with AI augmentation" },
+    ],
+    why: "AI-Augmented bets on tooling-led leverage. Productivity peaks at +40% post-transition, but the org carries the highest change-management risk during the 90-day adoption window.",
+  },
+};
+
+function toneBg(t: Tone) {
+  if (t === "green") return "bg-emerald-500";
+  if (t === "amber") return "bg-amber-400";
+  if (t === "cyan") return "bg-cyan-400";
+  return "bg-rose-500";
+}
+
+function toneText(t: Tone) {
+  if (t === "green") return "text-emerald-300";
+  if (t === "amber") return "text-amber-300";
+  if (t === "cyan") return "text-cyan-300";
+  return "text-rose-300";
+}
+
+function toneRing(t: Tone) {
+  if (t === "green") return "border-emerald-500/30 bg-emerald-500/[0.08]";
+  if (t === "amber") return "border-amber-400/30 bg-amber-400/[0.08]";
+  if (t === "cyan") return "border-cyan-500/30 bg-cyan-500/[0.08]";
+  return "border-rose-500/30 bg-rose-500/[0.08]";
+}
+
 export default function OverviewPage() {
+  const [active, setActive] = useState<ScenarioKey>("B");
+  const [animateBars, setAnimateBars] = useState(false);
+
+  // Re-trigger bar fill on scenario change
+  useEffect(() => {
+    setAnimateBars(false);
+    const t = setTimeout(() => setAnimateBars(true), 80);
+    return () => clearTimeout(t);
+  }, [active]);
+
+  const meta = scenarios[active];
+  const overview = overviews[active];
+  const chart = orgCharts[active];
+  const impact = competencyImpact[active];
+  const insights = aiInsights[active];
+
   return (
     <div className="mx-auto max-w-[1400px]">
-      <ScenarioStyles />
+      <PageStyles />
 
       {/* Header */}
       <header className="mb-10">
         <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
-          Overview
+          Company Intelligence Report
         </p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
-          Restructuring Scenarios
+          45-person SaaS Startup
         </h1>
-        <p className="mt-2 text-sm text-zinc-400">
-          Compare three strategic paths for your organization. Built from
-          competency intelligence and behavioral analytics.
-        </p>
+        <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-zinc-400">
+          <Stat label="Burn" value="$450K/mo" />
+          <Sep />
+          <Stat label="Runway" value="6 months" />
+          <Sep />
+          <Stat label="Team" value="45 people" />
+        </div>
+        <div className="mt-6 max-w-2xl rounded-xl border border-indigo-500/20 bg-indigo-500/[0.04] px-4 py-3">
+          <p className="text-[10px] font-medium uppercase tracking-widest text-indigo-300">
+            Founder Challenge
+          </p>
+          <p className="mt-1 text-sm italic text-zinc-200">
+            &ldquo;Reduce burn without destroying execution capability.&rdquo;
+          </p>
+        </div>
       </header>
 
-      <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
-        {/* Left context panel */}
-        <aside className="lg:sticky lg:top-10 lg:self-start">
-          <div className="rounded-2xl border border-[#1E1E24] bg-[#111113] p-6">
-            <p className="text-[10px] font-medium uppercase tracking-widest text-indigo-400">
-              Company Overview
-            </p>
-            <h2 className="mt-2 text-base font-semibold text-white">
-              Sample SaaS startup
-            </h2>
-            <p className="text-xs text-zinc-500">Series A · Singapore</p>
-
-            <div className="mt-6 space-y-4 border-t border-[#1E1E24] pt-5">
-              <Field label="Headcount" value="45" />
-              <Field label="Monthly burn" value="$450K" />
-              <Field label="Runway" value="6 months" />
-              <Field
-                label="Goal"
-                value="Optimize execution capability"
-                multiline
-              />
-            </div>
-          </div>
-        </aside>
-
-        {/* Main content */}
-        <section>
-          {/* Scenario grid */}
-          <div className="grid items-start gap-5 md:grid-cols-3">
-            {scenarios.map((s, i) => (
-              <ScenarioCard key={s.letter} scenario={s} index={i} />
-            ))}
-          </div>
-
-          {/* Competency Impact */}
-          <section className="mt-12">
-            <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
-              Competency Impact
-            </p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
-              How the recommended path lands
-            </h2>
-            <p className="mt-2 text-sm text-zinc-400">
-              Capability profile after Scenario B — Balanced Redesign.
-            </p>
-
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {competencyImpact.map((c) => (
-                <div
-                  key={c.label}
-                  className="rounded-2xl border border-[#1E1E24] bg-[#111113] p-5"
+      {/* Scenario tabs */}
+      <div className="mb-8">
+        <p className="mb-3 text-[10px] font-medium uppercase tracking-widest text-zinc-500">
+          Choose a restructuring path
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {(["A", "B", "C"] as const).map((k) => {
+            const s = scenarios[k];
+            const isActive = active === k;
+            return (
+              <button
+                key={k}
+                type="button"
+                onClick={() => setActive(k)}
+                className={`group relative flex items-center gap-3 rounded-xl border px-5 py-3 text-left transition-all duration-200 ${
+                  isActive
+                    ? `${s.accentBorder} ${s.accentBg}`
+                    : "border-[#1E1E24] bg-[#111118] hover:border-zinc-700"
+                }`}
+                style={
+                  isActive
+                    ? {
+                        boxShadow: `0 0 40px -12px ${s.accentHex}80`,
+                      }
+                    : undefined
+                }
+              >
+                {s.recommended && (
+                  <span className="recommended-badge absolute -top-2.5 right-3 rounded-full border border-indigo-400/50 bg-indigo-500/25 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-indigo-100">
+                    Recommended
+                  </span>
+                )}
+                <span
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border bg-[#0A0A0B] font-mono text-sm font-semibold"
+                  style={{
+                    color: s.accentHex,
+                    borderColor: `${s.accentHex}55`,
+                  }}
                 >
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`h-2 w-2 rounded-full ${toneBg(c.tone)}`}
-                    />
-                    <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-500">
-                      {c.label}
-                    </p>
-                  </div>
+                  {s.key}
+                </span>
+                <span className="flex flex-col">
+                  <span
+                    className={`text-sm font-semibold ${
+                      isActive ? "text-white" : "text-zinc-300"
+                    }`}
+                  >
+                    Scenario {k} — {s.name}
+                  </span>
+                  <span className={`text-[11px] ${s.accentText}`}>
+                    {s.tagline}
+                  </span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Scenario overview cards */}
+      <div className="grid gap-4 md:grid-cols-3">
+        {(["A", "B", "C"] as const).map((k) => {
+          const s = scenarios[k];
+          const o = overviews[k];
+          const isActive = active === k;
+          return (
+            <div
+              key={k}
+              onClick={() => setActive(k)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setActive(k);
+                }
+              }}
+              className={`scenario-card cursor-pointer rounded-2xl border bg-[#111118] p-6 transition-all duration-300 hover:-translate-y-0.5 ${
+                isActive
+                  ? `${s.accentBorder}`
+                  : "border-[rgba(99,102,241,0.15)]"
+              }`}
+              style={
+                isActive
+                  ? {
+                      boxShadow: `0 0 50px -15px ${s.accentHex}80`,
+                    }
+                  : undefined
+              }
+            >
+              <div className="flex items-start justify-between">
+                <div>
                   <p
-                    className={`mt-3 text-base font-semibold ${toneText(
-                      c.tone
+                    className={`text-[10px] font-medium uppercase tracking-widest ${s.accentText}`}
+                  >
+                    Scenario {k}
+                  </p>
+                  <h3 className="mt-1 text-base font-semibold text-white">
+                    {s.name}
+                  </h3>
+                </div>
+                <span
+                  className={`rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest ${toneRing(
+                    o.secondaryStat.tone
+                  )} ${toneText(o.secondaryStat.tone)}`}
+                >
+                  {o.secondaryStat.value}
+                </span>
+              </div>
+
+              <div className="mt-5 space-y-3 border-t border-[#1E1E24] pt-4">
+                <div className="flex items-baseline justify-between">
+                  <span className="text-[10px] uppercase tracking-widest text-zinc-500">
+                    Headcount
+                  </span>
+                  <span className="font-mono text-sm text-zinc-200">
+                    {o.headcount.from} → {o.headcount.to}{" "}
+                    <span className={s.accentText}>
+                      ({o.headcount.deltaPct})
+                    </span>
+                  </span>
+                </div>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-[10px] uppercase tracking-widest text-zinc-500">
+                    {o.primaryStat.label}
+                  </span>
+                  <span className="font-mono text-sm text-emerald-300">
+                    {o.primaryStat.value}
+                  </span>
+                </div>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-[10px] uppercase tracking-widest text-zinc-500">
+                    {o.secondaryStat.label}
+                  </span>
+                  <span
+                    className={`font-mono text-sm ${toneText(
+                      o.secondaryStat.tone
                     )}`}
                   >
-                    {c.status}
-                  </p>
-                  <p className="mt-2 text-xs leading-relaxed text-zinc-400">
-                    {c.description}
-                  </p>
+                    {o.secondaryStat.value}
+                  </span>
+                </div>
+              </div>
+
+              <p className="mt-4 text-xs leading-relaxed text-zinc-400">
+                {o.description}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Dynamic Org Chart Preview */}
+      <section className="mt-12">
+        <div className="flex items-end justify-between">
+          <div>
+            <p className="text-[10px] font-medium uppercase tracking-widest text-indigo-400">
+              Org Chart Preview
+            </p>
+            <h2 className="mt-1 text-2xl font-bold tracking-tight text-white">
+              Scenario {active} — {meta.name}
+            </h2>
+          </div>
+          {chart.label && (
+            <span className={`text-xs ${meta.accentText}`}>{chart.label}</span>
+          )}
+        </div>
+
+        <div className="mt-5 rounded-2xl border border-[rgba(99,102,241,0.15)] bg-[#111118] p-6 md:p-8">
+          {/* CEO */}
+          <div className="flex flex-col items-center">
+            <OrgNodeCard node={chart.ceo} large />
+            <div className="my-3 h-5 w-px bg-[#1E1E24]" />
+          </div>
+
+          {/* VP row */}
+          <div className="relative">
+            <div className="absolute left-[8%] right-[8%] top-0 hidden h-px bg-[#1E1E24] md:block" />
+            <div className="grid gap-5 md:grid-cols-3">
+              {chart.groups.map((g, gi) => (
+                <div key={gi} className="flex flex-col items-center">
+                  <div className="hidden h-3 w-px bg-[#1E1E24] md:block" />
+                  <OrgNodeCard node={g.parent} />
+                  <div className="my-2 h-3 w-px bg-[#1E1E24]" />
+                  <div className="w-full space-y-2">
+                    {g.children.map((c, ci) => (
+                      <OrgNodeCard key={ci} node={c} compact />
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
-          </section>
+          </div>
 
-          {/* Paywall CTA */}
-          <section className="mt-12">
-            <div className="relative overflow-hidden rounded-3xl border border-indigo-500/30 bg-gradient-to-b from-indigo-500/[0.08] to-[#111113] p-10 text-center shadow-[0_0_60px_-15px_rgba(99,102,241,0.5)]">
-              <div className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-indigo-500/20 blur-[80px]" />
-              <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
-                Full Analysis
+          {/* Exits */}
+          {chart.exits.length > 0 && (
+            <div className="mt-8 border-t border-[#1E1E24] pt-5">
+              <p className="text-[10px] font-medium uppercase tracking-widest text-rose-300">
+                Exits
               </p>
-              <h3 className="mt-3 text-2xl font-bold tracking-tight text-white md:text-3xl">
-                Unlock the complete decision package
-              </h3>
-              <p className="mx-auto mt-3 max-w-xl text-sm text-zinc-400">
-                Get the full competency org map, role-fit ranking across every
-                team member, and a founder memo you can take to the board.
-              </p>
-
-              <a
-                href={CHECKOUT_URL}
-                className="mt-8 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-7 py-3.5 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400 hover:shadow-[0_0_40px_-5px_rgba(99,102,241,0.9)]"
-              >
-                Unlock Full Analysis — $49
-                <ArrowRight className="h-4 w-4" />
-              </a>
-              <p className="mt-3 text-xs text-zinc-500">
-                One-time payment. Instant access.
-              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {chart.exits.map((e) => (
+                  <span
+                    key={e}
+                    className="rounded-md border border-rose-500/30 bg-rose-500/[0.08] px-2.5 py-1 text-xs text-rose-300 line-through"
+                  >
+                    {e}
+                  </span>
+                ))}
+              </div>
             </div>
-          </section>
-        </section>
-      </div>
+          )}
+        </div>
+      </section>
+
+      {/* Competency Impact */}
+      <section className="mt-12">
+        <p className="text-[10px] font-medium uppercase tracking-widest text-indigo-400">
+          Competency Impact Analysis
+        </p>
+        <h2 className="mt-1 text-2xl font-bold tracking-tight text-white">
+          Before vs After — Scenario {active}
+        </h2>
+
+        <div className="mt-5 overflow-hidden rounded-2xl border border-[rgba(99,102,241,0.15)] bg-[#111118]">
+          <div className="grid grid-cols-[1.6fr_1fr_1fr_1fr] gap-3 border-b border-[#1E1E24] bg-[#0A0A0B] px-5 py-3 text-[10px] font-medium uppercase tracking-widest text-zinc-500 md:grid-cols-[1.4fr_0.8fr_2fr_1fr]">
+            <span>Dimension</span>
+            <span>Before</span>
+            <span>After</span>
+            <span className="text-right">Change</span>
+          </div>
+          {impact.map((row) => (
+            <div
+              key={row.dimension}
+              className="grid grid-cols-[1.6fr_1fr_1fr_1fr] items-center gap-3 border-b border-[#1E1E24] px-5 py-4 last:border-0 md:grid-cols-[1.4fr_0.8fr_2fr_1fr]"
+            >
+              <span className="text-sm font-medium text-white">
+                {row.dimension}
+              </span>
+              <span className="text-sm text-zinc-500">{row.before}</span>
+              <div className="flex items-center gap-3">
+                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.04]">
+                  <div
+                    className={`h-full ${meta.accentBar} transition-[width] duration-[1100ms] ease-out`}
+                    style={{ width: animateBars ? `${row.delta}%` : "0%" }}
+                  />
+                </div>
+                <span
+                  className={`shrink-0 text-xs font-medium ${toneText(row.tone)}`}
+                >
+                  {row.after}
+                </span>
+              </div>
+              <span
+                className={`text-right text-xs font-medium ${toneText(row.tone)}`}
+              >
+                {row.change}
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* AI Insights Panel */}
+      <section className="mt-12">
+        <p className="text-[10px] font-medium uppercase tracking-widest text-indigo-400">
+          AI Insights
+        </p>
+        <h2 className="mt-1 text-2xl font-bold tracking-tight text-white">
+          What this scenario tells us
+        </h2>
+
+        <div className="mt-5 grid gap-5 md:grid-cols-[1.2fr_1fr]">
+          <div className="rounded-2xl border border-[rgba(99,102,241,0.15)] bg-[#111118] p-6">
+            <ul className="space-y-3">
+              {insights.items.map((it, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  {it.tone === "good" ? (
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+                  ) : it.tone === "warn" ? (
+                    <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+                  ) : (
+                    <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-rose-400" />
+                  )}
+                  <span className="text-sm text-zinc-200">{it.text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div
+            className={`rounded-2xl border ${meta.accentBorder} ${meta.accentBg} p-6`}
+          >
+            <p
+              className={`flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-widest ${meta.accentText}`}
+            >
+              <Sparkles className="h-3 w-3" />
+              Why Scenario {active}
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-200">
+              {insights.why}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Paywall */}
+      <section className="mt-14">
+        <div className="relative overflow-hidden rounded-3xl border border-indigo-500/30 bg-gradient-to-b from-indigo-500/[0.08] to-[#111118] p-10 text-center shadow-[0_0_60px_-15px_rgba(99,102,241,0.5)]">
+          <div className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-indigo-500/20 blur-[80px]" />
+          <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
+            Full Analysis
+          </p>
+          <h3 className="mt-3 text-2xl font-bold tracking-tight text-white md:text-3xl">
+            Unlock Full Analysis — $49
+          </h3>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-zinc-400">
+            Get the complete restructuring report, founder memo, and
+            implementation roadmap.
+          </p>
+          <a
+            href={CHECKOUT_URL}
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-7 py-3.5 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400 hover:shadow-[0_0_40px_-5px_rgba(99,102,241,0.9)]"
+          >
+            Unlock Full Analysis — $49
+            <ArrowRight className="h-4 w-4" />
+          </a>
+          <p className="mt-3 text-xs text-zinc-500">
+            One-time payment. Instant access.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }
 
-function Field({
-  label,
-  value,
-  multiline,
-}: {
-  label: string;
-  value: string;
-  multiline?: boolean;
-}) {
+function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className={multiline ? "" : "flex items-baseline justify-between"}>
-      <span className="text-xs uppercase tracking-widest text-zinc-500">
+    <span className="inline-flex items-baseline gap-2">
+      <span className="text-[10px] uppercase tracking-widest text-zinc-500">
         {label}
       </span>
-      <span
-        className={`font-semibold text-white ${
-          multiline ? "mt-1 block text-sm" : "text-sm"
-        }`}
-      >
+      <span className="font-mono text-sm font-semibold text-white">
         {value}
       </span>
-    </div>
+    </span>
   );
 }
 
-function ScenarioCard({
-  scenario,
-  index,
+function Sep() {
+  return <span className="text-zinc-700">·</span>;
+}
+
+function OrgNodeCard({
+  node,
+  large,
+  compact,
 }: {
-  scenario: Scenario;
-  index: number;
+  node: OrgNode;
+  large?: boolean;
+  compact?: boolean;
 }) {
-  const [expanded, setExpanded] = useState(false);
-  const [animateBars, setAnimateBars] = useState(false);
-
-  // Trigger bar fill on mount (after entry animation completes)
-  useEffect(() => {
-    const timer = setTimeout(() => setAnimateBars(true), 350 + index * 100);
-    return () => clearTimeout(timer);
-  }, [index]);
-
-  const accent = ACCENT_STYLES[scenario.accent];
-  const isRecommended = !!scenario.recommended;
+  const dot =
+    node.tone === "green"
+      ? "bg-emerald-500"
+      : node.tone === "amber"
+        ? "bg-amber-400"
+        : "bg-rose-500";
 
   return (
     <div
-      onClick={() => setExpanded((v) => !v)}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          setExpanded((v) => !v);
-        }
-      }}
-      className={`scenario-card group relative cursor-pointer rounded-2xl border bg-[#0f0f13] p-6 transition-all duration-300 ease-out hover:-translate-y-1 hover:bg-[#13131a] focus:outline-none ${
-        isRecommended
-          ? `${accent.softBorder} ${accent.glow} md:-translate-y-1 hover:!-translate-y-2`
+      className={`relative flex w-full max-w-[280px] items-center justify-between gap-3 rounded-xl border bg-[#0A0A0B] transition-colors ${
+        node.ai
+          ? "border-cyan-500/30 bg-cyan-500/[0.04]"
           : "border-[#1E1E24]"
-      }`}
-      style={{
-        animation: `scenarioIn 480ms cubic-bezier(0.22, 1, 0.36, 1) ${
-          index * 100
-        }ms both`,
-        boxShadow: isRecommended
-          ? undefined
-          : `0 0 0 1px transparent`,
-      }}
+      } ${large ? "px-5 py-3" : compact ? "px-3 py-2" : "px-4 py-2.5"}`}
     >
-      {/* Hover glow border (CSS variable-driven for accent color) */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{
-          boxShadow: `0 0 0 1px ${accent.hex}55, 0 0 40px -10px ${accent.hex}80`,
-        }}
-      />
-
-      {/* Recommended badge */}
-      {isRecommended && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <span className="recommended-badge inline-flex items-center gap-1 rounded-full border border-indigo-400/50 bg-indigo-500/25 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-indigo-100 backdrop-blur">
-            <Sparkles className="h-3 w-3" />
-            Recommended
-          </span>
+      <div className="flex min-w-0 items-center gap-3">
+        <span className={`h-2 w-2 shrink-0 rounded-full ${dot}`} />
+        <div className="min-w-0">
+          <p
+            className={`truncate font-medium text-white ${
+              large ? "text-sm" : compact ? "text-[11px]" : "text-xs"
+            }`}
+          >
+            {node.name}
+          </p>
+          <p
+            className={`truncate text-zinc-500 ${
+              large ? "text-[11px]" : "text-[10px]"
+            }`}
+          >
+            {node.role}
+          </p>
         </div>
-      )}
+      </div>
 
-      {/* Header row */}
-      <div className="relative flex items-center justify-between">
-        <div
-          className="flex h-9 w-9 items-center justify-center rounded-md border bg-[#0A0A0B] font-mono text-sm font-semibold"
-          style={{
-            color: accent.hex,
-            borderColor: `${accent.hex}55`,
-          }}
-        >
-          {scenario.letter}
-        </div>
+      {node.badge && (
         <span
-          className={`rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest ${toneRing(
-            scenario.riskTone
-          )} ${toneText(scenario.riskTone)}`}
+          className={`shrink-0 rounded-full border px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-widest ${
+            node.badge === "PROMOTED"
+              ? "border-emerald-500/30 bg-emerald-500/[0.08] text-emerald-300"
+              : node.badge === "NEW ROLE"
+                ? "border-indigo-500/30 bg-indigo-500/[0.08] text-indigo-300"
+                : node.badge === "AI-AUGMENTED"
+                  ? "border-cyan-500/30 bg-cyan-500/[0.08] text-cyan-300"
+                  : "border-rose-500/30 bg-rose-500/[0.08] text-rose-300"
+          }`}
         >
-          Risk · {scenario.risk}
+          {node.badge === "AI-AUGMENTED" ? (
+            <span className="inline-flex items-center gap-1">
+              <Cpu className="h-2.5 w-2.5" /> AI
+            </span>
+          ) : (
+            node.badge
+          )}
         </span>
-      </div>
-
-      {/* Title + tagline */}
-      <h3 className="relative mt-4 text-lg font-semibold leading-snug text-white">
-        Scenario {scenario.letter} — {scenario.name}
-      </h3>
-      <p className={`relative mt-1 text-xs ${accent.text}`}>
-        {scenario.tagline}
-      </p>
-
-      {/* Top-line metrics */}
-      <div className="relative mt-5 grid grid-cols-2 gap-3 border-t border-[#1E1E24] pt-4">
-        <Stat
-          icon={<TrendingUp className="h-3.5 w-3.5" />}
-          label="Headcount"
-          value={scenario.headcountChange}
-          subValue={scenario.headcountDetail}
-          tone={scenario.accent}
-        />
-        <Stat
-          icon={<ShieldCheck className="h-3.5 w-3.5" />}
-          label="Monthly savings"
-          value={scenario.monthlySavings}
-          subValue="estimated"
-          tone="indigo"
-          forceEmerald
-        />
-        <Stat
-          icon={<Zap className="h-3.5 w-3.5" />}
-          label="Execution speed"
-          value={scenario.speed}
-          tone={scenario.accent}
-          small
-        />
-        <Stat
-          icon={<AlertTriangle className="h-3.5 w-3.5" />}
-          label="Risk level"
-          value={scenario.risk}
-          tone={scenario.accent}
-          riskTone={scenario.riskTone}
-          small
-        />
-      </div>
-
-      {/* Competency bars */}
-      <div className="relative mt-5">
-        <p className="mb-3 text-[10px] font-medium uppercase tracking-widest text-zinc-500">
-          Competency impact
-        </p>
-        <div className="space-y-2.5">
-          {scenario.metrics.map((m) => (
-            <MetricBar
-              key={m.label}
-              label={m.label}
-              value={m.value}
-              note={m.note}
-              accent={accent}
-              animate={animateBars}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Expandable section */}
-      <div
-        className={`relative grid transition-all duration-300 ease-out ${
-          expanded
-            ? "mt-5 grid-rows-[1fr] opacity-100"
-            : "mt-0 grid-rows-[0fr] opacity-0"
-        }`}
-      >
-        <div className="overflow-hidden">
-          <div className="space-y-4 border-t border-[#1E1E24] pt-4">
-            <div>
-              <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-500">
-                Key tradeoffs
-              </p>
-              <p className="mt-2 text-xs leading-relaxed text-zinc-300">
-                {scenario.tradeoffs}
-              </p>
-            </div>
-            <div
-              className={`rounded-lg border ${accent.softBorder} ${accent.softBg} p-3`}
-            >
-              <p
-                className={`flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-widest ${accent.text}`}
-              >
-                <Sparkles className="h-3 w-3" />
-                AI Insight
-              </p>
-              <p className="mt-1.5 text-xs leading-relaxed text-zinc-200">
-                {scenario.insight}
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className={`group/btn mt-1 inline-flex w-full items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-medium uppercase tracking-widest transition-all duration-300 ${
-                isRecommended ? accent.button : accent.buttonOutline
-              }`}
-            >
-              Select This Scenario
-              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/btn:translate-x-0.5" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Expand affordance */}
-      <div className="relative mt-4 flex items-center justify-center">
-        <span
-          className={`text-[10px] font-medium uppercase tracking-widest text-zinc-500 transition-colors group-hover:${accent.text}`}
-        >
-          {expanded ? "Click to collapse" : "Click to expand details"}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-function Stat({
-  icon,
-  label,
-  value,
-  subValue,
-  tone,
-  riskTone,
-  small,
-  forceEmerald,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  subValue?: string;
-  tone: Accent;
-  riskTone?: RiskTone;
-  small?: boolean;
-  forceEmerald?: boolean;
-}) {
-  const accent = ACCENT_STYLES[tone];
-  const valueColor = forceEmerald
-    ? "text-emerald-300"
-    : riskTone
-    ? toneText(riskTone)
-    : accent.text;
-
-  return (
-    <div className="flex flex-col gap-0.5">
-      <span className="flex items-center gap-1 text-[9px] font-medium uppercase tracking-widest text-zinc-500">
-        <span className="opacity-70">{icon}</span>
-        {label}
-      </span>
-      <span
-        className={`font-semibold ${valueColor} ${
-          small ? "text-xs leading-tight" : "text-sm"
-        }`}
-      >
-        {value}
-      </span>
-      {subValue && (
-        <span className="text-[10px] text-zinc-500">{subValue}</span>
       )}
     </div>
   );
 }
 
-function MetricBar({
-  label,
-  value,
-  note,
-  accent,
-  animate,
-}: {
-  label: string;
-  value: number;
-  note?: string;
-  accent: (typeof ACCENT_STYLES)[Accent];
-  animate: boolean;
-}) {
-  return (
-    <div>
-      <div className="flex items-baseline justify-between text-[11px]">
-        <span className="text-zinc-400">{label}</span>
-        <span className={`font-mono font-semibold ${accent.text}`}>
-          {value}%
-        </span>
-      </div>
-      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-white/[0.04]">
-        <div
-          className={`h-full rounded-full ${accent.bar} transition-[width] duration-[1100ms] ease-out`}
-          style={{ width: animate ? `${value}%` : "0%" }}
-        />
-      </div>
-      {note && (
-        <p className="mt-1 text-[10px] italic text-zinc-500">{note}</p>
-      )}
-    </div>
-  );
-}
-
-function ScenarioStyles() {
+function PageStyles() {
   return (
     <style>{`
-      @keyframes scenarioIn {
-        0% {
-          opacity: 0;
-          transform: translateY(16px);
-        }
-        100% {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
       @keyframes recommendedPulse {
         0%, 100% {
           box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6),
@@ -670,8 +917,12 @@ function ScenarioStyles() {
       .recommended-badge {
         animation: recommendedPulse 2.2s ease-in-out infinite;
       }
-      .scenario-card:hover {
-        background-color: #13131a;
+      @keyframes scenarioFadeIn {
+        0% { opacity: 0; transform: translateY(8px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+      .scenario-card {
+        animation: scenarioFadeIn 350ms ease-out both;
       }
     `}</style>
   );

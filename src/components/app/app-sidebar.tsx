@@ -8,6 +8,7 @@ import {
   LayoutGrid,
   Network,
   Target,
+  ShieldAlert,
   ArrowLeft,
   Menu,
   X,
@@ -15,10 +16,25 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const navItems = [
+interface NavItem {
+  href: string;
+  label: string;
+  icon: typeof LayoutGrid;
+  lens?: string;
+  badge?: string;
+}
+
+const navItems: NavItem[] = [
   { href: "/app", label: "Overview", icon: LayoutGrid },
-  { href: "/app/org-map", label: "Org Map", icon: Network },
-  { href: "/app/role-fit", label: "Role Fit", icon: Target },
+  { href: "/app/org-map", label: "Org Map", icon: Network, lens: "Lens 1" },
+  { href: "/app/role-fit", label: "Role Fit", icon: Target, lens: "Lens 2" },
+  {
+    href: "/app/risk",
+    label: "Risk Intelligence",
+    icon: ShieldAlert,
+    lens: "Lens 4",
+    badge: "3",
+  },
 ];
 
 export function AppSidebar() {
@@ -49,6 +65,9 @@ export function AppSidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1 px-3 py-2">
+        <p className="mb-2 px-3 pt-2 text-[10px] font-medium uppercase tracking-widest text-zinc-600">
+          Analysis
+        </p>
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
@@ -59,14 +78,24 @@ export function AppSidebar() {
               href={item.href}
               onClick={() => setMobileOpen(false)}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 active
                   ? "bg-indigo-500/10 text-indigo-300 ring-1 ring-inset ring-indigo-500/30"
                   : "text-zinc-400 hover:bg-[#16161A] hover:text-white"
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
-              {item.label}
+              <span className="flex-1">{item.label}</span>
+              {item.badge && (
+                <span className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full border border-rose-500/40 bg-rose-500/15 px-1.5 text-[10px] font-semibold text-rose-300">
+                  {item.badge}
+                </span>
+              )}
+              {item.lens && !item.badge && (
+                <span className="text-[9px] font-medium uppercase tracking-widest text-zinc-600 group-hover:text-zinc-400">
+                  {item.lens}
+                </span>
+              )}
             </Link>
           );
         })}
