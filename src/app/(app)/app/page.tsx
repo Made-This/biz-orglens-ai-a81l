@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   Sparkles,
@@ -10,8 +11,14 @@ import {
   Cpu,
 } from "lucide-react";
 
-const CHECKOUT_URL =
-  "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
+function unlockAndGo(router: ReturnType<typeof useRouter>) {
+  try {
+    window.localStorage.setItem("orglens_report_unlocked", "true");
+  } catch {
+    // ignore
+  }
+  router.push("/app/report");
+}
 
 type ScenarioKey = "A" | "B" | "C";
 type Tone = "green" | "amber" | "red" | "cyan";
@@ -434,6 +441,7 @@ function toneRing(t: Tone) {
 }
 
 export default function OverviewPage() {
+  const router = useRouter();
   const [active, setActive] = useState<ScenarioKey>("B");
   const [animateBars, setAnimateBars] = useState(false);
 
@@ -799,13 +807,14 @@ export default function OverviewPage() {
             Get the complete restructuring report, founder memo, and
             implementation roadmap.
           </p>
-          <a
-            href={CHECKOUT_URL}
+          <button
+            type="button"
+            onClick={() => unlockAndGo(router)}
             className="mt-8 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-7 py-3.5 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400 hover:shadow-[0_0_40px_-5px_rgba(99,102,241,0.9)]"
           >
             Unlock Full Analysis — $49
             <ArrowRight className="h-4 w-4" />
-          </a>
+          </button>
           <p className="mt-3 text-xs text-zinc-500">
             One-time payment. Instant access.
           </p>

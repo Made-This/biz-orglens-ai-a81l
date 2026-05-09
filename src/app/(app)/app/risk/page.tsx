@@ -10,10 +10,17 @@ import {
   Zap,
   Crown,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 
-const CHECKOUT_URL =
-  "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
+function unlockAndGo(router: ReturnType<typeof useRouter>) {
+  try {
+    window.localStorage.setItem("orglens_report_unlocked", "true");
+  } catch {
+    // ignore
+  }
+  router.push("/app/report");
+}
 
 type Severity = "HIGH" | "MEDIUM" | "LOW";
 type Tone = "red" | "amber" | "green" | "yellow";
@@ -203,6 +210,7 @@ function rowToneBg(t: "red" | "amber" | "green") {
 }
 
 export default function RiskIntelligencePage() {
+  const router = useRouter();
   return (
     <div className="mx-auto max-w-[1400px]">
       {/* Header */}
@@ -492,13 +500,14 @@ export default function RiskIntelligencePage() {
               Unlock 90-day attrition probability per role, succession-readiness
               scoring, and dependency simulation models.
             </p>
-            <a
-              href={CHECKOUT_URL}
+            <button
+              type="button"
+              onClick={() => unlockAndGo(router)}
               className="mt-6 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-6 py-3 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
             >
               $49 — Unlock Full Risk Report
               <ArrowRight className="h-4 w-4" />
-            </a>
+            </button>
           </div>
         </div>
       </section>

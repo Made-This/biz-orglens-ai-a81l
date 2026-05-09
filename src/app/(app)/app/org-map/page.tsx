@@ -1,10 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Lock, ArrowRight, AlertTriangle, CheckCircle2 } from "lucide-react";
 
-const CHECKOUT_URL =
-  "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
+function unlockAndGo(router: ReturnType<typeof useRouter>) {
+  try {
+    window.localStorage.setItem("orglens_report_unlocked", "true");
+  } catch {
+    // ignore
+  }
+  router.push("/app/report");
+}
 
 type Dimension =
   | "Leadership"
@@ -205,6 +212,7 @@ function activeTone(p: Person, d: Dimension): "green" | "amber" | "red" {
 }
 
 export default function OrgMapPage() {
+  const router = useRouter();
   const [active, setActive] = useState<Dimension>("Leadership");
 
   const teamSummaries = useMemo(() => {
@@ -446,13 +454,14 @@ export default function OrgMapPage() {
               Unlock the full 48-competency heatmap, every node-level score, and
               team-wide behavioral signal patterns.
             </p>
-            <a
-              href={CHECKOUT_URL}
+            <button
+              type="button"
+              onClick={() => unlockAndGo(router)}
               className="mt-6 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-6 py-3 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
             >
               Unlock with Full Analysis — $49
               <ArrowRight className="h-4 w-4" />
-            </a>
+            </button>
           </div>
         </div>
       </section>

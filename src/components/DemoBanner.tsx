@@ -2,10 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { Sparkles, X, ArrowRight } from "lucide-react";
-
-const CHECKOUT_URL = "/checkout";
 
 /**
  * Sticky top banner shown on every (app)/* page when the user is browsing
@@ -38,8 +35,21 @@ export function DemoBanner() {
     router.push("/sign-in");
   }
 
+  function handleUnlock(e: React.MouseEvent) {
+    e.preventDefault();
+    try {
+      window.localStorage.setItem("orglens_report_unlocked", "true");
+    } catch {
+      // ignore
+    }
+    router.push("/app/report");
+  }
+
   return (
-    <div className="sticky top-0 z-50 w-full border-b border-indigo-500/30 bg-gradient-to-r from-indigo-950 via-indigo-900 to-amber-950/70 text-white">
+    <div
+      data-demo-banner
+      className="sticky top-0 z-50 w-full border-b border-indigo-500/30 bg-gradient-to-r from-indigo-950 via-indigo-900 to-amber-950/70 text-white"
+    >
       <div className="flex items-center gap-3 px-4 py-2 md:px-6">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-amber-200">
           <Sparkles className="h-3 w-3" />
@@ -48,18 +58,17 @@ export function DemoBanner() {
         <span className="hidden text-xs text-zinc-200 sm:inline">
           Sample Company Data — Alpha Investment Group
         </span>
-        <span className="text-xs text-zinc-200 sm:hidden">
-          Sample Data
-        </span>
+        <span className="text-xs text-zinc-200 sm:hidden">Sample Data</span>
 
         <span className="ml-auto flex items-center gap-2">
-          <Link
-            href={CHECKOUT_URL}
+          <button
+            type="button"
+            onClick={handleUnlock}
             className="group inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-indigo-700 shadow-sm transition-colors hover:bg-amber-200 hover:text-indigo-900"
           >
             Unlock Full Analysis — $49
             <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
-          </Link>
+          </button>
           <button
             type="button"
             onClick={handleExit}

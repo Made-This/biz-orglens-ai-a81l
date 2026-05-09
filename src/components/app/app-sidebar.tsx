@@ -13,6 +13,7 @@ import {
   Menu,
   X,
   LogOut,
+  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -34,6 +35,12 @@ const navItems: NavItem[] = [
     icon: ShieldAlert,
     lens: "Lens 4",
     badge: "3",
+  },
+  {
+    href: "/app/report",
+    label: "Full Report",
+    icon: FileText,
+    lens: "Premium",
   },
 ];
 

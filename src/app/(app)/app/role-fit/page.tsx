@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Lock,
   ArrowRight,
@@ -9,8 +10,14 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-const CHECKOUT_URL =
-  "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
+function unlockAndGo(router: ReturnType<typeof useRouter>) {
+  try {
+    window.localStorage.setItem("orglens_report_unlocked", "true");
+  } catch {
+    // ignore
+  }
+  router.push("/app/report");
+}
 
 type Role =
   | "CTO"
@@ -681,6 +688,7 @@ function toneBg(t: "green" | "amber" | "red") {
 }
 
 export default function RoleFitPage() {
+  const router = useRouter();
   const [selected, setSelected] = useState<Role>("VP Product");
   const [expandedRank, setExpandedRank] = useState<number | null>(1);
   const [animate, setAnimate] = useState(false);
@@ -883,13 +891,14 @@ export default function RoleFitPage() {
                 <p className="mt-1 text-xs text-zinc-400">
                   See every candidate, fit score, and gap analysis.
                 </p>
-                <a
-                  href={CHECKOUT_URL}
+                <button
+                  type="button"
+                  onClick={() => unlockAndGo(router)}
                   className="mt-4 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-5 py-2.5 text-sm font-medium text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
                 >
                   Unlock Full Rankings — $49
                   <ArrowRight className="h-3.5 w-3.5" />
-                </a>
+                </button>
               </div>
             </div>
           </div>
