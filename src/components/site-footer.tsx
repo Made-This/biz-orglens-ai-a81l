@@ -85,10 +85,18 @@ export function SiteFooter({
         </div>
 
         {/* Copyright */}
-        <div className="mt-8 border-t border-border pt-8 text-center">
+        <div className="mt-8 flex flex-col items-center justify-between gap-2 border-t border-border pt-8 text-center sm:flex-row">
           <p className="text-xs text-muted-foreground">
             &copy; {currentYear} {productName}. All rights reserved.
           </p>
+          <a
+            href="https://madethis.com"
+            target="_blank"
+            rel="noreferrer"
+            className="text-xs uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Built with MadeThis
+          </a>
         </div>
       </div>
     </footer>

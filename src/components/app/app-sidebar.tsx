@@ -5,10 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthActions } from "@convex-dev/auth/react";
 import {
-  LayoutDashboard,
+  LayoutGrid,
+  Network,
+  Target,
   Settings,
-  Users,
-  CreditCard,
+  Building2,
   ArrowLeft,
   Menu,
   X,
@@ -19,10 +20,13 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 const navItems = [
-  { href: "/app", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/app", label: "Scenarios", icon: LayoutGrid },
+  { href: "/app/org-map", label: "Org Map", icon: Network },
+  { href: "/app/role-fit", label: "Role Fit", icon: Target },
+];
+
+const secondaryNav = [
   { href: "/app/settings", label: "Settings", icon: Settings },
-  { href: "/app/settings/team", label: "Team", icon: Users },
-  { href: "/app/settings/billing", label: "Billing", icon: CreditCard },
 ];
 
 export function AppSidebar() {
@@ -34,15 +38,22 @@ export function AppSidebar() {
     if (href === "/app") {
       return pathname === "/app";
     }
-    return pathname === href;
+    return pathname === href || pathname.startsWith(href + "/");
   }
 
   const sidebarContent = (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-[#F9FAFB]">
       {/* App name */}
-      <div className="px-4 py-5">
-        <h2 className="truncate text-lg font-semibold">My App</h2>
-        <p className="text-xs text-muted-foreground">Workspace</p>
+      <div className="px-5 py-5">
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#4F46E5] text-white">
+            <Building2 className="h-4 w-4" />
+          </div>
+          <h2 className="truncate text-base font-semibold text-[#111827]">
+            OrgLens AI
+          </h2>
+        </div>
+        <p className="mt-1 text-xs text-gray-500">Decision Intelligence</p>
       </div>
 
       <Separator />
@@ -61,8 +72,8 @@ export function AppSidebar() {
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 active
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  ? "bg-[#4F46E5] text-white"
+                  : "text-gray-600 hover:bg-white hover:text-[#111827]"
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
@@ -74,23 +85,52 @@ export function AppSidebar() {
 
       <Separator />
 
+      {/* Secondary nav */}
+      <div className="space-y-1 px-3 py-3">
+        {secondaryNav.map((item) => {
+          const Icon = item.icon;
+          const active = isActive(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setMobileOpen(false)}
+              className={cn(
+                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                active
+                  ? "bg-white text-[#111827] shadow-sm"
+                  : "text-gray-600 hover:bg-white hover:text-[#111827]"
+              )}
+            >
+              <Icon className="h-4 w-4 shrink-0" />
+              {item.label}
+            </Link>
+          );
+        })}
+      </div>
+
+      <Separator />
+
       {/* Bottom actions */}
       <div className="space-y-1 px-3 py-4">
         <Link
           href="/"
           onClick={() => setMobileOpen(false)}
-          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+          className="flex items-center gap-2 rounded-md px-3 py-2 text-xs text-gray-500 transition-colors hover:bg-white hover:text-[#111827]"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-3.5 w-3.5" />
           Back to Site
         </Link>
         <button
           onClick={() => void signOut()}
-          className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+          className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-gray-500 transition-colors hover:bg-white hover:text-[#111827]"
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className="h-3.5 w-3.5" />
           Sign Out
         </button>
+        <p className="px-3 pt-3 text-[10px] uppercase tracking-wider text-gray-400">
+          Built with MadeThis
+        </p>
       </div>
     </div>
   );
@@ -118,7 +158,7 @@ export function AppSidebar() {
       {/* Sidebar — mobile (slide-over) */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 w-64 border-r bg-card transition-transform md:hidden",
+          "fixed inset-y-0 left-0 z-40 w-64 border-r border-[#E5E7EB] transition-transform md:hidden",
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -126,7 +166,7 @@ export function AppSidebar() {
       </aside>
 
       {/* Sidebar — desktop (static) */}
-      <aside className="hidden w-64 shrink-0 border-r bg-card md:block">
+      <aside className="hidden w-[280px] shrink-0 border-r border-[#E5E7EB] md:block">
         {sidebarContent}
       </aside>
     </>

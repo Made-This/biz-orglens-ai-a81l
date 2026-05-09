@@ -9,9 +9,9 @@ export default function AppLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-white text-[#111827]">
       <AppSidebar />
-      <main className="flex-1 overflow-y-auto p-6 pt-16 md:p-8 md:pt-8">
+      <main className="flex-1 overflow-y-auto px-6 pb-12 pt-16 md:px-10 md:pt-10">
         {children}
       </main>
       <Toaster />
