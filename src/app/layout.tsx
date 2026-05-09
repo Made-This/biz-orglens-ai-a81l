@@ -11,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "SaaS App",
-  description: "The smarter way to grow your business",
+  title: "OrgLens AI",
+  description: "AI-powered organizational intelligence for startup founders and SMEs. Parse psychometric reports, map competencies, score role-fit, and generate McKinsey-style founder memos.",
 };
 
 export default function RootLayout({
