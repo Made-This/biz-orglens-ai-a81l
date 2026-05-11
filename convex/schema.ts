@@ -91,4 +91,18 @@ export default defineSchema({
     .index("by_slug", ["slug"])
     .index("by_status", ["status"])
     .index("by_publishedAt", ["publishedAt"]),
+
+  newsletterSubscribers: defineTable({
+    email: v.string(),
+    name: v.optional(v.string()),
+    company: v.optional(v.string()),
+    role: v.optional(v.string()),
+    // page they signed up from: "homepage", "blog", "article", "demo", "footer", "newsletter-page"
+    source: v.string(),
+    subscribedAt: v.number(),
+    status: v.union(v.literal("subscribed"), v.literal("unsubscribed")),
+    unsubscribeToken: v.string(),
+  })
+    .index("by_email", ["email"])
+    .index("by_token", ["unsubscribeToken"]),
 });

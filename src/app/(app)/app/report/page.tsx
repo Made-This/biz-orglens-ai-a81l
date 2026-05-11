@@ -25,6 +25,7 @@ import {
   X,
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { NewsletterSignupForm } from "@/components/NewsletterSignupForm";
 
 const PRODUCT_ID = "md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
 
@@ -146,8 +147,24 @@ export default function ReportPage() {
         ) : (
           <LockedTeaser onDemo={() => setIsDemoMode(true)} />
         )}
+        <ReportNewsletterFooter />
       </div>
     </>
+  );
+}
+
+// ---------- NEWSLETTER FOOTER (bottom of demo report) ----------
+function ReportNewsletterFooter() {
+  return (
+    <section className="report-cta mt-16">
+      <div className="mx-auto max-w-2xl">
+        <NewsletterSignupForm
+          source="demo"
+          headline="Enjoying the demo?"
+          description="Subscribe for monthly org intelligence insights — practical articles on AI, HR tech, team structure, role fit, and founder decision reports."
+        />
+      </div>
+    </section>
   );
 }
 

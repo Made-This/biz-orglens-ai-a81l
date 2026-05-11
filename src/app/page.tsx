@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { NewsletterSignupForm } from "@/components/NewsletterSignupForm";
 
 // Keep the checkout URL constant so existing references still compile,
 // but the marketing site no longer surfaces it directly. All public CTAs
@@ -39,6 +40,9 @@ export default function HomePage() {
             <Link href="/insights" className="text-sm text-slate-600 transition-colors hover:text-slate-900">
               Insights
             </Link>
+            <Link href="/newsletter" className="text-sm text-slate-600 transition-colors hover:text-slate-900">
+              Newsletter
+            </Link>
           </nav>
 
           <div className="flex items-center gap-3">
@@ -65,8 +69,39 @@ export default function HomePage() {
       <ROICalculatorSection />
       <ReportPreviewSection />
       <TrustSection />
+      <NewsletterSection />
       <Footer />
     </div>
+  );
+}
+
+/* ─────────────────────────────────────────── */
+/* SECTION 8 — NEWSLETTER SIGNUP               */
+/* ─────────────────────────────────────────── */
+
+function NewsletterSection() {
+  return (
+    <section className="relative overflow-hidden bg-[#0A0A0B] py-20 text-zinc-100 md:py-24">
+      <div className="pointer-events-none absolute inset-0 -z-0">
+        <div className="absolute left-1/2 top-0 h-[320px] w-[640px] -translate-x-1/2 rounded-full bg-indigo-500/[0.08] blur-[120px]" />
+      </div>
+      <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-400">
+            OrgLens Monthly Insights
+          </p>
+          <h2 className="mt-4 text-3xl font-bold tracking-tight text-white md:text-4xl">
+            Get monthly insights on AI, HR tech, and startup team design.
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-base text-zinc-400">
+            Join the OrgLens newsletter for practical articles on organizational intelligence, role fit, team structure, and AI-powered people decisions for SaaS founders.
+          </p>
+        </div>
+        <div className="mx-auto mt-10 max-w-2xl">
+          <NewsletterSignupForm source="homepage" />
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -978,6 +1013,12 @@ function Footer() {
             <a href="#calculator" className="text-sm text-slate-600 hover:text-slate-900">
               ROI Calculator
             </a>
+            <Link href="/insights" className="text-sm text-slate-600 hover:text-slate-900">
+              Insights
+            </Link>
+            <Link href="/newsletter" className="text-sm text-slate-600 hover:text-slate-900">
+              Newsletter
+            </Link>
             <Link href="/sign-in" className="text-sm text-slate-600 hover:text-slate-900">
               Try Demo
             </Link>

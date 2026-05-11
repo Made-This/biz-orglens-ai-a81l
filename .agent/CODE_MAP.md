@@ -35,8 +35,8 @@ Auto-generated project analysis.
 - `/about`
 - `/blog/[slug]`
 - `/blog`
-- `/pricing`
-- `/sign-in`
+- `/insights/[slug]`
+- `/insights`
 
 ## Directory Structure
 - convex/

@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { NewsletterSignupForm } from "@/components/NewsletterSignupForm";
 
 interface SiteFooterProps {
   productName?: string;
@@ -54,6 +55,12 @@ export function SiteFooter({
               Insights
             </Link>
             <Link
+              href="/newsletter"
+              className="text-sm text-zinc-400 transition-colors hover:text-white"
+            >
+              Newsletter
+            </Link>
+            <Link
               href="/sign-in"
               className="text-sm text-zinc-400 transition-colors hover:text-white"
             >
@@ -75,11 +82,13 @@ export function SiteFooter({
             )}
           </div>
 
-          {/* Right tagline */}
-          <div className="md:text-right">
-            <p className="text-sm text-zinc-500">
-              Built for founders who make hard decisions.
-            </p>
+          {/* Right: compact newsletter signup */}
+          <div className="md:max-w-sm md:justify-self-end">
+            <NewsletterSignupForm
+              source="footer"
+              compact
+              headline="Monthly insights for founders."
+            />
           </div>
         </div>
 
