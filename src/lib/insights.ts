@@ -14,7 +14,7 @@ export type InsightCategory =
   | "Org Design for Founders"
   | "Role Fit & Competency Signals"
   | "People Analytics & Team Risk"
-  | "Founder Decision Reports";
+  | "Responsible AI in People Decisions";
 
 export type BlogPost = {
   slug: string;
@@ -42,7 +42,7 @@ export const INSIGHT_CATEGORIES: InsightCategory[] = [
   "Org Design for Founders",
   "Role Fit & Competency Signals",
   "People Analytics & Team Risk",
-  "Founder Decision Reports",
+  "Responsible AI in People Decisions",
 ];
 
 /**
@@ -82,7 +82,7 @@ export const CATEGORY_STYLES: Record<
     placeholder:
       "from-amber-500/20 via-amber-500/5 to-transparent border-amber-400/20",
   },
-  "Founder Decision Reports": {
+  "Responsible AI in People Decisions": {
     badge: "bg-sky-500/10 text-sky-300 border-sky-400/30",
     ring: "ring-sky-400/30",
     dot: "bg-sky-400",
@@ -190,7 +190,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: "why-orglens-starts-with-demo",
     title: "Why OrgLens Starts With a Demo Before Asking You to Pay",
-    category: "Founder Decision Reports",
+    category: "Responsible AI in People Decisions",
     author: "OrgLens AI",
     publishDate: "2026-03-31",
     tags: ["OrgLens", "Demo", "Product Design", "Founders"],

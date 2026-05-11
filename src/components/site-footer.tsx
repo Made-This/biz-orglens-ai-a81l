@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { NewsletterSignupForm } from "@/components/NewsletterSignupForm";
 
 interface SiteFooterProps {
   productName?: string;
@@ -9,14 +8,14 @@ interface SiteFooterProps {
   className?: string;
 }
 
+const FOUNDER_SNAPSHOT_CHECKOUT_URL =
+  "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
+
 export function SiteFooter({
   productName = "OrgLens AI",
-  supportEmail,
-  footerText = "Organizational intelligence for founders.",
+  supportEmail = "team@orglens-ai.madethis.app",
   className,
 }: SiteFooterProps) {
-  const currentYear = new Date().getFullYear();
-
   return (
     <footer
       className={cn(
@@ -25,81 +24,142 @@ export function SiteFooter({
       )}
     >
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-8 md:grid-cols-3">
-          {/* Brand */}
+        <div className="grid gap-10 md:grid-cols-3">
+          {/* Column 1 — Product */}
           <div>
             <p className="text-lg font-bold tracking-tight text-white">
               OrgLens<span className="text-indigo-400">.</span>AI
             </p>
-            <p className="mt-2 text-sm text-zinc-500">{footerText}</p>
+            <p className="mt-2 max-w-xs text-sm text-zinc-500">
+              Organizational intelligence for SaaS and health tech founders.
+            </p>
+
+            <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+              Product
+            </p>
+            <ul className="mt-4 space-y-2.5">
+              <li>
+                <Link
+                  href="/app/report"
+                  className="text-sm text-zinc-400 transition-colors hover:text-white"
+                >
+                  Demo Report
+                </Link>
+              </li>
+              <li>
+                <a
+                  href={FOUNDER_SNAPSHOT_CHECKOUT_URL}
+                  className="text-sm text-zinc-400 transition-colors hover:text-white"
+                >
+                  Founder Snapshot
+                </a>
+              </li>
+              <li>
+                <Link
+                  href="/pricing"
+                  className="text-sm text-zinc-400 transition-colors hover:text-white"
+                >
+                  Full OrgLens Report
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/get-analysis"
+                  className="text-sm text-zinc-400 transition-colors hover:text-white"
+                >
+                  Founder Advisory Review
+                </Link>
+              </li>
+            </ul>
           </div>
 
-          {/* Center links */}
-          <div className="flex flex-col gap-2 md:items-center">
-            <Link
-              href="/#features"
-              className="text-sm text-zinc-400 transition-colors hover:text-white"
-            >
-              Features
-            </Link>
-            <Link
-              href="/pricing"
-              className="text-sm text-zinc-400 transition-colors hover:text-white"
-            >
-              Pricing
-            </Link>
-            <Link
-              href="/insights"
-              className="text-sm text-zinc-400 transition-colors hover:text-white"
-            >
-              Insights
-            </Link>
-            <Link
-              href="/newsletter"
-              className="text-sm text-zinc-400 transition-colors hover:text-white"
-            >
-              Newsletter
-            </Link>
-            <Link
-              href="/sign-in"
-              className="text-sm text-zinc-400 transition-colors hover:text-white"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/sign-up"
-              className="text-sm text-zinc-400 transition-colors hover:text-white"
-            >
-              Sign Up
-            </Link>
-            {supportEmail && (
-              <a
-                href={`mailto:${supportEmail}`}
-                className="text-sm text-zinc-400 transition-colors hover:text-white"
-              >
-                {supportEmail}
-              </a>
-            )}
+          {/* Column 2 — Company */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+              Company
+            </p>
+            <ul className="mt-4 space-y-2.5">
+              <li>
+                <Link
+                  href="/use-cases"
+                  className="text-sm text-zinc-400 transition-colors hover:text-white"
+                >
+                  Use Cases
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/insights"
+                  className="text-sm text-zinc-400 transition-colors hover:text-white"
+                >
+                  Insights
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/newsletter"
+                  className="text-sm text-zinc-400 transition-colors hover:text-white"
+                >
+                  Newsletter
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/responsible-ai"
+                  className="text-sm text-zinc-400 transition-colors hover:text-white"
+                >
+                  Responsible AI
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/pricing"
+                  className="text-sm text-zinc-400 transition-colors hover:text-white"
+                >
+                  Pricing
+                </Link>
+              </li>
+            </ul>
           </div>
 
-          {/* Right: compact newsletter signup */}
-          <div className="md:max-w-sm md:justify-self-end">
-            <NewsletterSignupForm
-              source="footer"
-              compact
-              headline="Monthly insights for founders."
-            />
+          {/* Column 3 — Contact */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+              Contact
+            </p>
+            <ul className="mt-4 space-y-2.5">
+              <li>
+                <a
+                  href={`mailto:${supportEmail}`}
+                  className="text-sm text-zinc-400 transition-colors hover:text-white"
+                >
+                  {supportEmail}
+                </a>
+              </li>
+              <li>
+                <Link
+                  href="/get-analysis"
+                  className="text-sm text-zinc-400 transition-colors hover:text-white"
+                >
+                  Get My Analysis
+                </Link>
+              </li>
+            </ul>
+            <p className="mt-6 text-xs text-zinc-600">© 2025 {productName}</p>
           </div>
         </div>
 
-        {/* Copyright */}
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-[#1E1E24] pt-6 sm:flex-row">
+        {/* Bottom row */}
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-[#1E1E24] pt-6 sm:flex-row">
           <p className="text-xs text-zinc-600">
-            © {currentYear} {productName}. All rights reserved.
+            Decision-support tools for founders. No AI system makes employment decisions.
           </p>
-          <p className="text-xs text-zinc-600">
-            Competency science, made accessible.
-          </p>
+          <Link
+            href="/responsible-ai"
+            className="text-xs text-zinc-500 transition-colors hover:text-zinc-300"
+          >
+            See our Responsible AI commitment →
+          </Link>
         </div>
 
         {/* Built with MadeThis */}

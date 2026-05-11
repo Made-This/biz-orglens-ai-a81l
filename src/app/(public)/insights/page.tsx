@@ -4,9 +4,9 @@ import { InsightsListing } from "./InsightsListing";
 import { NewsletterSignupForm } from "@/components/NewsletterSignupForm";
 
 export const metadata: Metadata = {
-  title: "OrgLens Insights — AI, HR Tech, and Org Design for Founders",
+  title: "OrgLens Insights — Organizational Intelligence for Founders",
   description:
-    "Practical insights on AI, HR tech, team structure, role fit, and organizational intelligence for startup founders.",
+    "Practical ideas on organizational intelligence, team structure, and responsible AI for SaaS and health tech founders.",
 };
 
 export default function InsightsIndexPage() {
@@ -29,8 +29,8 @@ export default function InsightsIndexPage() {
             OrgLens Insights
           </h1>
           <p className="mt-5 text-lg text-zinc-400">
-            Practical insights on AI, HR tech, team structure, role fit, and
-            organizational intelligence for startup founders.
+            Practical ideas on organizational intelligence, team structure,
+            and responsible AI for SaaS and health tech founders.
           </p>
         </div>
 

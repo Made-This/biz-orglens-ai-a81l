@@ -105,4 +105,13 @@ export default defineSchema({
   })
     .index("by_email", ["email"])
     .index("by_token", ["unsubscribeToken"]),
+
+  advisoryInquiries: defineTable({
+    name: v.string(),
+    email: v.string(),
+    company: v.string(),
+    teamSize: v.string(),
+    message: v.optional(v.string()),
+    createdAt: v.number(),
+  }).index("by_createdAt", ["createdAt"]),
 });

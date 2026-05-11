@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
-import { useConvexAuth } from "convex/react";
 
 interface SiteHeaderProps {
   productName?: string;
@@ -12,13 +11,16 @@ interface SiteHeaderProps {
   className?: string;
 }
 
+// 8-item primary nav for the commercial OrgLens AI site.
+// "Get My Analysis" is rendered separately as a filled CTA button.
 const navLinks = [
-  { label: "Features", href: "/#features" },
-  { label: "Demo", href: "/#demo" },
+  { label: "Home", href: "/" },
+  { label: "Demo Report", href: "/app/report" },
+  { label: "Use Cases", href: "/use-cases" },
+  { label: "Pricing", href: "/pricing" },
   { label: "Insights", href: "/insights" },
   { label: "Newsletter", href: "/newsletter" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "About", href: "/about" },
+  { label: "Responsible AI", href: "/responsible-ai" },
 ];
 
 export function SiteHeader({
@@ -27,7 +29,6 @@ export function SiteHeader({
   className,
 }: SiteHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isAuthenticated } = useConvexAuth();
 
   return (
     <header
@@ -49,7 +50,7 @@ export function SiteHeader({
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-6 lg:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -61,36 +62,20 @@ export function SiteHeader({
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
-          {isAuthenticated ? (
-            <Link
-              href="/app"
-              className="rounded-full bg-indigo-500 px-4 py-2 text-sm font-medium text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
-            >
-              Dashboard
-            </Link>
-          ) : (
-            <>
-              <Link
-                href="/sign-in"
-                className="text-sm text-zinc-400 transition-colors hover:text-white"
-              >
-                Sign in
-              </Link>
-              <Link
-                href="/sign-up"
-                className="rounded-full bg-indigo-500 px-4 py-2 text-sm font-medium text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
-              >
-                Analyze My Organization
-              </Link>
-            </>
-          )}
+        {/* Desktop CTA */}
+        <div className="hidden items-center gap-3 lg:flex">
+          <Link
+            href="/get-analysis"
+            className="rounded-full bg-indigo-500 px-4 py-2 text-sm font-medium text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
+          >
+            Get My Analysis
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="inline-flex items-center justify-center rounded-md p-2 text-zinc-400 hover:bg-[#16161A] hover:text-white md:hidden"
+          className="inline-flex items-center justify-center rounded-md p-2 text-zinc-400 hover:bg-[#16161A] hover:text-white lg:hidden"
           aria-label="Toggle menu"
         >
           {mobileMenuOpen ? (
@@ -103,7 +88,7 @@ export function SiteHeader({
 
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="border-t border-[#1E1E24] md:hidden">
+        <div className="border-t border-[#1E1E24] lg:hidden">
           <nav className="mx-auto max-w-7xl space-y-1 px-4 py-3 sm:px-6 lg:px-8">
             {navLinks.map((link) => (
               <Link
@@ -115,32 +100,13 @@ export function SiteHeader({
                 {link.label}
               </Link>
             ))}
-            {isAuthenticated ? (
-              <Link
-                href="/app"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-md px-3 py-2 text-base font-medium text-indigo-400 transition-colors hover:bg-[#16161A]"
-              >
-                Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/sign-in"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md px-3 py-2 text-base font-medium text-zinc-400 transition-colors hover:bg-[#16161A] hover:text-white"
-                >
-                  Sign in
-                </Link>
-                <Link
-                  href="/sign-up"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md px-3 py-2 text-base font-medium text-indigo-400 transition-colors hover:bg-[#16161A]"
-                >
-                  Analyze My Organization
-                </Link>
-              </>
-            )}
+            <Link
+              href="/get-analysis"
+              onClick={() => setMobileMenuOpen(false)}
+              className="mt-2 block rounded-md bg-indigo-500 px-3 py-2 text-base font-semibold text-white transition-colors hover:bg-indigo-400"
+            >
+              Get My Analysis
+            </Link>
           </nav>
         </div>
       )}

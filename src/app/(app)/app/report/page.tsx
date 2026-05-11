@@ -140,6 +140,7 @@ export default function ReportPage() {
         <DemoBanner onClose={() => setIsDemoMode(false)} />
       )}
       <div className="report-root mx-auto max-w-6xl pb-24">
+        <SampleReportIntro />
         <ReportHeader />
         <ExecutiveSummary />
         {showFull ? (
@@ -150,6 +151,37 @@ export default function ReportPage() {
         <ReportNewsletterFooter />
       </div>
     </>
+  );
+}
+
+// ---------- SAMPLE REPORT INTRO ----------
+// Sits above the report header and explains this is a sample analysis for
+// a fictional company. Visible on every visit so the demo context is always
+// obvious to first-time visitors.
+function SampleReportIntro() {
+  return (
+    <section className="report-section mb-10 px-4 pt-8 sm:px-6 lg:px-8">
+      <div className="rounded-2xl border border-indigo-500/30 bg-gradient-to-b from-indigo-500/[0.08] to-[#0f0f14] p-6 md:p-8">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-indigo-300">
+          Sample Report
+        </p>
+        <h2 className="mt-3 text-xl font-bold tracking-tight text-white md:text-2xl">
+          This is a sample OrgLens analysis for a fictional company,
+          NovaCloud Health.
+        </h2>
+        <div className="mt-4 rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
+            Company context
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-zinc-300">
+            NovaCloud Health is a US-based health tech startup building
+            AI-enabled workflow software for clinics and care operations
+            teams. The company is moving from founder-led execution to a more
+            scalable operating model.
+          </p>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -1576,8 +1608,6 @@ function Section8FounderMemo() {
     });
   }, []);
 
-  const checkoutUrl = getCheckoutUrl();
-
   const findings = [
     {
       title: "LEADERSHIP COVERAGE IN CLINICAL OPS",
@@ -1822,11 +1852,12 @@ function Section8FounderMemo() {
             Ready to run this analysis on your own team?
           </h3>
           <p className="mx-auto mt-3 max-w-md text-sm text-zinc-400">
-            Get a McKinsey-quality decision report built from your team&apos;s
-            competency signals — in minutes.
+            Get a founder-ready organizational intelligence report built from
+            your team&apos;s structure, role-fit signals, and competency
+            patterns.
           </p>
           <a
-            href={checkoutUrl}
+            href="/get-analysis"
             className="mt-7 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-7 py-3.5 text-sm font-semibold text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-400 hover:shadow-[0_0_50px_-5px_rgba(99,102,241,0.9)]"
           >
             <Sparkles className="h-4 w-4" />
@@ -1834,7 +1865,8 @@ function Section8FounderMemo() {
             <ArrowUpRight className="h-4 w-4" />
           </a>
           <p className="mt-3 text-xs text-zinc-500">
-            Built from your team. Delivered in minutes.
+            Decision-support tool for founders. No employment decisions made
+            by AI.
           </p>
         </div>
       </div>
