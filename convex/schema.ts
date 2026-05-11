@@ -183,6 +183,45 @@ export default defineSchema({
     createdAt: v.number(),
   }).index("by_createdAt", ["createdAt"]),
 
+  // HUCAMA PDF uploads from /app/upload. Each row tracks a single uploaded
+  // file in Convex storage and (after analysis) links to its analyses row.
+  analysisUploads: defineTable({
+    userId: v.id("users"),
+    fileName: v.string(),
+    storageId: v.id("_storage"),
+    uploadedAt: v.number(),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("processing"),
+      v.literal("complete"),
+      v.literal("error")
+    ),
+    analysisId: v.optional(v.id("analyses")),
+  })
+    .index("by_userId", ["userId"])
+    .index("by_userId_uploadedAt", ["userId", "uploadedAt"]),
+
+  // Org analysis results produced from a HUCAMA upload. For now this is
+  // populated with simulated NovaCloud-style data — real PDF parsing will be
+  // wired into convex/analysis.ts in a later release.
+  analyses: defineTable({
+    userId: v.id("users"),
+    uploadId: v.id("analysisUploads"),
+    createdAt: v.number(),
+    status: v.union(
+      v.literal("processing"),
+      v.literal("complete"),
+      v.literal("error")
+    ),
+    // Mock scores — will be replaced with real PDF parsing later.
+    orgMapData: v.optional(v.string()), // JSON string
+    roleFitData: v.optional(v.string()), // JSON string
+    riskSummary: v.optional(v.string()), // JSON string
+    reportMarkdown: v.optional(v.string()),
+  })
+    .index("by_userId", ["userId"])
+    .index("by_uploadId", ["uploadId"]),
+
   // Per-customer workspace record — one per paid purchase.
   customerWorkspaces: defineTable({
     userId: v.id("users"),

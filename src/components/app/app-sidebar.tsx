@@ -17,6 +17,7 @@ import {
   Briefcase,
   ClipboardList,
   Activity,
+  Upload,
 } from "lucide-react";
 import { useConvexAuth } from "convex/react";
 import { cn } from "@/lib/utils";
@@ -50,6 +51,7 @@ const navItems: NavItem[] = [
 
 const workspaceNavItems: NavItem[] = [
   { href: "/app/workspace", label: "My Workspace", icon: Briefcase },
+  { href: "/app/upload", label: "My Analysis", icon: Upload },
   { href: "/app/intake", label: "Intake Form", icon: ClipboardList },
   { href: "/app/status", label: "Report Status", icon: Activity },
 ];

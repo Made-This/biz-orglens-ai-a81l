@@ -11,6 +11,7 @@ import {
   ClipboardList,
   CreditCard,
   FileText,
+  Loader2,
   Lock,
   ShieldCheck,
   Sparkles,
@@ -39,6 +40,10 @@ export default function WorkspacePage() {
   );
   const intake = useQuery(
     api.intakeSubmissions.getMyIntake,
+    isAuthenticated ? {} : "skip"
+  );
+  const myUploads = useQuery(
+    api.uploads.getMyUploads,
     isAuthenticated ? {} : "skip"
   );
 
@@ -135,10 +140,25 @@ export default function WorkspacePage() {
 
           {/* 5. Uploaded Files */}
           <Card icon={<Upload className="h-4 w-4" />} title="Uploaded Files">
-            <p className="mt-3 text-sm text-zinc-400">
-              File upload coming soon. For now you can attach an org chart in
-              the intake form.
-            </p>
+            <div className="mt-3 flex items-center justify-between gap-3">
+              <StatusChip
+                tone={myUploads && myUploads.length > 0 ? "good" : "warn"}
+                label={
+                  myUploads === undefined
+                    ? "Loading"
+                    : myUploads.length > 0
+                      ? `${myUploads.length} uploaded`
+                      : "None yet"
+                }
+              />
+              <Link
+                href="/app/upload"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-300 transition-colors hover:text-indigo-200"
+              >
+                Upload reports
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
           </Card>
 
           {/* 6. Final Report */}
@@ -166,6 +186,31 @@ export default function WorkspacePage() {
             )}
           </Card>
         </div>
+      )}
+
+      {/* Analyses section — always shown when authenticated. */}
+      {hasWorkspace && (
+        <section className="mt-12">
+          <div className="mb-5 flex items-end justify-between gap-3">
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400">
+                Analyses
+              </p>
+              <h2 className="mt-1 text-xl font-bold tracking-tight text-white">
+                Your team report analyses
+              </h2>
+            </div>
+            <Link
+              href="/app/upload"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-400/50 bg-indigo-500/10 px-3 py-1.5 text-xs font-semibold text-indigo-200 transition-colors hover:bg-indigo-500/20 hover:text-white"
+            >
+              <Upload className="h-3.5 w-3.5" />
+              Upload Reports
+            </Link>
+          </div>
+
+          <AnalysesList uploads={myUploads} />
+        </section>
       )}
 
       <ResponsibleAINote className="mt-12" />
@@ -285,6 +330,152 @@ function Card({
       {children}
     </div>
   );
+}
+
+type UploadRow = {
+  _id: string;
+  fileName: string;
+  uploadedAt: number;
+  status: "pending" | "processing" | "complete" | "error";
+  analysisId?: string;
+  analysisStatus?: string | null;
+};
+
+function AnalysesList({
+  uploads,
+}: {
+  uploads: UploadRow[] | undefined;
+}) {
+  if (uploads === undefined) {
+    return (
+      <div className="flex items-center gap-2 rounded-2xl border border-[#1E1E24] bg-[#111118] p-6 text-sm text-zinc-500">
+        <Loader2 className="h-4 w-4 animate-spin" />
+        Loading your analyses…
+      </div>
+    );
+  }
+
+  if (uploads.length === 0) {
+    return (
+      <div className="rounded-2xl border border-dashed border-[#23232A] bg-[#0F0F12] p-8 text-center">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300">
+          <Upload className="h-5 w-5" />
+        </div>
+        <p className="mt-4 text-sm font-semibold text-white">
+          No analyses yet
+        </p>
+        <p className="mt-1 text-xs text-zinc-500">
+          Upload your team reports to get started.
+        </p>
+        <Link
+          href="/app/upload"
+          className="mt-4 inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-4 py-2 text-xs font-semibold text-white shadow-[0_0_20px_-5px_rgba(99,102,241,0.6)] transition-colors hover:bg-indigo-400"
+        >
+          Upload Reports
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="overflow-hidden rounded-2xl border border-[#1E1E24] bg-[#0F0F12]">
+      <table className="w-full">
+        <thead>
+          <tr className="border-b border-[#1E1E24] bg-[#0A0A0B] text-left text-[10px] font-medium uppercase tracking-widest text-zinc-500">
+            <th className="px-5 py-3">File</th>
+            <th className="px-5 py-3 hidden sm:table-cell">Uploaded</th>
+            <th className="px-5 py-3">Status</th>
+            <th className="px-5 py-3 text-right">Action</th>
+          </tr>
+        </thead>
+        <tbody className="text-sm">
+          {uploads.map((u) => (
+            <tr
+              key={u._id}
+              className="border-b border-[#1E1E24] last:border-b-0 hover:bg-[#13131A]"
+            >
+              <td className="px-5 py-3">
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <FileText className="h-4 w-4 shrink-0 text-indigo-300" />
+                  <span className="truncate font-medium text-white">
+                    {u.fileName}
+                  </span>
+                </div>
+              </td>
+              <td className="px-5 py-3 hidden text-xs text-zinc-500 sm:table-cell">
+                {formatUploadDate(u.uploadedAt)}
+              </td>
+              <td className="px-5 py-3">
+                <UploadStatusBadge status={u.status} />
+              </td>
+              <td className="px-5 py-3 text-right">
+                {u.status === "complete" && u.analysisId ? (
+                  <Link
+                    href={`/app/analysis/${u.analysisId}`}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-300 transition-colors hover:text-indigo-200"
+                  >
+                    View Analysis
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                ) : u.status === "processing" || u.status === "pending" ? (
+                  <span className="inline-flex items-center gap-1.5 text-xs text-zinc-500">
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    Processing…
+                  </span>
+                ) : (
+                  <span className="text-xs text-zinc-500">—</span>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function UploadStatusBadge({
+  status,
+}: {
+  status: "pending" | "processing" | "complete" | "error";
+}) {
+  const map = {
+    pending: {
+      cls: "border-zinc-700 bg-zinc-800/50 text-zinc-400",
+      label: "Pending",
+    },
+    processing: {
+      cls: "border-indigo-500/40 bg-indigo-500/10 text-indigo-300",
+      label: "Processing",
+    },
+    complete: {
+      cls: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
+      label: "Complete",
+    },
+    error: {
+      cls: "border-rose-500/30 bg-rose-500/10 text-rose-300",
+      label: "Error",
+    },
+  } as const;
+  const m = map[status];
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-medium uppercase tracking-widest ${m.cls}`}
+    >
+      <span className="h-1.5 w-1.5 rounded-full bg-current" />
+      {m.label}
+    </span>
+  );
+}
+
+function formatUploadDate(ts: number): string {
+  const d = new Date(ts);
+  return d.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
 function StatusChip({
