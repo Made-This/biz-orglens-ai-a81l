@@ -24,6 +24,7 @@ Auto-generated project analysis.
 - `/admin/settings`
 - `/admin/users`
 - `/admin/workspaces`
+- `/app/intake`
 - `/app/org-map`
 - `/app`
 - `/app/report`
@@ -32,11 +33,10 @@ Auto-generated project analysis.
 - `/app/settings/billing`
 - `/app/settings`
 - `/app/settings/team`
+- `/app/status`
+- `/app/workspace`
 - `/about`
 - `/advisory`
-- `/blog/[slug]`
-- `/blog`
-- `/get-analysis`
 
 ## Directory Structure
 - convex/

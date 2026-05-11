@@ -23,8 +23,9 @@ export function SignInValuePanel() {
         </p>
         <p className="mt-2 text-sm leading-relaxed text-zinc-400">
           Explore a sample report first with{" "}
-          <span className="text-white">NovaCloud Health</span>, a fictional US
-          health tech startup.
+          <span className="text-white">NovaCloud Health</span>, a fictional
+          demo company showing how OrgLens works for a growing team. OrgLens is
+          built for startups and SMEs with 10–150 employees.
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
           <Link

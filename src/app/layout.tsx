@@ -13,9 +13,9 @@ const inter = Inter({
 const OG_IMAGE_URL =
   "https://grandiose-goshawk-617.convex.cloud/api/storage/9cfc9d9b-c341-4f81-9bd8-bc31d6c256c2";
 const SITE_URL = "https://orglens-ai.madethis.app";
-const OG_TITLE = "OrgLens AI — Organizational Intelligence for Founders";
+const OG_TITLE = "OrgLens AI — Organizational Intelligence for Growing Teams";
 const OG_DESCRIPTION =
-  "Map competencies, rank role fit, and make restructuring decisions in 5 minutes. AI-powered organizational intelligence for founders.";
+  "OrgLens AI helps startups and SMEs with 10–150 employees turn team structure, role-fit signals, and leadership coverage into a clear organizational intelligence report.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

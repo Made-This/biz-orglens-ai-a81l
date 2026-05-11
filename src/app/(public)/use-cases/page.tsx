@@ -7,12 +7,13 @@ import {
   Compass,
   Lightbulb,
   Stethoscope,
+  Users,
 } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Use Cases — OrgLens AI",
   description:
-    "OrgLens AI use cases for SaaS founders, health tech startups, COOs, fractional HR consultants, and VC platform teams.",
+    "OrgLens AI use cases for founders, operators, SME leaders, COOs, fractional HR consultants, and VC advisors supporting startups and SMEs with 10–150 employees.",
 };
 
 type UseCase = {
@@ -26,9 +27,9 @@ type UseCase = {
 const USE_CASES: UseCase[] = [
   {
     icon: Building2,
-    title: "SaaS founder preparing to scale",
+    title: "Founder-led startup preparing to scale",
     paragraphs: [
-      "You're approaching a funding round or a new growth phase. Before hiring more senior leaders, you want to understand whether your current team structure can support the next stage — or whether it will create new bottlenecks.",
+      "You're approaching a funding round or a new growth phase. Understand whether your current team structure, role ownership, and leadership coverage can support the next stage of growth before adding more headcount.",
       "Most founders make this call from intuition. OrgLens gives you a structured view of where your team is strong, where leadership coverage is thin, and where role-fit mismatches will compound under pressure.",
     ],
     painBefore: [
@@ -44,31 +45,49 @@ const USE_CASES: UseCase[] = [
   },
   {
     icon: Stethoscope,
-    title: "Health tech startup building an operating team",
+    title: "Growing SME adding management layers",
     paragraphs: [
-      "Your company is transitioning from founder-led execution to a structured operating model. Clinical, product, and engineering need to operate as one team — but the structure was never designed, it grew.",
-      "OrgLens helps you map role coverage, identify leadership gaps, and design a team structure that matches your clinical and technical operating needs.",
+      "Your company is transitioning from informal founder-led execution to a more structured operating model. Clarify accountability, reporting lines, and ownership as the company moves beyond informal team coordination.",
+      "OrgLens helps you map role coverage, identify leadership gaps, and design a team structure that matches how your business actually operates today.",
     ],
     painBefore: [
-      "Clinical and product execution living in different mental models",
+      "Informal team coordination breaking down as headcount grows",
       "No clear ownership of operating-model decisions",
-      "Founder dependency across both go-to-market and clinical ops",
+      "Key-person dependency across multiple functions",
     ],
     whatWeDeliver: [
-      "Operating model snapshot tailored to health tech execution",
-      "Leadership coverage view across clinical, product, and engineering",
+      "Operating model snapshot for a growing team",
+      "Leadership coverage view across functions",
       "Team structure risks that will surface as you scale",
     ],
   },
   {
+    icon: Users,
+    title: "Team with 20–100 employees",
+    paragraphs: [
+      "Your team is too complex to manage by intuition alone, but not yet ready for expensive org-design consulting. You need a clearer view of role clarity, leadership coverage, and structural risks before the next stage of growth.",
+      "OrgLens gives founders, operators, and SME leaders a structured organizational intelligence report at a fraction of the cost of traditional consulting — built specifically for growing teams.",
+    ],
+    painBefore: [
+      "Team complexity has outpaced founder intuition",
+      "Org-design consulting feels premature or too expensive",
+      "Decisions about hires and structure rely on gut feel",
+    ],
+    whatWeDeliver: [
+      "Structured organizational intelligence report",
+      "Role clarity and leadership coverage view",
+      "Practical next steps before the next hiring or restructure decision",
+    ],
+  },
+  {
     icon: Briefcase,
-    title: "COO improving ownership clarity",
+    title: "COO or operator improving ownership clarity",
     paragraphs: [
       "You're responsible for execution, but roles and ownership are unclear across functions. Things get done because individuals lean in — not because the structure assigns responsibility.",
       "OrgLens surfaces where accountability is missing and which roles need redesign before the next hiring cycle, so the execution layer can scale without depending on heroics.",
     ],
     painBefore: [
-      "Cross-functional work routinely escalates to the COO",
+      "Cross-functional work routinely escalates to the COO or operator",
       "Role descriptions don't match how work actually flows",
       "New hires absorbed without clarifying ownership lines",
     ],
@@ -82,26 +101,26 @@ const USE_CASES: UseCase[] = [
     icon: Compass,
     title: "Fractional HR consultant supporting a client",
     paragraphs: [
-      "You support early-stage companies without a dedicated People team. Your value is judgment — but you need a structured analytical layer to present to founders.",
-      "OrgLens turns team observation into a documented decision report, so your recommendations land with the weight of evidence behind them.",
+      "You support startups and SMEs without a dedicated People team. Your value is judgment — but you need a structured analytical layer to present to clients.",
+      "OrgLens turns team observation into a structured organizational intelligence report that helps clients understand role clarity, leadership coverage, and team risks.",
     ],
     painBefore: [
       "Founder conversations move faster than written documentation",
       "Recommendations rely on consultant credibility alone",
-      "No reusable artifact to leave with the founder after a session",
+      "No reusable artifact to leave with the client after a session",
     ],
     whatWeDeliver: [
-      "Structured decision report you can share with the founder",
+      "Structured decision report you can share with the client",
       "Org map and role-fit signals to anchor your recommendations",
       "Repeatable diagnostic you can run across multiple clients",
     ],
   },
   {
     icon: Lightbulb,
-    title: "VC platform team helping portfolio companies",
+    title: "VC advisor or startup operator helping portfolio companies",
     paragraphs: [
-      "You work with a portfolio of early-stage companies at inflection points. Every founder hits the same team-design questions, but at different times — and you don't have a structured way to compare across companies.",
-      "OrgLens lets you run a consistent organizational diagnostic across companies and give founders a structured view of their team health before a board review.",
+      "You work with a portfolio of growing companies at inflection points. Every founder hits the same team-design questions, but at different times — and you don't have a structured way to compare across companies.",
+      "OrgLens lets you run a consistent organizational diagnostic across companies and give leaders a structured view of team health before a board review or scaling decision.",
     ],
     painBefore: [
       "Each portfolio diagnostic done from scratch",
@@ -132,9 +151,10 @@ export default function UseCasesPage() {
             Built for the moments that define how a company scales.
           </h1>
           <p className="mt-5 text-lg text-zinc-400">
-            OrgLens turns team structure, role-fit signals, and competency
-            patterns into a founder-ready decision report — for the people
-            making the call.
+            OrgLens turns team structure, role-fit signals, competency
+            patterns, and leadership coverage into a founder- and
+            operator-ready decision report for startups and SMEs with 10–150
+            employees — for the people making the call.
           </p>
         </div>
 

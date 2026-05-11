@@ -14,7 +14,7 @@ import {
 export const metadata: Metadata = {
   title: "Responsible AI — OrgLens AI",
   description:
-    "OrgLens AI is a decision-support tool for founders. We do not make employment decisions. See our Responsible AI commitment.",
+    "OrgLens AI is a decision-support tool for founders, operators, and SME leaders. We do not make employment decisions. See our Responsible AI commitment.",
 };
 
 export default function ResponsibleAIPage() {
@@ -34,7 +34,8 @@ export default function ResponsibleAIPage() {
             Responsible AI in organizational intelligence.
           </h1>
           <p className="mt-5 text-lg text-zinc-400">
-            OrgLens is built to support founder judgment — not replace it.
+            OrgLens is built to support founder, operator, and SME-leader
+            judgment — not replace it.
           </p>
         </div>
 
@@ -115,7 +116,7 @@ export default function ResponsibleAIPage() {
         {/* CTA */}
         <div className="mt-20 rounded-3xl border border-indigo-500/30 bg-gradient-to-b from-indigo-500/[0.08] to-[#0F0F12] p-10 text-center shadow-[0_0_60px_-20px_rgba(99,102,241,0.5)]">
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Built for founders. Reviewed by founders.
+            Designed for growing teams. Reviewed by human leaders.
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base text-zinc-400">
             Try the free demo report and see exactly what OrgLens produces —

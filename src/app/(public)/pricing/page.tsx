@@ -19,7 +19,7 @@ const tiers: Tier[] = [
     name: "Free Demo Report",
     badge: "Free",
     description:
-      "Explore a sample OrgLens organizational intelligence report before you buy.",
+      "Explore a full sample report for NovaCloud Health — one example of how OrgLens can analyze a growing team.",
     features: [
       "Sample org map (NovaCloud Health)",
       "Role-fit signal summary",
@@ -36,7 +36,7 @@ const tiers: Tier[] = [
     badgeOriginal: "Normally $149",
     ribbon: "Most Popular",
     description:
-      "A lightweight organizational intelligence report covering team structure, role-fit signals, top risks, and recommended next steps.",
+      "A lightweight organizational intelligence report for founders and SME leaders who want a fast read on team structure, role-fit signals, ownership gaps, and scaling risks.",
     features: [
       "Team structure review",
       "Role-fit signal summary",
@@ -53,7 +53,7 @@ const tiers: Tier[] = [
     name: "Full OrgLens Report",
     badge: "$249",
     description:
-      "A deeper analysis of org structure, leadership coverage, role-fit signals, competency patterns, scaling risks, and recommendations.",
+      "A deeper report covering org structure, leadership coverage, role-fit signals, competency patterns, team risks, and recommended next steps for growing teams.",
     features: [
       "Org map review",
       "Role-fit analysis",
@@ -72,7 +72,7 @@ const tiers: Tier[] = [
     name: "Founder Advisory Review",
     badge: "Starting at $999",
     description:
-      "Full OrgLens report plus a founder review session and action plan.",
+      "Full report plus a founder/operator review session and action plan for hiring, restructuring, or scaling decisions.",
     features: [
       "Full OrgLens Report",
       "Founder review session (60 min)",
@@ -96,7 +96,7 @@ const faqs = [
   },
   {
     q: "Who is OrgLens designed for?",
-    a: "Founders, COOs, Heads of People, Chiefs of Staff, fractional HR consultants, and VC platform teams supporting Seed to Series B SaaS and health tech companies (10–80 employees).",
+    a: "Founders, COOs, Heads of People, Chiefs of Staff, operators, SME leaders, fractional HR consultants, and VC advisors supporting startups and SMEs with 10–150 employees. Best fit for growing teams with 20–100 employees.",
   },
   {
     q: "Is my team's data secure?",
@@ -129,8 +129,9 @@ export default function PricingPage() {
             Simple, founder-friendly pricing.
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-zinc-400">
-            Start with the free demo. Upgrade when you&rsquo;re ready for your
-            own analysis.
+            Built for startups and SMEs with 10–150 employees. Start with the
+            free demo and upgrade when you&rsquo;re ready to see whether your
+            team is ready for the next stage of growth.
           </p>
         </div>
 

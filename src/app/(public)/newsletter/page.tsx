@@ -4,24 +4,24 @@ import { getPublishedPosts, CATEGORY_STYLES } from "@/lib/insights";
 import { NewsletterSignupForm } from "@/components/NewsletterSignupForm";
 
 export const metadata: Metadata = {
-  title: "OrgLens Monthly Insights — Newsletter for SaaS Founders",
+  title: "OrgLens Monthly Insights — Newsletter for Growing Teams",
   description:
-    "Monthly ideas on AI, HR tech, organizational intelligence, and better team decisions for SaaS founders.",
+    "Monthly ideas on AI, HR tech, role clarity, organizational intelligence, and better team decisions for founders, operators, and SME leaders.",
 };
 
 const RECEIVE_BULLETS = [
   "Monthly roundup of new OrgLens articles",
-  "Practical guides on org design, role fit, and team structure",
-  "AI and HR tech trend updates for SaaS founders",
+  "Practical guides on org design, role fit, leadership coverage, and team structure",
+  "AI and HR tech trend updates for founders, operators, and SME leaders",
   "Early access to OrgLens features and tools",
 ];
 
 const EXAMPLE_TOPICS = [
   "AI trends in HR tech",
-  "Founder-focused org design",
+  "Org design for growing teams",
   "Role-fit and competency signals",
   "Team structure risks",
-  "People analytics for early-stage SaaS",
+  "People analytics for startups and SMEs",
   "How to turn org data into better decisions",
 ];
 
@@ -57,7 +57,9 @@ export default function NewsletterPage() {
             OrgLens Monthly Insights
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-zinc-400">
-            Monthly ideas on AI, HR tech, organizational intelligence, and better team decisions for SaaS founders.
+            Monthly ideas on AI, HR tech, role clarity, organizational
+            intelligence, and better team decisions for founders, operators,
+            and SME leaders.
           </p>
 
           <div className="mt-10 max-w-2xl">

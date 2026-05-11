@@ -11,10 +11,11 @@
 
 export type InsightCategory =
   | "AI in HR Tech"
-  | "Org Design for Founders"
+  | "Org Design for Growing Teams"
   | "Role Fit & Competency Signals"
   | "People Analytics & Team Risk"
-  | "Responsible AI in People Decisions";
+  | "Responsible AI in People Decisions"
+  | "Founder and SME Leadership";
 
 export type BlogPost = {
   slug: string;
@@ -39,10 +40,11 @@ export type InsightPost = BlogPost;
 
 export const INSIGHT_CATEGORIES: InsightCategory[] = [
   "AI in HR Tech",
-  "Org Design for Founders",
+  "Org Design for Growing Teams",
   "Role Fit & Competency Signals",
   "People Analytics & Team Risk",
   "Responsible AI in People Decisions",
+  "Founder and SME Leadership",
 ];
 
 /**
@@ -61,7 +63,7 @@ export const CATEGORY_STYLES: Record<
     placeholder:
       "from-indigo-500/20 via-indigo-500/5 to-transparent border-indigo-400/20",
   },
-  "Org Design for Founders": {
+  "Org Design for Growing Teams": {
     badge: "bg-violet-500/10 text-violet-300 border-violet-400/30",
     ring: "ring-violet-400/30",
     dot: "bg-violet-400",
@@ -89,6 +91,13 @@ export const CATEGORY_STYLES: Record<
     placeholder:
       "from-sky-500/20 via-sky-500/5 to-transparent border-sky-400/20",
   },
+  "Founder and SME Leadership": {
+    badge: "bg-rose-500/10 text-rose-300 border-rose-400/30",
+    ring: "ring-rose-400/30",
+    dot: "bg-rose-400",
+    placeholder:
+      "from-rose-500/20 via-rose-500/5 to-transparent border-rose-400/20",
+  },
 };
 
 export const blogPosts: BlogPost[] = [
@@ -115,7 +124,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: "why-saas-founders-need-org-intelligence-before-scaling",
     title: "Why SaaS Founders Need Organizational Intelligence Before Scaling",
-    category: "Org Design for Founders",
+    category: "Org Design for Growing Teams",
     author: "OrgLens AI",
     publishDate: "2026-04-28",
     tags: ["Org Design", "Scaling", "Founders", "Team Structure"],

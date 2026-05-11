@@ -485,6 +485,12 @@ export default function OverviewPage() {
             &ldquo;Move from founder-led execution to a structured leadership model — and understand whether team structure, role coverage, and competency signals are ready to support scaling.&rdquo;
           </p>
         </div>
+        <p className="mt-3 max-w-2xl text-[11px] leading-relaxed text-zinc-500">
+          NovaCloud Health is a fictional demo company. OrgLens can be used by
+          startups and SMEs across industries, including software, healthcare
+          services, professional services, e-commerce, education, fintech, and
+          other knowledge-work businesses.
+        </p>
       </header>
 
       {/* Scenario tabs */}

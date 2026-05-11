@@ -31,7 +31,13 @@ export function SiteFooter({
               OrgLens<span className="text-indigo-400">.</span>AI
             </p>
             <p className="mt-2 max-w-xs text-sm text-zinc-500">
-              Organizational intelligence for SaaS and health tech founders.
+              Organizational intelligence for startups and SMEs with 10–150
+              employees.
+            </p>
+            <p className="mt-3 max-w-xs text-xs leading-relaxed text-zinc-600">
+              OrgLens AI helps growing teams turn team structure, role-fit
+              signals, competency patterns, and leadership coverage into
+              founder- and operator-ready organizational intelligence reports.
             </p>
 
             <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">

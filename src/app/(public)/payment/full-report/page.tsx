@@ -55,8 +55,8 @@ export default function FullReportPaymentPage() {
             </h1>
 
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-zinc-400">
-              A comprehensive organizational intelligence report for founders
-              making high-stakes team decisions.
+              A comprehensive organizational intelligence report for founders,
+              operators, and SME leaders making high-stakes team decisions.
             </p>
 
             <div className="mt-8 rounded-2xl border border-[#1E1E24] bg-[#0F0F12] p-6">

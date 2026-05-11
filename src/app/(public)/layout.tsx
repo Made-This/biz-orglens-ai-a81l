@@ -12,7 +12,7 @@ export default function PublicLayout({
       <main className="flex-1">{children}</main>
       <SiteFooter
         productName="OrgLens AI"
-        footerText="Organizational intelligence for founders."
+        footerText="Organizational intelligence for startups and SMEs with 10–150 employees."
       />
     </div>
   );

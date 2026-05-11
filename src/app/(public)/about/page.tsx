@@ -18,10 +18,10 @@ export default function AboutPage() {
 
         <div className="mt-10 space-y-6 text-lg text-zinc-400">
           <p>
-            We built OrgLens AI for founders who face organizational decisions
-            without the right intelligence. Restructuring under burn pressure.
-            Filling a critical role with imperfect data. Reading a board memo
-            you don&rsquo;t fully trust.
+            We built OrgLens AI for founders, operators, and SME leaders who
+            face organizational decisions without the right intelligence.
+            Restructuring under burn pressure. Filling a critical role with
+            imperfect data. Reading a board memo you don&rsquo;t fully trust.
           </p>
           <p>
             For decades, the analytical tools that could answer those questions
@@ -31,9 +31,9 @@ export default function AboutPage() {
           </p>
           <p>
             OrgLens AI brings competency science, organizational intelligence,
-            and AI-generated restructuring scenarios to every founder and SME
-            executive. Pay per analysis. Run it in minutes. Walk into your next
-            board meeting with clarity instead of guesswork.
+            and AI-generated scenarios to startups and SMEs with 10–150
+            employees. Pay per analysis. Run it in minutes. Walk into your
+            next board meeting with clarity instead of guesswork.
           </p>
           <p className="text-xl font-semibold text-white">
             We turn human complexity into decision clarity.

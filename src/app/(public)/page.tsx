@@ -55,16 +55,18 @@ function Hero() {
       <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 md:py-28 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-400">
-            Organizational intelligence for founders
+            Organizational intelligence for growing teams
           </p>
           <h1 className="mt-6 text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
             See the hidden team risks before they slow your{" "}
             <span className="text-indigo-300">next stage of growth.</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-zinc-400">
-            OrgLens AI turns team structure, role-fit signals, and competency
-            patterns into a founder-ready organizational intelligence report
-            for SaaS and health tech companies.
+            OrgLens AI helps startups and SMEs with 10–150 employees turn team
+            structure, role-fit signals, competency patterns, and leadership
+            coverage into a clear organizational intelligence report — so
+            leaders can clarify ownership, identify bottlenecks, and make
+            better people decisions before hiring, restructuring, or scaling.
           </p>
 
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -84,8 +86,8 @@ function Hero() {
           </div>
 
           <p className="mt-8 text-sm text-zinc-500">
-            Used by SaaS and health tech founders. No employment decisions
-            made by AI.
+            Best fit for growing teams with 20–100 employees. No employment
+            decisions made by AI.
           </p>
         </div>
       </div>
@@ -136,8 +138,13 @@ function PainPoints() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            If your team is growing, these problems are already forming.
+            Built for growing teams that are becoming too complex for founder
+            intuition alone.
           </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-zinc-400">
+            OrgLens is designed for startups and SMEs moving from informal
+            founder-led execution to a more structured operating model.
+          </p>
         </div>
 
         <div className="mx-auto mt-14 grid max-w-6xl grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -187,8 +194,8 @@ function HowItWorks() {
     {
       num: "03",
       icon: Target,
-      title: "Receive your founder-ready decision report",
-      desc: "Get a structured report with org map, role-fit rankings, team structure risks, and recommended next steps — ready to act on immediately.",
+      title: "Receive your founder- and operator-ready decision report",
+      desc: "Get a structured report with org map, role-fit signals, team structure risks, leadership coverage, and recommended next steps — ready to support better decisions before your next hire, restructure, or growth stage.",
     },
   ];
 
@@ -277,7 +284,7 @@ function ReportContents() {
     {
       icon: UserCog,
       title: "Founder Dependency Risks",
-      desc: "Where the company is over-indexed on founder involvement.",
+      desc: "Where the company is over-indexed on founder or key-person involvement.",
     },
     {
       icon: CheckCircle2,
@@ -332,28 +339,33 @@ function UseCases() {
   const cases = [
     {
       icon: Building2,
-      title: "SaaS founder preparing to scale",
-      desc: "Before hiring more senior leaders, understand whether your current team structure can support the next stage — or whether it will create new bottlenecks.",
+      title: "Founder-led startup preparing to scale",
+      desc: "Understand whether your current team structure, role ownership, and leadership coverage can support the next stage of growth before adding more headcount.",
     },
     {
       icon: Stethoscope,
-      title: "Health tech startup building an operating team",
-      desc: "Map role coverage, identify leadership gaps, and design a team structure that matches your clinical and technical operating needs.",
+      title: "Growing SME adding management layers",
+      desc: "Clarify accountability, reporting lines, and ownership as the company moves beyond informal team coordination.",
+    },
+    {
+      icon: Users,
+      title: "Team with 20–100 employees",
+      desc: "For teams that are too complex to manage by intuition alone, but not yet ready for expensive org-design consulting.",
     },
     {
       icon: Briefcase,
-      title: "COO improving ownership clarity",
+      title: "COO or operator improving ownership clarity",
       desc: "Surface where accountability is missing and which roles need redesign before the next hiring cycle.",
     },
     {
       icon: Compass,
       title: "Fractional HR consultant supporting a client",
-      desc: "Turn team observation into a documented decision report — a structured analytical layer to present to founders.",
+      desc: "Turn team observation into a structured organizational intelligence report that helps clients understand role clarity, leadership coverage, and team risks.",
     },
     {
       icon: Lightbulb,
-      title: "VC platform team helping portfolio companies",
-      desc: "Run a consistent organizational diagnostic across companies and give founders a structured view of team health before a board review.",
+      title: "VC advisor or startup operator helping portfolio companies",
+      desc: "Run a consistent organizational diagnostic across companies and give leaders a structured view of team health before a board review or scaling decision.",
     },
   ];
 
@@ -427,7 +439,7 @@ function PricingPreview() {
           <PricingCard
             label="Demo Report"
             price="Free"
-            description="Explore a full sample report for NovaCloud Health — a fictional health tech startup."
+            description="Explore a full sample report for NovaCloud Health — one example of how OrgLens can analyze a growing team."
             ctaLabel="View Demo Report"
             ctaHref={DEMO_URL}
             tone="outline"
@@ -439,7 +451,7 @@ function PricingPreview() {
             price="$49"
             priceSuffix="early access"
             badge="Most Popular"
-            description="A lightweight organizational intelligence report for founders who want a fast read on team structure, role-fit signals, and scaling risks."
+            description="A lightweight organizational intelligence report for founders and SME leaders who want a fast read on team structure, role-fit signals, ownership gaps, and scaling risks."
             ctaLabel="Get Founder Snapshot"
             ctaHref={FOUNDER_SNAPSHOT_CHECKOUT_URL}
             ctaExternal
@@ -450,7 +462,7 @@ function PricingPreview() {
           <PricingCard
             label="Full OrgLens Report"
             price="$249"
-            description="A deeper report covering org structure, leadership coverage, role-fit signals, risk areas, and recommendations."
+            description="A deeper report covering org structure, leadership coverage, role-fit signals, competency patterns, team risks, and recommended next steps for growing teams."
             ctaLabel="Run Full Analysis"
             ctaHref="/pricing"
             tone="outline"
@@ -460,7 +472,7 @@ function PricingPreview() {
           <PricingCard
             label="Founder Advisory Review"
             price="From $999"
-            description="Full report plus a founder review session and action plan."
+            description="Full report plus a founder/operator review session and action plan for hiring, restructuring, or scaling decisions."
             ctaLabel="Request Advisory Review"
             ctaHref="/get-analysis"
             tone="outline"
@@ -568,7 +580,7 @@ function ResponsibleAI() {
     },
     {
       icon: Users,
-      label: "Designed for founders, reviewed by founders",
+      label: "Designed for growing teams, reviewed by human leaders.",
     },
   ];
 
@@ -584,16 +596,17 @@ function ResponsibleAI() {
           </h2>
           <div className="mx-auto mt-6 max-w-2xl space-y-4 text-base leading-relaxed text-zinc-400">
             <p>
-              OrgLens is designed as a decision-support tool for founders and
-              operators. Reports surface patterns, risks, and signals — but
-              every decision about hiring, restructuring, or role design
-              remains with the human leader.
+              OrgLens is designed as a decision-support tool for founders,
+              operators, and SME leaders. Reports surface patterns, risks, and
+              signals — but every decision about hiring, restructuring, or
+              role design remains with the human leader.
             </p>
             <p>
               OrgLens reports should not be used as the sole basis for hiring,
               firing, promotion, compensation, or other employment decisions.
-              They are analytical inputs to help founders think more clearly
-              about their team — not outputs that replace human judgment.
+              They are analytical inputs to help founders, operators, and SME
+              leaders think more clearly about their team — not outputs that
+              replace human judgment.
             </p>
           </div>
         </div>
@@ -646,7 +659,7 @@ function NewsletterSection() {
           </p>
           <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Get monthly insights on AI, org design, and team intelligence for
-            founders.
+            growing teams.
           </h2>
         </div>
         <div className="mx-auto mt-10 max-w-2xl">

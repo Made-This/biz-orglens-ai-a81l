@@ -14,9 +14,9 @@ type Props = {
 };
 
 const DEFAULT_HEADLINE =
-  "Get monthly insights on AI, HR tech, and startup team design.";
+  "Get monthly insights on AI, HR tech, role clarity, and startup/SME team design.";
 const DEFAULT_DESCRIPTION =
-  "Join the OrgLens newsletter for practical articles on organizational intelligence, role fit, team structure, and AI-powered people decisions for SaaS founders.";
+  "Join OrgLens Monthly Insights for practical articles on organizational intelligence, role fit, team structure, leadership coverage, and AI-powered people decisions for founders, operators, and SME leaders.";
 
 type FormState =
   | { kind: "idle" }

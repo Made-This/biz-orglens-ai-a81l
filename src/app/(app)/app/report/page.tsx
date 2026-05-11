@@ -271,6 +271,12 @@ function SampleReportIntro() {
             teams. The company is moving from founder-led execution to a more
             scalable operating model.
           </p>
+          <p className="mt-3 text-xs leading-relaxed text-zinc-500">
+            NovaCloud Health is a fictional demo company. OrgLens can be used
+            by startups and SMEs across industries, including software,
+            healthcare services, professional services, e-commerce, education,
+            fintech, and other knowledge-work businesses.
+          </p>
         </div>
       </div>
     </section>
@@ -1944,9 +1950,10 @@ function Section8FounderMemo() {
             Ready to run this analysis on your own team?
           </h3>
           <p className="mx-auto mt-3 max-w-md text-sm text-zinc-400">
-            Get a founder-ready organizational intelligence report built from
-            your team&apos;s structure, role-fit signals, and competency
-            patterns.
+            Get a founder- and operator-ready organizational intelligence
+            report built from your team&apos;s structure, role-fit signals,
+            and competency patterns. See whether your team is ready for the
+            next stage of growth.
           </p>
           <a
             href="/get-analysis"
