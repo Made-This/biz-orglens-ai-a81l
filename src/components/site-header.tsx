@@ -15,6 +15,7 @@ interface SiteHeaderProps {
 const navLinks = [
   { label: "Features", href: "/#features" },
   { label: "Demo", href: "/#demo" },
+  { label: "Insights", href: "/insights" },
   { label: "Pricing", href: "/pricing" },
   { label: "About", href: "/about" },
 ];

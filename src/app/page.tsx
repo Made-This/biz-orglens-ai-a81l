@@ -36,6 +36,9 @@ export default function HomePage() {
             <a href="#preview" className="text-sm text-slate-600 transition-colors hover:text-slate-900">
               Sample Report
             </a>
+            <Link href="/insights" className="text-sm text-slate-600 transition-colors hover:text-slate-900">
+              Insights
+            </Link>
           </nav>
 
           <div className="flex items-center gap-3">

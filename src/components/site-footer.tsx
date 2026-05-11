@@ -48,6 +48,12 @@ export function SiteFooter({
               Pricing
             </Link>
             <Link
+              href="/insights"
+              className="text-sm text-zinc-400 transition-colors hover:text-white"
+            >
+              Insights
+            </Link>
+            <Link
               href="/sign-in"
               className="text-sm text-zinc-400 transition-colors hover:text-white"
             >
