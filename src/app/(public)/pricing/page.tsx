@@ -10,6 +10,7 @@ type Tier = {
   ctaLabel: string;
   ctaHref: string;
   ctaExternal?: boolean;
+  ctaSubtext?: string;
   tone: "ghost" | "highlighted" | "standard" | "premium";
   ribbon?: string;
 };
@@ -26,9 +27,10 @@ const tiers: Tier[] = [
       "Leadership coverage snapshot",
       "Team risk indicators",
     ],
-    ctaLabel: "View Demo Report",
-    ctaHref: "/app",
+    ctaLabel: "Preview Demo Report",
+    ctaHref: "/demo",
     tone: "ghost",
+    ctaSubtext: "Create a free account to unlock the full demo.",
   },
   {
     name: "Founder Snapshot",
@@ -198,7 +200,7 @@ export default function PricingPage() {
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href="/app"
+              href="/demo"
               className="inline-flex items-center gap-2 rounded-lg border border-indigo-400/50 px-6 py-3 text-sm font-semibold text-indigo-200 transition-all hover:bg-indigo-500/10 hover:text-white"
             >
               View Demo Report
@@ -267,6 +269,11 @@ function TierCard({ tier }: { tier: Tier }) {
           {tier.ctaLabel}
           <ArrowRight className="h-4 w-4" />
         </Link>
+      )}
+      {tier.ctaSubtext && (
+        <p className="mt-3 text-center text-xs text-zinc-500">
+          {tier.ctaSubtext}
+        </p>
       )}
     </div>
   );

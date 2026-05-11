@@ -15,9 +15,11 @@ interface SiteHeaderProps {
 // Primary nav for the commercial OrgLens AI site.
 // "Get My Analysis" is rendered separately as a filled CTA button.
 // "My Workspace" only renders for authenticated users.
-const navLinks = [
+// "Demo Report" destination depends on auth state — logged-out visitors
+// see the public preview at /demo; signed-in users go straight to the
+// full demo report at /app/demo.
+const baseNavLinks = [
   { label: "Home", href: "/" },
-  { label: "Demo Report", href: "/app" },
   { label: "Use Cases", href: "/use-cases" },
   { label: "Pricing", href: "/pricing" },
   { label: "Insights", href: "/insights" },
@@ -32,6 +34,14 @@ export function SiteHeader({
 }: SiteHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isAuthenticated } = useConvexAuth();
+
+  // Conditional destination: logged-out → /demo, logged-in → /app/demo
+  const demoHref = isAuthenticated ? "/app/demo" : "/demo";
+  const navLinks = [
+    baseNavLinks[0],
+    { label: "Demo Report", href: demoHref },
+    ...baseNavLinks.slice(1),
+  ];
 
   return (
     <header

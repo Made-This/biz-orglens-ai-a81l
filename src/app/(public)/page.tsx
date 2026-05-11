@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { NewsletterSignupForm } from "@/components/NewsletterSignupForm";
 
-const DEMO_URL = "/app";
+const DEMO_URL = "/demo";
 const FOUNDER_SNAPSHOT_CHECKOUT_URL =
   "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
 
