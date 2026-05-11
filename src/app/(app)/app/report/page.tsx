@@ -26,6 +26,9 @@ import {
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { NewsletterSignupForm } from "@/components/NewsletterSignupForm";
+import { useConvexAuth, useQuery } from "convex/react";
+import { api } from "@convex/_generated/api";
+import { ResponsibleAINote } from "@/components/auth-shared";
 
 const PRODUCT_ID = "md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
 
@@ -123,6 +126,12 @@ export default function ReportPage() {
   const { ready, unlocked } = useReportState();
   const [isDemoMode, setIsDemoMode] = useState(false);
 
+  const { isAuthenticated } = useConvexAuth();
+  const workspace = useQuery(
+    api.customerWorkspaces.getMyWorkspace,
+    isAuthenticated ? {} : "skip"
+  );
+
   if (!ready) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center text-zinc-500">
@@ -132,6 +141,8 @@ export default function ReportPage() {
   }
 
   const showFull = unlocked || isDemoMode;
+  const showCustomBanner =
+    isAuthenticated && workspace?.reportStatus === "report_ready";
 
   return (
     <>
@@ -140,6 +151,7 @@ export default function ReportPage() {
         <DemoBanner onClose={() => setIsDemoMode(false)} />
       )}
       <div className="report-root mx-auto max-w-6xl pb-24">
+        {showCustomBanner && <CustomReportBanner />}
         <SampleReportIntro />
         <ReportHeader />
         <ExecutiveSummary />
@@ -148,9 +160,89 @@ export default function ReportPage() {
         ) : (
           <LockedTeaser onDemo={() => setIsDemoMode(true)} />
         )}
+        <ReportUpgradeCTA
+          productName={workspace?.productName}
+          hasWorkspace={!!workspace}
+        />
         <ReportNewsletterFooter />
+        <ResponsibleAINote className="mx-auto mt-12 max-w-2xl px-4" />
       </div>
     </>
+  );
+}
+
+// ---------- CUSTOM REPORT BANNER (for authenticated paid users) ----------
+function CustomReportBanner() {
+  return (
+    <section className="report-section mb-6 px-4 pt-8 sm:px-6 lg:px-8">
+      <div className="rounded-2xl border border-amber-500/30 bg-amber-500/[0.08] p-5">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-300">
+          Your custom report
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-zinc-200">
+          Your custom report is in preparation. Below is a sample report for
+          reference — your final report will use the same format and structure,
+          built from the team context you submitted.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ---------- UPGRADE / ADVISORY CTA ----------
+function ReportUpgradeCTA({
+  productName,
+  hasWorkspace,
+}: {
+  productName?: string;
+  hasWorkspace: boolean;
+}) {
+  // Match against the product names we sell.
+  const lower = productName?.toLowerCase() ?? "";
+
+  let title = "Get your custom OrgLens report — Starting at $49";
+  let body =
+    "Run this analysis on your own team. Start with a Founder Snapshot for a focused organizational intelligence report.";
+  let href = "/payment/founder-snapshot";
+  let ctaLabel = "Get Founder Snapshot";
+
+  if (hasWorkspace && lower.includes("founder snapshot")) {
+    title = "Upgrade to Full OrgLens Report — $249";
+    body =
+      "Go deeper: org map review, leadership coverage, role-fit analysis, team risk signals, and scaling recommendations.";
+    href = "/payment/full-report";
+    ctaLabel = "Upgrade to Full Report";
+  } else if (hasWorkspace && lower.includes("full")) {
+    title = "Request Founder Advisory Review — Starting at $999";
+    body =
+      "Full OrgLens report plus a founder review session and an action plan tailored to your team.";
+    href = "/advisory";
+    ctaLabel = "Request Advisory Review";
+  }
+
+  return (
+    <section className="report-cta mt-14 px-4 sm:px-6 lg:px-8">
+      <div className="relative overflow-hidden rounded-2xl border border-indigo-500/30 bg-gradient-to-b from-indigo-500/[0.08] to-[#0f0f14] p-8 text-center shadow-[0_0_60px_-20px_rgba(99,102,241,0.5)]">
+        <div className="mx-auto max-w-xl">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400">
+            Next step
+          </p>
+          <h3 className="mt-3 text-2xl font-bold tracking-tight text-white">
+            {title}
+          </h3>
+          <p className="mx-auto mt-3 max-w-md text-sm text-zinc-400">
+            {body}
+          </p>
+          <a
+            href={href}
+            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
+          >
+            {ctaLabel}
+            <ArrowUpRight className="h-4 w-4" />
+          </a>
+        </div>
+      </div>
+    </section>
   );
 }
 

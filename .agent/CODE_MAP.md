@@ -33,10 +33,10 @@ Auto-generated project analysis.
 - `/app/settings`
 - `/app/settings/team`
 - `/about`
+- `/advisory`
 - `/blog/[slug]`
 - `/blog`
 - `/get-analysis`
-- `/insights/[slug]`
 
 ## Directory Structure
 - convex/

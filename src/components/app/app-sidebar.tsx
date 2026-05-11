@@ -14,7 +14,11 @@ import {
   X,
   LogOut,
   FileText,
+  Briefcase,
+  ClipboardList,
+  Activity,
 } from "lucide-react";
+import { useConvexAuth } from "convex/react";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -44,10 +48,17 @@ const navItems: NavItem[] = [
   },
 ];
 
+const workspaceNavItems: NavItem[] = [
+  { href: "/app/workspace", label: "My Workspace", icon: Briefcase },
+  { href: "/app/intake", label: "Intake Form", icon: ClipboardList },
+  { href: "/app/status", label: "Report Status", icon: Activity },
+];
+
 export function AppSidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { signOut } = useAuthActions();
+  const { isAuthenticated } = useConvexAuth();
 
   function isActive(href: string) {
     if (href === "/app") {
@@ -106,6 +117,34 @@ export function AppSidebar() {
             </Link>
           );
         })}
+
+        {isAuthenticated && (
+          <>
+            <p className="mb-2 mt-6 px-3 pt-2 text-[10px] font-medium uppercase tracking-widest text-zinc-600">
+              Your workspace
+            </p>
+            {workspaceNavItems.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                    active
+                      ? "bg-indigo-500/10 text-indigo-300 ring-1 ring-inset ring-indigo-500/30"
+                      : "text-zinc-400 hover:bg-[#16161A] hover:text-white"
+                  )}
+                >
+                  <Icon className="h-4 w-4 shrink-0" />
+                  <span className="flex-1">{item.label}</span>
+                </Link>
+              );
+            })}
+          </>
+        )}
       </nav>
 
       {/* Bottom actions */}

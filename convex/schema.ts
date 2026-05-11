@@ -128,19 +128,68 @@ export default defineSchema({
     createdAt: v.number(),
   }).index("by_createdAt", ["createdAt"]),
 
-  // Post-purchase intake form submissions from /intake.
+  // Post-purchase intake form submissions from /intake and /app/intake.
   intakeSubmissions: defineTable({
+    // Auth + payment linkage
+    userId: v.optional(v.id("users")),
+    sessionId: v.optional(v.string()),
+    productId: v.optional(v.string()),
+    productName: v.optional(v.string()),
+    // Company basics
     founderName: v.string(),
     email: v.string(),
-    company: v.string(),
+    // Legacy field name (kept optional for backward compat with old rows)
+    company: v.optional(v.string()),
+    companyName: v.optional(v.string()),
+    // Legacy field name (kept optional for backward compat with old rows)
     website: v.optional(v.string()),
-    companyType: v.string(),
-    companySize: v.string(),
-    currentRoles: v.string(),
-    mainChallenge: v.string(),
+    companyWebsite: v.optional(v.string()),
+    companyType: v.optional(v.string()),
+    industry: v.optional(v.string()),
+    companySize: v.optional(v.string()),
+    fundingStage: v.optional(v.string()),
+    // Team structure
+    leadershipTeam: v.optional(v.string()),
+    currentRoles: v.optional(v.string()),
+    reportingStructure: v.optional(v.string()),
+    keyDepartments: v.optional(v.string()),
+    openRoles: v.optional(v.string()),
+    // Decision context
+    decisionContext: v.optional(v.string()),
+    // Legacy field name (kept optional for backward compat with old rows)
+    mainChallenge: v.optional(v.string()),
+    restructuringContext: v.optional(v.string()),
+    teamChallenges: v.optional(v.string()),
+    founderDependency: v.optional(v.string()),
+    // Legacy/free-text decision field
     decision: v.optional(v.string()),
     // Cosmetic file upload — record only the filename if provided.
     fileName: v.optional(v.string()),
+    // Status: "submitted" | "in_review" | "report_ready"
+    status: v.optional(v.string()),
+    submittedAt: v.optional(v.number()),
     createdAt: v.number(),
-  }).index("by_createdAt", ["createdAt"]),
+  })
+    .index("by_createdAt", ["createdAt"])
+    .index("by_userId", ["userId"])
+    .index("by_sessionId", ["sessionId"]),
+
+  // Per-customer workspace record — one per paid purchase.
+  customerWorkspaces: defineTable({
+    userId: v.id("users"),
+    email: v.string(),
+    sessionId: v.optional(v.string()),
+    productId: v.optional(v.string()),
+    productName: v.optional(v.string()),
+    amount: v.optional(v.number()),
+    // "payment_received" | "intake_needed" | "intake_submitted" |
+    // "analysis_in_progress" | "report_ready"
+    reportStatus: v.string(),
+    intakeSubmissionId: v.optional(v.id("intakeSubmissions")),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_userId", ["userId"])
+    .index("by_email", ["email"])
+    .index("by_sessionId", ["sessionId"]),
 });

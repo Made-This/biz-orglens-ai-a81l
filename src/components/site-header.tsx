@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useConvexAuth } from "convex/react";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 
@@ -11,8 +12,9 @@ interface SiteHeaderProps {
   className?: string;
 }
 
-// 8-item primary nav for the commercial OrgLens AI site.
+// Primary nav for the commercial OrgLens AI site.
 // "Get My Analysis" is rendered separately as a filled CTA button.
+// "My Workspace" only renders for authenticated users.
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Demo Report", href: "/app/report" },
@@ -29,6 +31,7 @@ export function SiteHeader({
   className,
 }: SiteHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isAuthenticated } = useConvexAuth();
 
   return (
     <header
@@ -60,6 +63,14 @@ export function SiteHeader({
               {link.label}
             </Link>
           ))}
+          {isAuthenticated && (
+            <Link
+              href="/app/workspace"
+              className="text-sm font-medium text-indigo-300 transition-colors hover:text-white"
+            >
+              My Workspace
+            </Link>
+          )}
         </nav>
 
         {/* Desktop CTA */}
@@ -100,6 +111,15 @@ export function SiteHeader({
                 {link.label}
               </Link>
             ))}
+            {isAuthenticated && (
+              <Link
+                href="/app/workspace"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block rounded-md px-3 py-2 text-base font-medium text-indigo-300 transition-colors hover:bg-[#16161A] hover:text-white"
+              >
+                My Workspace
+              </Link>
+            )}
             <Link
               href="/get-analysis"
               onClick={() => setMobileMenuOpen(false)}
