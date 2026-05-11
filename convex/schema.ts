@@ -114,4 +114,33 @@ export default defineSchema({
     message: v.optional(v.string()),
     createdAt: v.number(),
   }).index("by_createdAt", ["createdAt"]),
+
+  // Founder Advisory Review request form submissions from /advisory.
+  advisoryRequests: defineTable({
+    name: v.string(),
+    email: v.string(),
+    company: v.string(),
+    roleTitle: v.string(),
+    companySize: v.string(),
+    teamChallenge: v.string(),
+    decision: v.optional(v.string()),
+    preferredContact: v.string(),
+    createdAt: v.number(),
+  }).index("by_createdAt", ["createdAt"]),
+
+  // Post-purchase intake form submissions from /intake.
+  intakeSubmissions: defineTable({
+    founderName: v.string(),
+    email: v.string(),
+    company: v.string(),
+    website: v.optional(v.string()),
+    companyType: v.string(),
+    companySize: v.string(),
+    currentRoles: v.string(),
+    mainChallenge: v.string(),
+    decision: v.optional(v.string()),
+    // Cosmetic file upload — record only the filename if provided.
+    fileName: v.optional(v.string()),
+    createdAt: v.number(),
+  }).index("by_createdAt", ["createdAt"]),
 });

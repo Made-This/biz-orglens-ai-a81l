@@ -135,11 +135,32 @@ function SuccessInner() {
           )}
         </div>
 
+        <div className="mt-10 rounded-2xl border border-indigo-400/40 bg-gradient-to-b from-indigo-500/[0.10] to-[#0F0F12] p-6 text-left shadow-[0_0_60px_-15px_rgba(99,102,241,0.45)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-300">
+            Next step
+          </p>
+          <h2 className="mt-3 text-lg font-semibold text-white">
+            Submit your team context so we can begin your analysis.
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+            Share your team, current roles, and the decision you&rsquo;re
+            working through. Your report will follow within the delivery
+            window for your plan.
+          </p>
+          <Link
+            href="/intake"
+            className="mt-5 inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
+          >
+            Submit Team Context
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+
         <Link
           href="/app"
-          className="mt-8 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-7 py-3.5 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400 hover:shadow-[0_0_40px_-5px_rgba(99,102,241,0.9)]"
+          className="mt-8 inline-flex items-center gap-2 rounded-full border border-indigo-400/50 px-7 py-3.5 text-sm font-medium text-indigo-200 transition-all hover:bg-indigo-500/10 hover:text-white"
         >
-          Open Full Analysis
+          Or explore the demo report
           <ArrowRight className="h-4 w-4" />
         </Link>
 
