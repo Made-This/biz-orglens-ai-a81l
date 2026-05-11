@@ -53,78 +53,78 @@ interface VPGroup {
 }
 
 const ceo: Person = {
-  name: "Wenjing Li",
-  role: "CEO",
+  name: "Alex Morgan",
+  role: "Founder & CEO",
   scores: { Leadership: 8.2, Execution: 7.9, Adaptability: 8.0, Stability: 7.8 },
 };
 
 const orgTree: VPGroup[] = [
   {
-    team: "Product",
+    team: "Engineering & Product",
     vp: {
-      name: "Chifong Dong",
+      name: "Jordan Lee",
       role: "CTO",
-      scores: { Leadership: 8.8, Execution: 9.0, Adaptability: 8.5, Stability: 8.7 },
+      scores: { Leadership: 7.8, Execution: 7.7, Adaptability: 7.4, Stability: 7.5 },
     },
     reports: [
       {
-        name: "Eric Li",
+        name: "Morgan Chen",
         role: "Engineering Lead",
-        scores: { Leadership: 7.8, Execution: 9.1, Adaptability: 7.5, Stability: 8.2 },
+        scores: { Leadership: 6.8, Execution: 7.1, Adaptability: 6.5, Stability: 6.2 },
       },
       {
-        name: "Luke Cai",
-        role: "Product Manager",
-        scores: { Leadership: 7.9, Execution: 8.7, Adaptability: 8.1, Stability: 7.9 },
+        name: "Taylor Brooks",
+        role: "Head of Product",
+        scores: { Leadership: 7.1, Execution: 7.4, Adaptability: 7.2, Stability: 6.9 },
       },
       {
-        name: "Yijun Sim",
-        role: "Sr Engineer",
-        scores: { Leadership: 7.2, Execution: 8.6, Adaptability: 7.8, Stability: 8.0 },
+        name: "Chris Bennett",
+        role: "Senior Engineer",
+        scores: { Leadership: 5.8, Execution: 6.6, Adaptability: 6.0, Stability: 6.2 },
       },
       {
-        name: "Jun Park",
-        role: "Designer",
-        scores: { Leadership: 6.5, Execution: 7.8, Adaptability: 7.9, Stability: 7.1 },
+        name: "Sophia Grant",
+        role: "UX Designer",
+        scores: { Leadership: 5.2, Execution: 6.2, Adaptability: 6.5, Stability: 5.8 },
       },
     ],
   },
   {
-    team: "Sales",
+    team: "Customer Success",
     vp: {
-      name: "Supriya Kumar",
-      role: "VP Sales",
-      scores: { Leadership: 8.4, Execution: 8.5, Adaptability: 8.0, Stability: 7.9 },
+      name: "Riley Johnson",
+      role: "Customer Success Lead",
+      scores: { Leadership: 6.6, Execution: 6.7, Adaptability: 6.4, Stability: 6.5 },
     },
     reports: [
       {
-        name: "Patrick Wang",
+        name: "Lucas Kim",
         role: "Account Executive",
-        scores: { Leadership: 6.8, Execution: 7.5, Adaptability: 7.2, Stability: 7.0 },
+        scores: { Leadership: 5.4, Execution: 6.0, Adaptability: 5.8, Stability: 5.6 },
       },
       {
-        name: "Mei Tanaka",
-        role: "SDR",
-        scores: { Leadership: 6.2, Execution: 7.1, Adaptability: 7.0, Stability: 6.8 },
+        name: "Zoe Chambers",
+        role: "Onboarding Specialist",
+        scores: { Leadership: 5.0, Execution: 5.7, Adaptability: 5.6, Stability: 5.4 },
       },
     ],
   },
   {
-    team: "Operations",
+    team: "Clinical Operations",
     vp: {
-      name: "Lili Mao",
-      role: "Head of Ops",
-      scores: { Leadership: 8.3, Execution: 8.4, Adaptability: 7.2, Stability: 8.5 },
+      name: "Casey Miller",
+      role: "Head of Operations",
+      scores: { Leadership: 6.7, Execution: 6.8, Adaptability: 5.8, Stability: 6.9 },
     },
     reports: [
       {
-        name: "Yuzhe Zhao",
-        role: "Ops Specialist",
-        scores: { Leadership: 4.2, Execution: 5.1, Adaptability: 4.8, Stability: 4.5 },
+        name: "Elena Torres",
+        role: "Clinical Specialist",
+        scores: { Leadership: 3.6, Execution: 4.2, Adaptability: 3.9, Stability: 3.8 },
         atRisk: true,
       },
       {
-        name: "Support Lead",
+        name: "Clinical Ops Lead",
         role: "Vacant",
         scores: { Leadership: 0, Execution: 0, Adaptability: 0, Stability: 0 },
         vacant: true,
@@ -290,7 +290,7 @@ function DefaultOrgMap({ onActivateDemo }: { onActivateDemo: () => void }) {
             className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-500"
           >
             <Sparkles className="h-4 w-4" />
-            Unlock Full Analysis — $49
+            Get My Custom OrgLens Analysis
           </a>
         </div>
       </header>
@@ -384,11 +384,11 @@ function DefaultOrgMap({ onActivateDemo }: { onActivateDemo: () => void }) {
         </h2>
 
         <div className="mt-5 grid gap-4 md:grid-cols-3">
-          {/* Product */}
+          {/* Engineering & Product */}
           <div className="rounded-2xl border border-[rgba(99,102,241,0.15)] border-l-4 border-l-emerald-500 bg-[#111118] p-5">
             <div className="flex items-center justify-between">
               <p className="text-[10px] font-medium uppercase tracking-widest text-emerald-300">
-                Product Team
+                Engineering & Product
               </p>
               <span className="rounded-full border border-emerald-500/30 bg-emerald-500/[0.08] px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest text-emerald-300">
                 Strong
@@ -398,49 +398,49 @@ function DefaultOrgMap({ onActivateDemo }: { onActivateDemo: () => void }) {
               <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
               <span>
                 <strong className="text-white">High execution balance.</strong>{" "}
-                Chifong, Eric, and Luke maintain strong scores across all
+                Jordan, Morgan, and Taylor maintain strong scores across all
                 dimensions. Engineering capacity is well-covered.
               </span>
             </p>
           </div>
 
-          {/* Operations */}
+          {/* Clinical Operations */}
           <div className="rounded-2xl border border-[rgba(99,102,241,0.15)] border-l-4 border-l-rose-500 bg-[#111118] p-5">
             <div className="flex items-center justify-between">
               <p className="text-[10px] font-medium uppercase tracking-widest text-rose-300">
-                Operations Team
+                Clinical Operations
               </p>
               <span className="rounded-full border border-rose-500/30 bg-rose-500/[0.08] px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest text-rose-300">
-                Restructuring Risk
+                Scaling Risk
               </span>
             </div>
             <p className="mt-3 flex items-start gap-2 text-sm text-zinc-300">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-rose-400" />
               <span>
-                Low adaptability + low coping scores in Operations.{" "}
-                <strong className="text-white">Yuzhe Zhao</strong> shows
+                Low adaptability + low coping scores in Clinical Operations.{" "}
+                <strong className="text-white">Elena Torres</strong> shows
                 near-critical gaps across all four dimensions. Dependency on
-                Lili Mao is high.
+                Casey Miller is high.
               </span>
             </p>
           </div>
 
-          {/* Sales */}
+          {/* Customer Success */}
           <div className="rounded-2xl border border-[rgba(99,102,241,0.15)] border-l-4 border-l-amber-400 bg-[#111118] p-5">
             <div className="flex items-center justify-between">
               <p className="text-[10px] font-medium uppercase tracking-widest text-amber-300">
-                Sales Team
+                Customer Success
               </p>
               <span className="rounded-full border border-amber-400/30 bg-amber-400/[0.08] px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest text-amber-300">
-                Collaboration Risk
+                Coverage Risk
               </span>
             </div>
             <p className="mt-3 flex items-start gap-2 text-sm text-zinc-300">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
               <span>
-                High influence concentration around{" "}
-                <strong className="text-white">Supriya Kumar</strong>. Patrick
-                and Mei show moderate profiles. Team resilience is below
+                Customer load concentrated around{" "}
+                <strong className="text-white">Riley Johnson</strong>. Lucas
+                and Zoe show moderate profiles. Team resilience is below
                 benchmark.
               </span>
             </p>
@@ -471,7 +471,7 @@ function DefaultOrgMap({ onActivateDemo }: { onActivateDemo: () => void }) {
       <section className="relative mt-14">
         <div className="pointer-events-none select-none rounded-2xl border border-[rgba(99,102,241,0.15)] bg-[#111118] p-8 blur-[3px]">
           <p className="text-xs font-medium uppercase tracking-widest text-zinc-500">
-            Behavioral Signal Map · 48 Competency Heatmap
+            Behavioral Signal Map · Competency Heatmap
           </p>
           <div className="mt-6 grid grid-cols-8 gap-1.5">
             {Array.from({ length: 48 }).map((_, i) => (
@@ -498,7 +498,7 @@ function DefaultOrgMap({ onActivateDemo }: { onActivateDemo: () => void }) {
               Behavioral Signal Map locked
             </h3>
             <p className="mx-auto mt-2 max-w-md text-sm text-zinc-400">
-              Unlock the full 48-competency heatmap, every node-level score, and
+              Unlock the full competency heatmap, every node-level score, and
               team-wide behavioral signal patterns.
             </p>
             <div className="mt-6 flex flex-col items-center justify-center gap-2.5 sm:flex-row">
@@ -507,7 +507,7 @@ function DefaultOrgMap({ onActivateDemo }: { onActivateDemo: () => void }) {
                 onClick={() => unlockAndGo(router)}
                 className="inline-flex items-center gap-2 rounded-full bg-indigo-500 px-6 py-3 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
               >
-                Unlock with Full Analysis — $49
+                Get My Custom OrgLens Analysis
                 <ArrowRight className="h-4 w-4" />
               </button>
               <button
@@ -570,9 +570,9 @@ const DEMO_MODE_LABELS: Record<DemoMode, string> = {
 };
 
 const DEMO_CEO: DemoNode = {
-  id: "wenjing",
-  name: "Wenjing Li",
-  role: "CEO",
+  id: "alex",
+  name: "Alex Morgan",
+  role: "Founder & CEO",
   dots: { L: "green", E: "green", A: "green", S: "green" },
   modeTone: {
     Leadership: "green",
@@ -586,9 +586,9 @@ const DEMO_CEO: DemoNode = {
 const DEMO_TREE: DemoBranch[] = [
   {
     lead: {
-      id: "chifong",
-      name: "Chifong Dong",
-      role: "Head of Investment",
+      id: "jordan",
+      name: "Jordan Lee",
+      role: "CTO · Engineering",
       dots: { L: "green", E: "green", A: "amber", S: "green" },
       modeTone: {
         Leadership: "green",
@@ -600,9 +600,9 @@ const DEMO_TREE: DemoBranch[] = [
     },
     reports: [
       {
-        id: "yijun",
-        name: "Yijun Sim",
-        role: "Senior Analyst",
+        id: "morgan",
+        name: "Morgan Chen",
+        role: "Engineering Lead",
         dots: { L: "amber", E: "green", A: "amber", S: "amber" },
         modeTone: {
           Leadership: "amber",
@@ -613,9 +613,9 @@ const DEMO_TREE: DemoBranch[] = [
         },
       },
       {
-        id: "analyst1",
-        name: "Devina Patel",
-        role: "Investment Analyst",
+        id: "chris",
+        name: "Chris Bennett",
+        role: "Senior Engineer",
         dots: { L: "amber", E: "green", A: "green", S: "amber" },
         modeTone: {
           Leadership: "amber",
@@ -626,9 +626,9 @@ const DEMO_TREE: DemoBranch[] = [
         },
       },
       {
-        id: "analyst2",
-        name: "Marcus Reid",
-        role: "Investment Analyst",
+        id: "derek",
+        name: "Derek Huang",
+        role: "Backend Engineer",
         dots: { L: "amber", E: "amber", A: "amber", S: "green" },
         modeTone: {
           Leadership: "amber",
@@ -638,12 +638,38 @@ const DEMO_TREE: DemoBranch[] = [
           Risk: "amber",
         },
       },
+      {
+        id: "priya",
+        name: "Priya Nair",
+        role: "Data & Analytics Lead",
+        dots: { L: "amber", E: "green", A: "green", S: "amber" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "green",
+          Adaptability: "green",
+          Stability: "amber",
+          Risk: "green",
+        },
+      },
+      {
+        id: "owen",
+        name: "Owen Fletcher",
+        role: "DevOps Lead",
+        dots: { L: "amber", E: "green", A: "amber", S: "green" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "green",
+          Adaptability: "amber",
+          Stability: "green",
+          Risk: "green",
+        },
+      },
     ],
   },
   {
     lead: {
-      id: "lili",
-      name: "Lili Mao",
+      id: "casey",
+      name: "Casey Miller",
       role: "Head of Operations",
       dots: { L: "green", E: "amber", A: "amber", S: "green" },
       modeTone: {
@@ -656,9 +682,9 @@ const DEMO_TREE: DemoBranch[] = [
     },
     reports: [
       {
-        id: "joyce",
-        name: "Joyce Zhang",
-        role: "Operations Lead",
+        id: "avery",
+        name: "Avery Wilson",
+        role: "Clinical Operations Lead",
         dots: { L: "amber", E: "amber", A: "amber", S: "red" },
         modeTone: {
           Leadership: "amber",
@@ -670,9 +696,9 @@ const DEMO_TREE: DemoBranch[] = [
         modeBadge: { Risk: "WATCH" },
       },
       {
-        id: "yuzhe",
-        name: "Yuzhe Zhao",
-        role: "Operations Specialist",
+        id: "elena",
+        name: "Elena Torres",
+        role: "Clinical Specialist",
         dots: { L: "red", E: "red", A: "red", S: "red" },
         modeTone: {
           Leadership: "red",
@@ -685,9 +711,9 @@ const DEMO_TREE: DemoBranch[] = [
         alwaysBadge: "AT RISK",
       },
       {
-        id: "ops_coord",
-        name: "Tom Becker",
-        role: "Ops Coordinator",
+        id: "isabella",
+        name: "Isabella Park",
+        role: "Executive Assistant",
         dots: { L: "amber", E: "amber", A: "amber", S: "amber" },
         modeTone: {
           Leadership: "amber",
@@ -698,9 +724,9 @@ const DEMO_TREE: DemoBranch[] = [
         },
       },
       {
-        id: "finance_lead",
-        name: "Priya Naidu",
-        role: "Finance Lead",
+        id: "sam",
+        name: "Sam Parker",
+        role: "Finance & Strategy Lead",
         dots: { L: "amber", E: "green", A: "amber", S: "green" },
         modeTone: {
           Leadership: "amber",
@@ -714,9 +740,9 @@ const DEMO_TREE: DemoBranch[] = [
   },
   {
     lead: {
-      id: "eric",
-      name: "Eric Li",
-      role: "Head of Research",
+      id: "taylor",
+      name: "Taylor Brooks",
+      role: "Head of Product",
       dots: { L: "green", E: "green", A: "green", S: "green" },
       modeTone: {
         Leadership: "green",
@@ -728,9 +754,9 @@ const DEMO_TREE: DemoBranch[] = [
     },
     reports: [
       {
-        id: "research1",
-        name: "Hana Yamamoto",
-        role: "Senior Researcher",
+        id: "natalie",
+        name: "Natalie Adams",
+        role: "Product Manager",
         dots: { L: "amber", E: "green", A: "green", S: "green" },
         modeTone: {
           Leadership: "amber",
@@ -741,9 +767,9 @@ const DEMO_TREE: DemoBranch[] = [
         },
       },
       {
-        id: "research2",
-        name: "Daniel Adeyemi",
-        role: "Research Analyst",
+        id: "lily",
+        name: "Lily Chen",
+        role: "Product Analyst",
         dots: { L: "amber", E: "green", A: "green", S: "amber" },
         modeTone: {
           Leadership: "amber",
@@ -754,15 +780,15 @@ const DEMO_TREE: DemoBranch[] = [
         },
       },
       {
-        id: "data_lead",
-        name: "Anya Volkov",
-        role: "Data Lead",
-        dots: { L: "green", E: "green", A: "green", S: "green" },
+        id: "sophia",
+        name: "Sophia Grant",
+        role: "UX Designer",
+        dots: { L: "amber", E: "green", A: "green", S: "amber" },
         modeTone: {
-          Leadership: "green",
+          Leadership: "amber",
           Execution: "green",
           Adaptability: "green",
-          Stability: "green",
+          Stability: "amber",
           Risk: "green",
         },
       },
@@ -770,9 +796,9 @@ const DEMO_TREE: DemoBranch[] = [
   },
   {
     lead: {
-      id: "luke",
-      name: "Luke Cai",
-      role: "Head of Product",
+      id: "riley",
+      name: "Riley Johnson",
+      role: "Customer Success Lead",
       dots: { L: "amber", E: "green", A: "green", S: "amber" },
       modeTone: {
         Leadership: "amber",
@@ -784,22 +810,9 @@ const DEMO_TREE: DemoBranch[] = [
     },
     reports: [
       {
-        id: "pm1",
-        name: "Maya Iyer",
-        role: "Product Manager",
-        dots: { L: "amber", E: "green", A: "green", S: "amber" },
-        modeTone: {
-          Leadership: "amber",
-          Execution: "green",
-          Adaptability: "green",
-          Stability: "amber",
-          Risk: "amber",
-        },
-      },
-      {
-        id: "pm2",
-        name: "Jonas Weber",
-        role: "Product Manager",
+        id: "zoe",
+        name: "Zoe Chambers",
+        role: "Onboarding Specialist",
         dots: { L: "amber", E: "amber", A: "green", S: "amber" },
         modeTone: {
           Leadership: "amber",
@@ -810,25 +823,38 @@ const DEMO_TREE: DemoBranch[] = [
         },
       },
       {
-        id: "design_lead",
-        name: "Sarah Kim",
-        role: "Design Lead",
-        dots: { L: "amber", E: "green", A: "green", S: "amber" },
+        id: "caden",
+        name: "Caden Brooks",
+        role: "Customer Success Manager",
+        dots: { L: "amber", E: "amber", A: "green", S: "amber" },
+        modeTone: {
+          Leadership: "amber",
+          Execution: "amber",
+          Adaptability: "green",
+          Stability: "amber",
+          Risk: "amber",
+        },
+      },
+      {
+        id: "ethan",
+        name: "Ethan Ross",
+        role: "QA Lead",
+        dots: { L: "amber", E: "green", A: "amber", S: "amber" },
         modeTone: {
           Leadership: "amber",
           Execution: "green",
-          Adaptability: "green",
+          Adaptability: "amber",
           Stability: "amber",
-          Risk: "green",
+          Risk: "amber",
         },
       },
     ],
   },
   {
     lead: {
-      id: "supriya",
-      name: "Supriya Kumar",
-      role: "Head of People",
+      id: "marcus",
+      name: "Marcus Wright",
+      role: "Sales Lead",
       dots: { L: "amber", E: "amber", A: "amber", S: "green" },
       modeTone: {
         Leadership: "amber",
@@ -840,9 +866,9 @@ const DEMO_TREE: DemoBranch[] = [
     },
     reports: [
       {
-        id: "hr_bp",
-        name: "Renata Costa",
-        role: "HR Business Partner",
+        id: "jamie",
+        name: "Jamie Carter",
+        role: "Growth Lead",
         dots: { L: "amber", E: "amber", A: "amber", S: "green" },
         modeTone: {
           Leadership: "amber",
@@ -853,9 +879,9 @@ const DEMO_TREE: DemoBranch[] = [
         },
       },
       {
-        id: "talent",
-        name: "James Okonkwo",
-        role: "Talent Lead",
+        id: "lucas",
+        name: "Lucas Kim",
+        role: "Account Executive",
         dots: { L: "amber", E: "green", A: "amber", S: "amber" },
         modeTone: {
           Leadership: "amber",
@@ -866,9 +892,9 @@ const DEMO_TREE: DemoBranch[] = [
         },
       },
       {
-        id: "culture",
-        name: "Aiko Nakamura",
-        role: "Culture Lead",
+        id: "mia",
+        name: "Mia Santos",
+        role: "Marketing Manager",
         dots: { L: "amber", E: "amber", A: "green", S: "amber" },
         modeTone: {
           Leadership: "amber",
@@ -887,9 +913,9 @@ const SCENARIO_B_OVERRIDES: Record<
   string,
   { addBadge?: string; modeToneOverride?: Partial<Record<DemoMode, DemoTone>> }
 > = {
-  chifong: { addBadge: "REDESIGNED" },
-  lili: { addBadge: "REDESIGNED" },
-  yuzhe: {
+  jordan: { addBadge: "REDESIGNED" },
+  casey: { addBadge: "REDESIGNED" },
+  elena: {
     addBadge: "Redeployed",
     modeToneOverride: {
       Leadership: "amber",
@@ -899,7 +925,7 @@ const SCENARIO_B_OVERRIDES: Record<
       Risk: "amber",
     },
   },
-  joyce: {
+  avery: {
     modeToneOverride: {
       Leadership: "green",
       Execution: "green",
@@ -932,14 +958,14 @@ function DemoOrgMap({ onClose }: { onClose: () => void }) {
             <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-400">
               <span className="inline-flex items-center gap-1.5">
                 <Building2 className="h-3.5 w-3.5 text-indigo-400" />
-                <strong className="text-white">Alpha Investment Group</strong>
+                <strong className="text-white">NovaCloud Health</strong>
               </span>
               <span className="text-zinc-700">·</span>
-              <span>30 employees</span>
+              <span>28 employees</span>
               <span className="text-zinc-700">·</span>
               <span className="inline-flex items-center gap-1.5">
                 <Network className="h-3.5 w-3.5 text-indigo-400" />
-                Investment & Asset Management
+                US Health Tech · B2B SaaS
               </span>
             </p>
           </div>
@@ -995,7 +1021,7 @@ function DemoOrgMap({ onClose }: { onClose: () => void }) {
               <span
                 className={`h-1.5 w-1.5 rounded-full ${scenarioB ? "bg-white" : "bg-zinc-500"}`}
               />
-              Scenario B — Balanced Redesign
+              Scenario B — Balanced
             </button>
           </div>
         </div>
@@ -1091,7 +1117,7 @@ function DemoOrgMap({ onClose }: { onClose: () => void }) {
         {scenarioB && (
           <div className="mt-5 rounded-xl border border-emerald-500/30 bg-emerald-500/[0.06] p-4">
             <p className="text-[10px] font-medium uppercase tracking-widest text-emerald-300">
-              Scenario B — Balanced Redesign · Outcomes
+              Scenario B — Balanced · Outcomes
             </p>
             <div className="mt-2 grid gap-3 text-sm text-zinc-200 md:grid-cols-3">
               <div className="flex items-center gap-2">
@@ -1144,16 +1170,16 @@ function DemoOrgMap({ onClose }: { onClose: () => void }) {
             Run the same analysis on your organization
           </h3>
           <p className="mx-auto mt-2 max-w-2xl text-sm text-zinc-400">
-            Upload your team&apos;s HUCAMA reports, get back a full
-            organizational capability map, role-fit ranking, and restructuring
-            scenarios — in under 5 minutes.
+            Get a full organizational capability map, role-fit ranking, and
+            scaling scenarios — built from your team&apos;s competency signals
+            in under 5 minutes.
           </p>
           <a
             href={CHECKOUT_URL}
             className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-500"
           >
             <Sparkles className="h-4 w-4" />
-            Unlock Full Analysis — $49
+            Get My Custom OrgLens Analysis
             <ArrowRight className="h-4 w-4" />
           </a>
         </section>
@@ -1176,7 +1202,7 @@ function DemoBanner({ onClose }: { onClose: () => void }) {
               Demo Mode — Organizational Capability Analysis
             </p>
             <p className="mt-0.5 text-[11px] leading-snug text-indigo-100/90">
-              Fully unlocked preview · Alpha Investment Group · 30 employees
+              Fully unlocked preview · NovaCloud Health · 28 employees
             </p>
           </div>
         </div>
@@ -1185,7 +1211,7 @@ function DemoBanner({ onClose }: { onClose: () => void }) {
             href={CHECKOUT_URL}
             className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3.5 py-1.5 text-xs font-semibold text-indigo-700 transition-colors hover:bg-indigo-50"
           >
-            Unlock Full Analysis — $49
+            Get My Custom OrgLens Analysis
             <ArrowRight className="h-3 w-3" />
           </a>
           <button
@@ -1326,30 +1352,30 @@ const DEFAULT_INSIGHTS: Insight[] = [
   {
     severity: "red",
     emoji: "🔴",
-    title: "Burnout Risk — Operations",
+    title: "Burnout Risk — Clinical Operations",
     body:
-      "Operations team shows low coping and support capacity → high burnout probability under current workload.",
+      "Clinical Operations team shows low coping and support capacity → high burnout probability under current workload.",
   },
   {
     severity: "amber",
     emoji: "🟡",
-    title: "Leadership Dependency",
+    title: "Founder Dependency",
     body:
-      "Leadership capability concentrated in 3 individuals. Organization is fragile if any single leader departs.",
+      "Leadership capability concentrated in 3 individuals (Alex Morgan, Jordan Lee, Taylor Brooks). Organization is fragile if any single leader is unavailable.",
   },
   {
     severity: "amber",
     emoji: "🟡",
-    title: "Structural Weakness — Product",
+    title: "Structural Weakness — Customer Success",
     body:
-      "Product team is highly adaptive but lacks structural execution discipline. Risk of missed delivery timelines.",
+      "Customer Success team is highly adaptive but lacks structural execution discipline. Risk of inconsistent onboarding and churn signals.",
   },
   {
     severity: "red",
     emoji: "🔴",
     title: "Execution Bottleneck",
     body:
-      "Execution bottleneck detected between Research and Operations. Cross-functional handoff failure risk is elevated.",
+      "Execution bottleneck detected between Product and Clinical Operations. Cross-functional handoff failure risk is elevated.",
   },
 ];
 
@@ -1359,28 +1385,28 @@ const SCENARIO_B_INSIGHTS: Insight[] = [
     emoji: "🟢",
     title: "Burnout Risk Resolved",
     body:
-      "Operations workload redistributed across Lili Mao's expanded org. Coping capacity returns to safe range.",
+      "Clinical Operations workload redistributed across Casey Miller's expanded org. Coping capacity returns to safe range.",
   },
   {
     severity: "green",
     emoji: "🟢",
     title: "Leadership Coverage Strengthened",
     body:
-      "Chifong Dong's role expanded with two direct reports. Single-point-of-failure risk reduced from High to Moderate.",
+      "Jordan Lee's role expanded with two direct reports. Founder-dependency risk reduced from High to Moderate.",
   },
   {
     severity: "amber",
     emoji: "🟡",
-    title: "Product Team Structure Improving",
+    title: "Customer Success Structure Improving",
     body:
-      "Cross-functional pairing with Research adds execution discipline. Delivery confidence improving — monitor through next quarter.",
+      "Cross-functional pairing with Product adds execution discipline. Onboarding confidence improving — monitor through next quarter.",
   },
   {
     severity: "green",
     emoji: "🟢",
     title: "Execution Bottleneck Eased",
     body:
-      "Joyce Zhang elevated to Operations Lead, restoring handoff cadence between Research and Operations. Risk: Moderate → Low.",
+      "Avery Wilson elevated to Clinical Operations Lead, restoring handoff cadence between Product and Clinical Ops. Risk: Moderate → Low.",
   },
 ];
 

@@ -821,7 +821,7 @@ function ReportPreviewSection() {
 
             {/* LOCKED rows */}
             <div className="space-y-3 p-6 md:p-8">
-              <LockedRow title="Full Role-Fit Ranking" sample="Luke Cai · 94% · VP Product" />
+              <LockedRow title="Full Role-Fit Ranking" sample="Taylor Brooks · 94% · Head of Product" />
               <LockedRow title="Competency Heatmap" sample="48 cells · L · E · A · S" />
               <LockedRow title="Scenario Detail" sample="A · B · C — full breakdown" />
               <LockedRow title="Founder Memo" sample="Decision · Trade-offs · Next steps" />

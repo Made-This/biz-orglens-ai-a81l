@@ -183,10 +183,10 @@ function DemoBanner({ onClose }: { onClose: () => void }) {
           </div>
           <div>
             <p className="text-sm font-semibold leading-tight">
-              Demo Mode — Sample Organizational Analysis
+              Demo Mode — NovaCloud Health Sample Decision Report
             </p>
             <p className="mt-0.5 text-xs leading-snug opacity-80">
-              This is a fully unlocked preview. Real analysis costs $49.
+              Fully unlocked preview · US Health Tech startup · 28 employees
             </p>
           </div>
         </div>
@@ -196,7 +196,7 @@ function DemoBanner({ onClose }: { onClose: () => void }) {
             className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-500 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-indigo-400"
           >
             <Sparkles className="h-3.5 w-3.5" />
-            Unlock Real Analysis — $49
+            Get My Custom OrgLens Analysis
           </a>
           <button
             onClick={onClose}
@@ -250,7 +250,7 @@ function ReportHeader() {
           Organizational Analysis Report
         </h1>
         <p className="mt-2 text-sm text-zinc-400">
-          Alpha Investment Group
+          NovaCloud Health
           <span className="mx-2 text-zinc-700">·</span>
           Confidential
           <span className="mx-2 text-zinc-700">·</span>
@@ -315,26 +315,26 @@ function ExecutiveSummary() {
     {
       icon: ShieldAlert,
       tone: "rose" as const,
-      label: "Leadership Gap",
-      text: "Leadership coverage gap in Operations (58% → target 76%).",
+      label: "Leadership Coverage",
+      text: "Leadership coverage gap in Clinical Operations (58% → target 76%).",
     },
     {
       icon: AlertTriangle,
       tone: "amber" as const,
-      label: "Execution Risk",
-      text: "Execution stability: Medium risk under current structure.",
+      label: "Scaling Risk",
+      text: "Execution stability: Medium risk under current founder-led structure.",
     },
     {
       icon: Users,
       tone: "rose" as const,
       label: "Role Misalignment",
-      text: "Yuzhe Zhao: role misalignment flagged — below threshold on 6/8 competencies.",
+      text: "Elena Torres: role misalignment flagged — below threshold on 6 of 8 competencies.",
     },
     {
       icon: Crown,
       tone: "indigo" as const,
-      label: "Talent Concentration",
-      text: "Top 3 performers (Chifong Dong, Eric Li, Lili Mao) covering 40% of critical delivery.",
+      label: "Founder Dependency",
+      text: "Top 3 performers (Alex Morgan, Jordan Lee, Taylor Brooks) cover ~40% of critical delivery.",
     },
   ];
 
@@ -380,21 +380,26 @@ function ExecutiveSummary() {
             Company Profile
           </div>
           <h3 className="mt-3 text-xl font-bold text-white">
-            Alpha Investment Group
+            NovaCloud Health
           </h3>
           <dl className="mt-6 space-y-4">
             <div className="flex justify-between gap-4 border-b border-white/[0.06] pb-3">
               <dt className="text-xs uppercase tracking-widest text-zinc-500">Headcount</dt>
-              <dd className="font-mono text-sm font-semibold text-white">30</dd>
+              <dd className="font-mono text-sm font-semibold text-white">28</dd>
             </div>
             <div className="flex justify-between gap-4 border-b border-white/[0.06] pb-3">
               <dt className="text-xs uppercase tracking-widest text-zinc-500">Sector</dt>
-              <dd className="text-sm font-medium text-zinc-200">Investment / Finance</dd>
+              <dd className="text-sm font-medium text-zinc-200">Health Tech · B2B SaaS</dd>
+            </div>
+            <div className="flex justify-between gap-4 border-b border-white/[0.06] pb-3">
+              <dt className="text-xs uppercase tracking-widest text-zinc-500">Stage</dt>
+              <dd className="text-sm font-medium text-zinc-200">Seed → Series A</dd>
             </div>
             <div className="flex flex-col gap-2">
               <dt className="text-xs uppercase tracking-widest text-zinc-500">Objective</dt>
               <dd className="text-sm leading-relaxed text-zinc-200">
-                Reduce burn without destroying execution capability
+                Move from founder-led execution to a structured leadership
+                model — and stress-test scaling readiness.
               </dd>
             </div>
           </dl>
@@ -440,11 +445,12 @@ function ExecutiveSummary() {
               Recommended Scenario
             </p>
             <h3 className="mt-2 text-xl font-bold text-white md:text-2xl">
-              Scenario B — Balanced Redesign
+              Scenario B — Balanced
             </h3>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-zinc-200">
-              Balances cost reduction with organizational resilience. Maintains
-              leadership continuity while removing structural redundancy.
+              Maintains NovaCloud&apos;s 28-person structure with clear
+              functional leads and shared accountability. Preserves execution
+              continuity while reducing founder dependency.
             </p>
           </div>
           <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-500/30 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-emerald-100 ring-1 ring-inset ring-emerald-400/40">
@@ -501,7 +507,7 @@ function LockedTeaser({ onDemo }: { onDemo: () => void }) {
                 className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-3 font-semibold text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-500 hover:shadow-[0_0_50px_-5px_rgba(99,102,241,0.9)]"
               >
                 <Sparkles className="h-4 w-4" />
-                Unlock Full Report — $49
+                Get My Custom OrgLens Analysis
                 <ArrowRight className="h-4 w-4" />
               </a>
               <button
@@ -509,11 +515,11 @@ function LockedTeaser({ onDemo }: { onDemo: () => void }) {
                 className="inline-flex items-center gap-2 rounded-lg border-2 border-indigo-600 bg-transparent px-5 py-3 font-medium text-indigo-300 transition-all hover:bg-indigo-600/10 hover:text-indigo-200"
               >
                 <FileText className="h-4 w-4" />
-                View Full Demo Report
+                View Full Demo Decision Report
               </button>
             </div>
             <p className="mt-3 text-xs text-zinc-500">
-              Instant access. One-time payment. Or preview with the demo report.
+              Built from your team. Delivered in minutes. Or preview the demo decision report.
             </p>
 
             <div className="mt-8 grid grid-cols-2 gap-3 text-left text-xs text-zinc-400 sm:grid-cols-4">
@@ -602,7 +608,7 @@ function Section2Metrics() {
       <SectionTitle
         num="02"
         title="Organizational Metrics"
-        subtitle="Before vs After — net deltas under Scenario B (Balanced Redesign)"
+        subtitle="Before vs After — net deltas under Scenario B (Balanced)"
       />
 
       <div className="report-card overflow-hidden rounded-xl border border-white/[0.08] bg-[#111116]">
@@ -782,7 +788,7 @@ function Section3OrgMap() {
 
   const teams = [
     {
-      name: "Investment Team",
+      name: "Engineering & Product",
       stats: [
         { label: "Leadership", value: 89 },
         { label: "Execution", value: 91 },
@@ -793,18 +799,18 @@ function Section3OrgMap() {
       tone: "emerald" as const,
     },
     {
-      name: "Operations Team",
+      name: "Clinical Operations",
       stats: [
         { label: "Leadership", value: 58 },
         { label: "Execution", value: 76 },
         { label: "Adaptability", value: 72 },
         { label: "Stability", value: 69 },
       ],
-      summary: "Leadership gap; risk concentration",
+      summary: "Leadership coverage gap; founder dependency",
       tone: "rose" as const,
     },
     {
-      name: "Research Team",
+      name: "Customer Success & GTM",
       stats: [
         { label: "Leadership", value: 78 },
         { label: "Execution", value: 82 },
@@ -858,72 +864,73 @@ function Section3OrgMap() {
           {/* CEO */}
           <OrgNode
             isCEO
-            name="Wenjing Li"
-            role="Chief Executive Officer"
+            name="Alex Morgan"
+            role="Founder & CEO"
             dots={baseDots("green", "green", "green", "green")}
+            score="7.8/10"
           />
 
           {/* Direct reports */}
           <div className="ml-4 space-y-3 border-l border-white/[0.08] pl-5 md:ml-6 md:pl-7">
             <OrgNode
-              name="Chifong Dong"
-              role="Investment Director"
+              name="Jordan Lee"
+              role="CTO"
               dots={baseDots("green", "green", "green", "green")}
-              score="9.5/10"
+              score="7.5/10"
             />
 
             <div>
               <OrgNode
-                name="Lili Mao"
-                role="Operations Lead"
+                name="Casey Miller"
+                role="Head of Operations"
                 dots={baseDots("green", "green", "amber", "green")}
-                score="8.4/10"
+                score="6.6/10"
               />
               <div className="ml-4 mt-3 space-y-3 border-l border-white/[0.08] pl-5 md:ml-6 md:pl-7">
                 <OrgNode
-                  name="Eric Li"
-                  role="Senior Analyst"
+                  name="Morgan Chen"
+                  role="Engineering Lead"
                   dots={baseDots("green", "green", "green", "amber")}
-                  score="9.2/10"
+                  score="6.4/10"
                 />
                 <OrgNode
-                  name="Yijun Sim"
-                  role="Senior Analyst"
+                  name="Chris Bennett"
+                  role="Senior Engineer"
                   dots={baseDots("amber", "green", "green", "green")}
-                  score="9.2/10"
+                  score="6.2/10"
                 />
                 <OrgNode
                   atRisk
-                  name="Yuzhe Zhao"
-                  role="Analyst"
+                  name="Elena Torres"
+                  role="Clinical Specialist"
                   dots={baseDots("red", "red", "amber", "amber")}
-                  score="4.1/10"
+                  score="3.8/10"
                 />
               </div>
             </div>
 
             <div>
               <OrgNode
-                name="Supriya Kumar"
-                role="Research Director"
+                name="Riley Johnson"
+                role="Customer Success Lead"
                 dots={baseDots("green", "green", "green", "amber")}
-                score="9.4/10"
+                score="6.5/10"
               />
               <div className="ml-4 mt-3 space-y-3 border-l border-white/[0.08] pl-5 md:ml-6 md:pl-7">
                 <OrgNode
-                  name="Joyce Zhang"
-                  role="Business Development"
+                  name="Avery Wilson"
+                  role="Clinical Operations Lead"
                   dots={baseDots("amber", "amber", "green", "red")}
-                  score="7.2/10"
+                  score="5.6/10"
                 />
               </div>
             </div>
 
             <OrgNode
-              name="Luke Cai"
-              role="Strategy Lead"
+              name="Taylor Brooks"
+              role="Head of Product"
               dots={baseDots("green", "green", "amber", "green")}
-              score="9.0/10"
+              score="7.2/10"
             />
           </div>
         </div>
@@ -956,7 +963,7 @@ function Section3OrgMap() {
 }
 
 // ---------- SECTION 4: ROLE-COMPETENCY FIT RANKING ----------
-type RoleKey = "investment" | "operations" | "research";
+type RoleKey = "engineering" | "operations" | "product";
 
 interface DemoCandidate {
   name: string;
@@ -967,65 +974,65 @@ interface DemoCandidate {
 }
 
 const DEMO_ROLES: Record<RoleKey, { label: string; candidates: DemoCandidate[] }> = {
-  investment: {
-    label: "Investment Lead",
+  engineering: {
+    label: "Head of Engineering",
     candidates: [
       {
-        name: "Chifong Dong",
+        name: "Jordan Lee",
         fit: 95,
         strengths: ["Strategic Thinking", "Stakeholder Influence"],
         gaps: ["Acting with Consideration"],
-        insight: "Top investment leadership profile. Dominant analytical and stakeholder posture.",
+        insight: "Top engineering leadership profile. Dominant technical and stakeholder posture.",
       },
       {
-        name: "Eric Li",
+        name: "Morgan Chen",
         fit: 91,
-        strengths: ["Analytical Rigor", "Drive"],
+        strengths: ["Execution Rigor", "Drive"],
         gaps: ["Team Leadership"],
         insight: "Execution-strong deputy candidate. Develop people-leadership for next step.",
       },
       {
-        name: "Yijun Sim",
+        name: "Chris Bennett",
         fit: 90,
         strengths: ["Execution Focus", "Structure"],
         gaps: ["Innovation"],
-        insight: "Highly structured; pair with creative profiles for portfolio breadth.",
+        insight: "Highly structured; pair with creative profiles for product breadth.",
       },
       {
-        name: "Luke Cai",
+        name: "Priya Nair",
         fit: 84,
-        strengths: ["Strategy", "Communication"],
+        strengths: ["Analytical Rigor", "Communication"],
         gaps: ["Detail Orientation"],
-        insight: "Strong strategic communicator; better suited to thematic investment lead.",
+        insight: "Strong analytical communicator; better suited to data-platform leadership.",
       },
       {
-        name: "Supriya Kumar",
+        name: "Owen Fletcher",
         fit: 81,
-        strengths: ["Research Depth", "Delivery"],
+        strengths: ["Reliability", "Delivery"],
         gaps: ["Influence"],
-        insight: "Strong analytical anchor; better aligned to research direction.",
+        insight: "Strong infrastructure anchor; better aligned to DevOps & SRE leadership.",
       },
     ],
   },
   operations: {
-    label: "Operations Lead",
+    label: "Head of Operations",
     candidates: [
       {
-        name: "Lili Mao",
+        name: "Casey Miller",
         fit: 94,
         strengths: ["People Leadership", "Delivery", "Standards"],
         gaps: ["Analytical Depth"],
         insight: "Highest operational fit. Add analytical support to relieve cognitive load.",
       },
       {
-        name: "Supriya Kumar",
+        name: "Sam Parker",
         fit: 88,
-        strengths: ["Planning", "Research"],
+        strengths: ["Planning", "Strategy"],
         gaps: ["Team Motivation"],
         insight: "Strong process leader; pair with energetic culture-builder.",
       },
       {
-        name: "Eric Li",
+        name: "Morgan Chen",
         fit: 79,
         strengths: ["Execution", "Drive"],
         gaps: ["People Development"],
@@ -1033,36 +1040,36 @@ const DEMO_ROLES: Record<RoleKey, { label: string; candidates: DemoCandidate[] }
       },
     ],
   },
-  research: {
-    label: "Research Director",
+  product: {
+    label: "Head of Product",
     candidates: [
       {
-        name: "Supriya Kumar",
+        name: "Taylor Brooks",
         fit: 96,
-        strengths: ["Depth", "Precision", "Innovation"],
+        strengths: ["Depth", "Customer Focus", "Innovation"],
         gaps: ["Speed"],
-        insight: "Ideal research director. Manage scope to mitigate speed risk.",
+        insight: "Ideal head of product. Manage scope to mitigate speed risk.",
       },
       {
-        name: "Yijun Sim",
+        name: "Natalie Adams",
         fit: 85,
         strengths: ["Analysis", "Structure"],
-        gaps: ["Research Breadth"],
-        insight: "Strong methodological fit; broaden research scope progressively.",
+        gaps: ["Product Breadth"],
+        insight: "Strong methodological fit; broaden product scope progressively.",
       },
       {
-        name: "Luke Cai",
+        name: "Sophia Grant",
         fit: 77,
-        strengths: ["Strategy"],
-        gaps: ["Research Methodology"],
-        insight: "Better suited to thematic research strategy than research operations.",
+        strengths: ["Design Vision"],
+        gaps: ["Product Operations"],
+        insight: "Better suited to design leadership than product operations.",
       },
     ],
   },
 };
 
 function Section4RoleFit() {
-  const [role, setRole] = useState<RoleKey>("investment");
+  const [role, setRole] = useState<RoleKey>("engineering");
   const [expanded, setExpanded] = useState<number | null>(0);
   const data = DEMO_ROLES[role];
 
@@ -1213,46 +1220,46 @@ function Section5Scenarios() {
   const cards = [
     {
       key: "A",
-      name: "Lean Efficiency",
+      name: "Lean",
       borderClass: "border-amber-500/40",
       ringClass: "ring-amber-500/20",
       pillClass: "bg-rose-500/15 text-rose-300 ring-rose-500/30",
       pillLabel: "High Risk ⚠",
       stats: [
-        { label: "Headcount Impact", value: "−4 roles (13% reduction)" },
-        { label: "Cost Reduction", value: "$320K / year" },
+        { label: "Team Structure", value: "15-person core team" },
+        { label: "Leadership Model", value: "Founder directly manages all" },
         { label: "Execution Effect", value: "Moderate decline (−15%)" },
       ],
       tradeoff:
-        "Removes buffer capacity; increases dependency on top performers.",
+        "Reduces operating cost fast — increases founder dependency and removes succession depth.",
       recommended: false,
     },
     {
       key: "B",
-      name: "Balanced Redesign",
+      name: "Balanced",
       borderClass: "border-indigo-500/50",
       ringClass: "ring-indigo-500/30",
       pillClass: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
       pillLabel: "Moderate Risk ✓",
       stats: [
-        { label: "Headcount Impact", value: "−2 roles + 1 redesign" },
-        { label: "Cost Reduction", value: "$180K / year" },
+        { label: "Team Structure", value: "28-person structure preserved" },
+        { label: "Leadership Model", value: "Clear functional leads, shared accountability" },
         { label: "Execution Effect", value: "Stable → Strong (+18%)" },
       ],
       tradeoff:
-        "Minor short-term adjustment cost; sustainable long-term capability.",
+        "Minor short-term adjustment cost; sustainable scaling capability into Series A.",
       recommended: true,
     },
     {
       key: "C",
-      name: "AI-Augmented Organization",
+      name: "AI-Native",
       borderClass: "border-cyan-500/40",
       ringClass: "ring-cyan-500/20",
       pillClass: "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30",
-      pillLabel: "Low Risk ✓",
+      pillLabel: "Transition Risk ✓",
       stats: [
-        { label: "Headcount Impact", value: "−1 role + 2 AI-enhanced roles" },
-        { label: "Cost Reduction", value: "$90K / year" },
+        { label: "Team Structure", value: "3 senior leads + AI-augmented teams" },
+        { label: "Leadership Model", value: "AI handles ops and analytics" },
         { label: "Execution Effect", value: "Strong improvement (+32%)" },
       ],
       tradeoff:
@@ -1266,7 +1273,7 @@ function Section5Scenarios() {
       <SectionTitle
         num="05"
         title="Scenario Comparison"
-        subtitle="Three restructuring paths evaluated for cost, risk, and execution impact"
+        subtitle="Three scaling paths evaluated for team structure, leadership coverage, and execution impact"
       />
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
@@ -1338,7 +1345,7 @@ function Section6CompetencyImpact() {
       label: "Leadership Coverage",
       before: 58,
       after: 76,
-      insight: "Eric Li promoted to Operations deputy closes the leadership gap.",
+      insight: "Morgan Chen promoted to Operations deputy closes the leadership gap.",
     },
     {
       label: "Execution Strength",
@@ -1350,13 +1357,13 @@ function Section6CompetencyImpact() {
       label: "Stability Index",
       before: 65,
       after: 72,
-      insight: "Workload redistribution reduces burnout risk in Operations.",
+      insight: "Workload redistribution reduces burnout risk in Clinical Ops.",
     },
     {
       label: "Adaptability Score",
       before: 62,
       after: 78,
-      insight: "BD repositioning unlocks Joyce Zhang's flexible profile.",
+      insight: "Role repositioning unlocks Avery Wilson's clinical operator profile.",
     },
   ];
 
@@ -1365,7 +1372,7 @@ function Section6CompetencyImpact() {
       <SectionTitle
         num="06"
         title="Competency Impact"
-        subtitle="Animated competency deltas under Scenario B (Balanced Redesign)"
+        subtitle="Animated competency deltas under Scenario B (Balanced)"
       />
 
       <div className="report-card rounded-xl border border-white/[0.08] bg-[#111116] p-6 md:p-8">
@@ -1470,24 +1477,24 @@ function Section6CompetencyImpact() {
 function Section7RiskIntel() {
   const risks = [
     {
-      title: "Leadership Dependency",
+      title: "Founder Dependency",
       severity: "HIGH",
       severityClass: "bg-rose-500/15 text-rose-300 ring-rose-500/30",
       borderClass: "border-l-rose-500",
-      team: "Operations",
+      team: "Leadership",
       detail:
-        "40% of delivery capability concentrated in 2 people (Chifong Dong, Lili Mao). No succession depth.",
+        "~40% of delivery capability concentrated in 2 people (Alex Morgan, Jordan Lee). No succession depth across functional leads.",
       action:
-        "Develop Eric Li as Operations deputy. Cross-train Yijun Sim on stakeholder management.",
+        "Develop Morgan Chen as Engineering deputy. Cross-train Chris Bennett on stakeholder management.",
     },
     {
       title: "Burnout Risk",
       severity: "MEDIUM",
       severityClass: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
       borderClass: "border-l-amber-500",
-      team: "Operations, Research",
+      team: "Clinical Operations, Engineering",
       detail:
-        "Lili Mao's 360 feedback shows impatience signals and urgency pressure passed to team. Sustained high load for 12+ months.",
+        "Casey Miller's 360 feedback shows urgency pressure passed to team. Sustained high load for 12+ months without structured recovery.",
       action:
         "Redistribute 2 direct reports. Add structured recovery protocols.",
     },
@@ -1496,20 +1503,20 @@ function Section7RiskIntel() {
       severity: "MEDIUM",
       severityClass: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
       borderClass: "border-l-amber-500",
-      team: "Business Development",
+      team: "Clinical Operations",
       detail:
-        "Joyce Zhang (Influencer/Networker type) in delivery-heavy role. Low Implementer score creates execution gaps.",
+        "Avery Wilson (relationship-oriented profile) in delivery-heavy clinical role. Low implementer score creates execution gaps.",
       action:
-        "Redesign role toward BD/partnerships. Pair with execution-strong Analyst.",
+        "Redesign role toward clinical partnerships and onboarding. Pair with execution-strong specialist.",
     },
     {
       title: "Role Misalignment",
       severity: "HIGH",
       severityClass: "bg-rose-500/15 text-rose-300 ring-rose-500/30",
       borderClass: "border-l-rose-500",
-      team: "Operations",
+      team: "Clinical Operations",
       detail:
-        "Yuzhe Zhao scoring below threshold on 6/8 Great 8 competencies. Role fit score: 34%. Exit or reassignment risk.",
+        "Elena Torres scoring below threshold on 6 of 8 competency dimensions. Role-fit score: 34%. Exit or reassignment risk.",
       action:
         "Performance review with structured support plan. Consider role redesign or transition plan.",
     },
@@ -1573,20 +1580,20 @@ function Section8FounderMemo() {
 
   const findings = [
     {
-      title: "LEADERSHIP GAP IN OPERATIONS",
-      body: "Current leadership coverage in Operations stands at 58% — below the 70% threshold required for sustainable execution at your growth stage. The primary risk is over-reliance on Lili Mao as a single point of leadership with insufficient succession depth.",
+      title: "LEADERSHIP COVERAGE IN CLINICAL OPS",
+      body: "Current leadership coverage in Clinical Operations stands at 58% — below the 70% threshold required for sustainable execution at NovaCloud's growth stage. The primary risk is over-reliance on Casey Miller as a single point of leadership with insufficient succession depth.",
     },
     {
-      title: "ROLE MISALIGNMENT — YUZHE ZHAO",
-      body: "Yuzhe Zhao's competency profile scores below role requirements on 6 of 8 Great 8 dimensions. Continuation in the current role creates drag on the Operations team. Immediate intervention recommended.",
+      title: "ROLE MISALIGNMENT — ELENA TORRES",
+      body: "Elena Torres' competency profile scores below role requirements on 6 of 8 dimensions in the organizational intelligence competency model. Continuation in the current role creates drag on the Clinical Operations team. Immediate intervention recommended.",
     },
     {
-      title: "TALENT CONCENTRATION RISK",
-      body: "Chifong Dong and Eric Li together account for approximately 40% of the firm's high-execution delivery capacity. Loss of either would materially impact client delivery timelines.",
+      title: "FOUNDER DEPENDENCY",
+      body: "Alex Morgan and Jordan Lee together account for ~40% of NovaCloud's high-execution delivery capacity. Loss of either would materially impact product delivery and customer-facing timelines.",
     },
     {
-      title: "JOYCE ZHANG — MISAPPLIED TALENT",
-      body: "Zhang's psychometric profile (Influencer 9.7, Networker 9.7, Pioneer 7.6) positions her as an exceptional relationship and alignment driver. The current role under-utilizes this profile. Redesigning toward business development or strategic partnerships would deliver higher returns.",
+      title: "AVERY WILSON — MISAPPLIED TALENT",
+      body: "Wilson's behavioral indicators (high relationship orientation, strong networker score, pioneering profile) position her as an exceptional clinical partnerships and customer-alignment driver. The current role under-utilizes this profile. Redesigning toward clinical partnerships and onboarding would deliver higher returns.",
     },
   ];
 
@@ -1595,25 +1602,25 @@ function Section8FounderMemo() {
       label: "Priority 1",
       window: "Immediate — 0–30 days",
       items: [
-        "Initiate Yuzhe Zhao performance review with structured support plan",
-        "Begin Eric Li leadership development track",
-        "Redistribute 1–2 direct reports from Lili Mao",
+        "Initiate Elena Torres performance review with structured support plan",
+        "Begin Morgan Chen leadership development track",
+        "Redistribute 1–2 direct reports from Casey Miller",
       ],
     },
     {
       label: "Priority 2",
       window: "Short-term — 30–60 days",
       items: [
-        "Redesign Joyce Zhang's role toward BD/Partnerships",
-        "Implement cross-training: Yijun Sim on stakeholder management",
-        "Document Chifong Dong's institutional knowledge (succession risk mitigation)",
+        "Redesign Avery Wilson's role toward clinical partnerships and onboarding",
+        "Implement cross-training: Chris Bennett on stakeholder management",
+        "Document Jordan Lee's institutional knowledge (succession risk mitigation)",
       ],
     },
     {
       label: "Priority 3",
       window: "Structural — 60–90 days",
       items: [
-        "Implement Scenario B: Balanced Redesign",
+        "Implement Scenario B: Balanced structure",
         "Introduce 2 new role definitions aligned to AI-augmented workflow",
         "Re-run OrgLens analysis post-restructuring to measure improvement",
       ],
@@ -1637,7 +1644,7 @@ function Section8FounderMemo() {
                   Confidential — Founder Memo
                 </p>
                 <p className="mt-1 text-sm font-semibold tracking-wide text-white">
-                  Alpha Investment Group
+                  NovaCloud Health
                 </p>
               </div>
             </div>
@@ -1653,7 +1660,7 @@ function Section8FounderMemo() {
                 To
               </p>
               <p className="mt-1 text-sm font-semibold text-white">
-                Wenjing Li, CEO
+                Alex Morgan, Founder & CEO
               </p>
             </div>
             <div>
@@ -1669,7 +1676,7 @@ function Section8FounderMemo() {
                 Re
               </p>
               <p className="mt-1 text-sm font-semibold text-white">
-                Organizational Restructuring Assessment
+                Scaling Readiness & Team Structure Assessment
               </p>
             </div>
             <div>
@@ -1691,10 +1698,10 @@ function Section8FounderMemo() {
               Executive Summary
             </h3>
             <p className="mt-3 text-sm leading-relaxed text-zinc-700 md:text-base">
-              Alpha Investment Group presents a strong competency foundation
-              with identifiable execution risk concentrated in the Operations
-              function. This memo outlines our findings, recommended
-              restructuring path, and priority actions for Q2 2025.
+              NovaCloud Health presents a strong competency foundation with
+              identifiable execution risk concentrated in the Clinical
+              Operations function. This memo outlines our findings, recommended
+              scaling path, and priority actions for the next 90 days.
             </p>
           </section>
 
@@ -1763,13 +1770,12 @@ function Section8FounderMemo() {
               Restructuring Guidance
             </h3>
             <p className="mt-3 text-sm leading-relaxed text-zinc-700 md:text-base">
-              Scenario B (Balanced Redesign) is recommended as the
-              risk-adjusted optimal path. It achieves $180K in annual cost
-              reduction while improving leadership coverage from 58% to 76% and
-              execution stability from Medium to Strong. Unlike Scenario A
-              (Lean Efficiency), it does not create execution fragility. Unlike
-              Scenario C (AI-Augmented), it does not require a 60-day tooling
-              transition.
+              Scenario B (Balanced) is recommended as the risk-adjusted optimal
+              path. It preserves NovaCloud&apos;s 28-person structure while
+              improving leadership coverage from 58% to 76% and execution
+              stability from Medium to Strong. Unlike Scenario A (Lean), it
+              does not create founder dependency. Unlike Scenario C
+              (AI-Native), it does not require a 60-day tooling transition.
             </p>
           </section>
 
@@ -1816,19 +1822,19 @@ function Section8FounderMemo() {
             Ready to run this analysis on your own team?
           </h3>
           <p className="mx-auto mt-3 max-w-md text-sm text-zinc-400">
-            Upload your team's HUCAMA reports. Get a McKinsey-quality
-            organizational analysis report in minutes.
+            Get a McKinsey-quality decision report built from your team&apos;s
+            competency signals — in minutes.
           </p>
           <a
             href={checkoutUrl}
             className="mt-7 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-7 py-3.5 text-sm font-semibold text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-400 hover:shadow-[0_0_50px_-5px_rgba(99,102,241,0.9)]"
           >
             <Sparkles className="h-4 w-4" />
-            Analyze My Organization — $49
+            Get My Custom OrgLens Analysis
             <ArrowUpRight className="h-4 w-4" />
           </a>
           <p className="mt-3 text-xs text-zinc-500">
-            One-time payment. Instant access. No subscription.
+            Built from your team. Delivered in minutes.
           </p>
         </div>
       </div>

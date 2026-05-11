@@ -38,8 +38,8 @@ interface ScenarioMeta {
 const scenarios: Record<ScenarioKey, ScenarioMeta> = {
   A: {
     key: "A",
-    name: "Lean Efficiency",
-    tagline: "Aggressive cost reduction · removes management layers",
+    name: "Lean",
+    tagline: "Founder-led · 15-person core team · removes leadership layer",
     accentHex: "#f59e0b",
     accentText: "text-amber-300",
     accentBorder: "border-amber-500/40",
@@ -48,8 +48,8 @@ const scenarios: Record<ScenarioKey, ScenarioMeta> = {
   },
   B: {
     key: "B",
-    name: "Balanced Redesign",
-    tagline: "Balances cost reduction with organizational resilience",
+    name: "Balanced",
+    tagline: "28-person structure with clear functional leads",
     accentHex: "#6366f1",
     accentText: "text-indigo-300",
     accentBorder: "border-indigo-500/40",
@@ -59,8 +59,8 @@ const scenarios: Record<ScenarioKey, ScenarioMeta> = {
   },
   C: {
     key: "C",
-    name: "AI-Augmented",
-    tagline: "Workflows redesigned for AI-handled operational work",
+    name: "AI-Native",
+    tagline: "3 senior leads · AI handles ops, analytics, and workflows",
     accentHex: "#06b6d4",
     accentText: "text-cyan-300",
     accentBorder: "border-cyan-500/40",
@@ -78,25 +78,25 @@ interface ScenarioOverview {
 
 const overviews: Record<ScenarioKey, ScenarioOverview> = {
   A: {
-    headcount: { from: 45, to: 31, deltaPct: "−31%" },
-    primaryStat: { label: "Burn reduction", value: "↓ 35%" },
+    headcount: { from: 28, to: 15, deltaPct: "−46%" },
+    primaryStat: { label: "Operating cost", value: "↓ 38%" },
     secondaryStat: { label: "Execution risk", value: "HIGH", tone: "red" },
     description:
-      "Aggressive cost reduction. Removes management layers. Higher execution fragility.",
+      "NovaCloud consolidates to a 15-person core team, founder directly manages all functions. Higher founder dependency.",
   },
   B: {
-    headcount: { from: 45, to: 36, deltaPct: "−20%" },
-    primaryStat: { label: "Burn reduction", value: "↓ 22%" },
+    headcount: { from: 28, to: 28, deltaPct: "= 0%" },
+    primaryStat: { label: "Leadership coverage", value: "↑ 18%" },
     secondaryStat: {
       label: "Execution stability",
       value: "STRONG",
       tone: "green",
     },
     description:
-      "Balances cost reduction with organizational resilience. Preserves top performers.",
+      "NovaCloud maintains 28-person structure with clear functional leads and shared accountability.",
   },
   C: {
-    headcount: { from: 45, to: 38, deltaPct: "−16%" },
+    headcount: { from: 28, to: 22, deltaPct: "−21%" },
     primaryStat: { label: "Productivity (post 90d)", value: "↑ 40%" },
     secondaryStat: {
       label: "Transition risk",
@@ -104,7 +104,7 @@ const overviews: Record<ScenarioKey, ScenarioOverview> = {
       tone: "amber",
     },
     description:
-      "Redesigns workflows assuming AI handles repetitive operational work.",
+      "NovaCloud adopts an AI-augmented model with 3 senior leads, AI tools handling ops and analytics.",
   },
 };
 
@@ -130,115 +130,115 @@ interface OrgChart {
 
 const orgCharts: Record<ScenarioKey, OrgChart> = {
   A: {
-    ceo: { name: "Wenjing Li", role: "CEO", tone: "green" },
-    label: "Management layers removed",
+    ceo: { name: "Alex Morgan", role: "Founder & CEO", tone: "green" },
+    label: "Founder-led · leadership layer removed",
     groups: [
       {
         parent: {
-          name: "Chifong Dong",
+          name: "Jordan Lee",
           role: "CTO · Product",
           tone: "green",
         },
         children: [
-          { name: "Eric Li", role: "Engineering Lead", tone: "green" },
-          { name: "Luke Cai", role: "Product Manager", tone: "green" },
+          { name: "Morgan Chen", role: "Engineering Lead", tone: "green" },
+          { name: "Taylor Brooks", role: "Head of Product", tone: "green" },
         ],
       },
       {
-        parent: { name: "Supriya Kumar", role: "Sales Lead", tone: "amber" },
+        parent: { name: "Marcus Wright", role: "Sales Lead", tone: "amber" },
         children: [
-          { name: "Patrick Wang", role: "Account Executive", tone: "amber" },
+          { name: "Lucas Kim", role: "Account Executive", tone: "amber" },
         ],
       },
       {
-        parent: { name: "Lili Mao", role: "Ops Lead", tone: "amber" },
+        parent: { name: "Casey Miller", role: "Ops Lead", tone: "amber" },
         children: [{ name: "Support", role: "Support", tone: "amber" }],
       },
     ],
     exits: [
-      "Yuzhe Zhao",
-      "Jun Park",
-      "Mei Tanaka",
-      "+11 redundant roles cut across teams",
+      "Elena Torres",
+      "Sophia Grant",
+      "Noah Davis",
+      "+10 roles consolidated across teams",
     ],
   },
   B: {
-    ceo: { name: "Wenjing Li", role: "CEO", tone: "green" },
+    ceo: { name: "Alex Morgan", role: "Founder & CEO", tone: "green" },
     groups: [
       {
-        parent: { name: "Chifong Dong", role: "CTO · Product", tone: "green" },
+        parent: { name: "Jordan Lee", role: "CTO · Engineering", tone: "green" },
         children: [
-          { name: "Eric Li", role: "Engineering Lead", tone: "green" },
-          { name: "Luke Cai", role: "Product Manager", tone: "green" },
-          { name: "Designer", role: "Designer", tone: "amber" },
+          { name: "Morgan Chen", role: "Engineering Lead", tone: "green" },
+          { name: "Taylor Brooks", role: "Head of Product", tone: "green" },
+          { name: "Sophia Grant", role: "UX Designer", tone: "amber" },
         ],
       },
       {
         parent: {
-          name: "Supriya Kumar",
-          role: "VP Sales",
+          name: "Riley Johnson",
+          role: "Customer Success Lead",
           tone: "green",
           badge: "PROMOTED",
         },
         children: [
-          { name: "Patrick Wang", role: "Account Executive", tone: "amber" },
-          { name: "Mei Tanaka", role: "SDR", tone: "amber" },
+          { name: "Zoe Chambers", role: "Onboarding Specialist", tone: "amber" },
+          { name: "Caden Brooks", role: "CS Manager", tone: "amber" },
         ],
       },
       {
         parent: {
-          name: "Lili Mao",
-          role: "Head of Ops",
+          name: "Casey Miller",
+          role: "Head of Operations",
           tone: "green",
           badge: "NEW ROLE",
         },
         children: [
-          { name: "Ops Manager", role: "Ops Manager", tone: "amber" },
-          { name: "Support", role: "Support", tone: "amber" },
+          { name: "Avery Wilson", role: "Clinical Ops Lead", tone: "amber" },
+          { name: "Isabella Park", role: "Executive Assistant", tone: "amber" },
         ],
       },
     ],
-    exits: ["Yuzhe Zhao", "2 redundant support roles", "1 middle manager"],
+    exits: ["Elena Torres role reshaped", "2 redundant support roles", "1 mid-management layer"],
   },
   C: {
-    ceo: { name: "Wenjing Li", role: "CEO", tone: "green" },
+    ceo: { name: "Alex Morgan", role: "Founder & CEO", tone: "green" },
     label: "AI-augmented workflows",
     groups: [
       {
         parent: {
-          name: "Chifong Dong",
-          role: "CTO · Product",
+          name: "Jordan Lee",
+          role: "CTO · Engineering",
           tone: "green",
           badge: "AI-AUGMENTED",
           ai: true,
         },
         children: [
           {
-            name: "Eric Li",
+            name: "Morgan Chen",
             role: "Engineering Lead",
             tone: "green",
             badge: "AI-AUGMENTED",
             ai: true,
           },
-          { name: "Luke Cai", role: "Product Manager", tone: "green" },
+          { name: "Taylor Brooks", role: "Head of Product", tone: "green" },
         ],
       },
       {
         parent: {
-          name: "Supriya Kumar",
-          role: "VP Sales",
+          name: "Riley Johnson",
+          role: "Customer Success Lead",
           tone: "green",
           badge: "AI-AUGMENTED",
           ai: true,
         },
         children: [
-          { name: "Patrick Wang", role: "AE", tone: "amber" },
+          { name: "Caden Brooks", role: "CS Manager", tone: "amber" },
         ],
       },
       {
         parent: {
-          name: "Lili Mao",
-          role: "Head of Ops",
+          name: "Casey Miller",
+          role: "Head of Operations",
           tone: "green",
           badge: "AI-AUGMENTED",
           ai: true,
@@ -249,9 +249,9 @@ const orgCharts: Record<ScenarioKey, OrgChart> = {
       },
     ],
     exits: [
-      "Yuzhe Zhao",
-      "Mei Tanaka",
-      "Jun Park",
+      "Elena Torres",
+      "Noah Davis",
+      "Sophia Grant",
       "+4 ops roles replaced by AI",
     ],
   },
@@ -379,43 +379,43 @@ interface AIInsight {
 const aiInsights: Record<ScenarioKey, { items: AIInsight[]; why: string }> = {
   A: {
     items: [
-      { tone: "warn", text: "High execution risk — 3 critical roles lost" },
+      { tone: "warn", text: "High founder dependency — Alex Morgan manages all functions" },
       { tone: "bad", text: "Leadership coverage drops to 41%" },
-      { tone: "bad", text: "Operations fragility increases significantly" },
+      { tone: "bad", text: "Clinical operations fragility increases significantly" },
     ],
-    why: "Lean Efficiency hits the burn target fast but at the cost of execution depth. Three critical product/ops roles are removed, and leadership coverage falls below the safe threshold.",
+    why: "Lean consolidates NovaCloud into a 15-person founder-led team. Cuts cost quickly but removes the leadership layer that lets the company scale beyond Alex Morgan's direct attention.",
   },
   B: {
     items: [
       {
         tone: "good",
-        text: "Leadership continuity maintained — Supriya Kumar elevated to VP Sales",
+        text: "Leadership continuity maintained — Riley Johnson elevated to Customer Success Lead",
       },
       {
         tone: "good",
-        text: "Execution reliability improved — Core product team preserved",
+        text: "Execution reliability improved — core engineering and product team preserved",
       },
       {
         tone: "warn",
-        text: "Moderate adaptability gaps remain in Operations",
+        text: "Moderate adaptability gaps remain in Clinical Operations",
       },
       {
         tone: "warn",
-        text: "Acting with Consideration is still a team-wide development gap",
+        text: "Acting with Consideration is still a team-wide development gap (avg 4.8)",
       },
     ],
-    why: "Balanced Redesign preserves high-performing execution teams (Chifong, Eric, Luke, Lili Mao) while reducing structural redundancy and improving leadership coverage. Supriya Kumar's promotion closes a key succession gap.",
+    why: "Balanced preserves NovaCloud's strongest leads (Jordan Lee, Morgan Chen, Taylor Brooks, Casey Miller) while building functional accountability across 28 employees. Riley Johnson's promotion closes a key customer success coverage gap.",
   },
   C: {
     items: [
       { tone: "good", text: "Highest productivity potential at 90-day mark" },
       {
         tone: "warn",
-        text: "Highest transition risk — requires AI tooling adoption",
+        text: "Highest transition risk — requires AI tooling adoption across ops and analytics",
       },
-      { tone: "warn", text: "4 roles restructured with AI augmentation" },
+      { tone: "warn", text: "4 ops & analytics roles restructured with AI augmentation" },
     ],
-    why: "AI-Augmented bets on tooling-led leverage. Productivity peaks at +40% post-transition, but the org carries the highest change-management risk during the 90-day adoption window.",
+    why: "AI-Native bets on tooling-led leverage. With three senior leads (Jordan Lee, Taylor Brooks, Casey Miller) and AI handling ops and analytics, productivity peaks at +40% post-transition — but the org carries the highest change-management risk during the 90-day adoption window.",
   },
 };
 
@@ -465,24 +465,24 @@ export default function OverviewPage() {
       {/* Header */}
       <header className="mb-10">
         <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
-          Company Intelligence Report
+          Organizational Intelligence Report
         </p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
-          45-person SaaS Startup
+          NovaCloud Health — Health Tech Startup
         </h1>
         <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-zinc-400">
-          <Stat label="Burn" value="$450K/mo" />
+          <Stat label="Stage" value="Seed → Series A" />
           <Sep />
-          <Stat label="Runway" value="6 months" />
+          <Stat label="Sector" value="B2B SaaS · Health Tech" />
           <Sep />
-          <Stat label="Team" value="45 people" />
+          <Stat label="Team" value="28 employees" />
         </div>
         <div className="mt-6 max-w-2xl rounded-xl border border-indigo-500/20 bg-indigo-500/[0.04] px-4 py-3">
           <p className="text-[10px] font-medium uppercase tracking-widest text-indigo-300">
             Founder Challenge
           </p>
           <p className="mt-1 text-sm italic text-zinc-200">
-            &ldquo;Reduce burn without destroying execution capability.&rdquo;
+            &ldquo;Move from founder-led execution to a structured leadership model — and understand whether team structure, role coverage, and competency signals are ready to support scaling.&rdquo;
           </p>
         </div>
       </header>
@@ -490,7 +490,7 @@ export default function OverviewPage() {
       {/* Scenario tabs */}
       <div className="mb-8">
         <p className="mb-3 text-[10px] font-medium uppercase tracking-widest text-zinc-500">
-          Choose a restructuring path
+          Choose a scaling path
         </p>
         <div className="flex flex-wrap gap-2">
           {(["A", "B", "C"] as const).map((k) => {
@@ -798,25 +798,25 @@ export default function OverviewPage() {
         <div className="relative overflow-hidden rounded-3xl border border-indigo-500/30 bg-gradient-to-b from-indigo-500/[0.08] to-[#111118] p-10 text-center shadow-[0_0_60px_-15px_rgba(99,102,241,0.5)]">
           <div className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-indigo-500/20 blur-[80px]" />
           <p className="text-xs font-medium uppercase tracking-widest text-indigo-400">
-            Full Analysis
+            Your Organization
           </p>
           <h3 className="mt-3 text-2xl font-bold tracking-tight text-white md:text-3xl">
-            Unlock Full Analysis — $49
+            Run This Analysis on Your Own Team
           </h3>
           <p className="mx-auto mt-3 max-w-xl text-sm text-zinc-400">
-            Get the complete restructuring report, founder memo, and
-            implementation roadmap.
+            Get a complete organizational intelligence decision report, founder
+            memo, and scaling roadmap built from your team.
           </p>
           <button
             type="button"
             onClick={() => unlockAndGo(router)}
             className="mt-8 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-7 py-3.5 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400 hover:shadow-[0_0_40px_-5px_rgba(99,102,241,0.9)]"
           >
-            Unlock Full Analysis — $49
+            Get My Custom OrgLens Analysis
             <ArrowRight className="h-4 w-4" />
           </button>
           <p className="mt-3 text-xs text-zinc-500">
-            One-time payment. Instant access.
+            Built from your team. Delivered in minutes.
           </p>
         </div>
       </section>
