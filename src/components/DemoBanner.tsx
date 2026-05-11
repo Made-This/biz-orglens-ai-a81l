@@ -56,7 +56,7 @@ export function DemoBanner() {
           Demo Mode
         </span>
         <span className="hidden text-xs text-zinc-200 sm:inline">
-          Sample Company Data — Alpha Investment Group
+          Sample Company Data — Meridian SaaS Co.
         </span>
         <span className="text-xs text-zinc-200 sm:hidden">Sample Data</span>
 

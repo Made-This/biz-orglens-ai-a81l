@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Check, ArrowRight } from "lucide-react";
 
-const CHECKOUT_URL =
-  "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
+// Marketing-page CTAs route to the demo first. The payment CTA lives on
+// /app/report after the user has explored the demo value.
+const DEMO_URL = "/app/report";
 
 const features = [
   "Competency org map",
@@ -86,13 +87,13 @@ export default function PricingPage() {
               ))}
             </ul>
 
-            <a
-              href={CHECKOUT_URL}
+            <Link
+              href={DEMO_URL}
               className="mt-10 flex w-full items-center justify-center gap-2 rounded-full bg-indigo-500 px-6 py-3.5 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400 hover:shadow-[0_0_40px_-5px_rgba(99,102,241,0.9)]"
             >
-              Analyze My Organization — $49
+              See a Live Demo
               <ArrowRight className="h-4 w-4" />
-            </a>
+            </Link>
           </div>
 
           <p className="mt-8 text-center text-sm text-zinc-500">
@@ -131,10 +132,10 @@ export default function PricingPage() {
           </p>
           <div className="mt-8">
             <Link
-              href="/sign-up"
+              href={DEMO_URL}
               className="inline-flex items-center gap-2 rounded-full bg-indigo-500 px-6 py-3 text-sm font-medium text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
             >
-              Start Your Analysis
+              See a Live Demo
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

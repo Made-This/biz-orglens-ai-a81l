@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-const CHECKOUT_URL =
-  "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
+// Keep the checkout URL constant so existing references still compile,
+// but the marketing site no longer surfaces it directly. All public CTAs
+// route to the demo report first; the payment CTA lives on /app/report.
+const DEMO_URL = "/app/report";
 
 const HERO_BG_IMAGE =
   "https://grandiose-goshawk-617.convex.cloud/api/storage/9cfc9d9b-c341-4f81-9bd8-bc31d6c256c2";
@@ -43,12 +45,12 @@ export default function HomePage() {
             >
               Try Demo
             </Link>
-            <a
-              href={CHECKOUT_URL}
+            <Link
+              href={DEMO_URL}
               className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-indigo-500"
             >
-              Get $49 Analysis
-            </a>
+              See a Live Demo
+            </Link>
           </div>
         </div>
       </header>
@@ -112,18 +114,12 @@ function HeroSection() {
             </p>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <a
-                href={CHECKOUT_URL}
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-indigo-900/40 transition-all hover:bg-indigo-500"
-              >
-                Get My $49 OrgLens Analysis
-                <ArrowRightIcon />
-              </a>
               <Link
                 href="/app/report"
-                className="inline-flex items-center justify-center rounded-lg border border-white/30 bg-transparent px-6 py-3.5 text-base font-semibold text-white transition-colors hover:border-white hover:bg-white/5"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-indigo-900/40 transition-all hover:bg-indigo-500"
               >
-                View Demo Report
+                See a Live Demo
+                <ArrowRightIcon />
               </Link>
             </div>
 
@@ -435,12 +431,12 @@ function PainCard({
           {pain}
         </p>
       </div>
-      <a
-        href={CHECKOUT_URL}
+      <Link
+        href={DEMO_URL}
         className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 transition-colors hover:text-indigo-500"
       >
         {cta}
-      </a>
+      </Link>
     </div>
   );
 }
@@ -491,13 +487,13 @@ function RecognizeSection() {
           <p className="text-lg text-slate-700">
             If one of these questions is live in your company, OrgLens AI is worth running today.
           </p>
-          <a
-            href={CHECKOUT_URL}
+          <Link
+            href={DEMO_URL}
             className="mt-8 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-7 py-3.5 text-base font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-500"
           >
-            Run My $49 Analysis
+            See a Live Demo
             <ArrowRightIcon />
-          </a>
+          </Link>
         </div>
       </div>
     </section>
@@ -537,7 +533,7 @@ function IncludedSection() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl lg:text-5xl">
-            What your $49 OrgLens Analysis includes
+            What your OrgLens Analysis includes
           </h2>
         </div>
 
@@ -567,13 +563,13 @@ function IncludedSection() {
         </div>
 
         <div className="mt-14 flex justify-center">
-          <a
-            href={CHECKOUT_URL}
+          <Link
+            href={DEMO_URL}
             className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-7 py-3.5 text-base font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-500"
           >
-            Get My $49 OrgLens Analysis
+            Explore the Demo
             <ArrowRightIcon />
-          </a>
+          </Link>
         </div>
       </div>
     </section>
@@ -712,13 +708,13 @@ function ROICalculatorSection() {
                   people mistake is a rational founder decision.
                 </p>
 
-                <a
-                  href={CHECKOUT_URL}
+                <Link
+                  href={DEMO_URL}
                   className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-indigo-300/40 transition-all hover:bg-indigo-500"
                 >
-                  Get My Analysis
+                  Try the Demo
                   <ArrowRightIcon />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -752,10 +748,10 @@ function ReportPreviewSection() {
                     OrgLens AI — Organizational Analysis Report
                   </p>
                   <h3 className="mt-2 text-2xl font-bold text-slate-900">
-                    Alpha Investment Group
+                    Meridian SaaS Co.
                   </h3>
                   <p className="mt-1 text-sm text-slate-500">
-                    30 employees · Investment / Finance
+                    30 employees · SaaS / Software
                   </p>
                 </div>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200">
@@ -795,13 +791,13 @@ function ReportPreviewSection() {
           </div>
 
           <div className="mt-10 flex justify-center">
-            <a
-              href={CHECKOUT_URL}
+            <Link
+              href={DEMO_URL}
               className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-7 py-4 text-base font-semibold text-white shadow-xl shadow-indigo-300/50 transition-all hover:bg-indigo-500"
             >
-              Unlock Full Report — $49
+              Explore the Live Demo
               <ArrowRightIcon />
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -858,12 +854,12 @@ function LockedRow({ title, sample }: { title: string; sample: string }) {
           </div>
           <p className="text-sm font-semibold text-slate-900">{title}</p>
         </div>
-        <a
-          href={CHECKOUT_URL}
+        <Link
+          href={DEMO_URL}
           className="rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-indigo-500"
         >
-          Unlock
-        </a>
+          Preview
+        </Link>
       </div>
     </div>
   );
@@ -877,13 +873,13 @@ function TrustSection() {
   const trust = [
     {
       icon: <FlaskIcon />,
-      label: "HUCAMA Framework",
-      text: "Built on validated competency assessments used by enterprise HR teams globally.",
+      label: "Organizational Intelligence Competency Model",
+      text: "Built on a science-informed competency model designed to surface leadership coverage, role fit, and organizational risk.",
     },
     {
       icon: <ChartIcon />,
-      label: "Great 8 Competency Model",
-      text: "Every person ranked across 8 core business competencies — not personality tests or sentiment scores.",
+      label: "Behavioral & Role-Fit Signals",
+      text: "Every person ranked across core business competencies — not personality tests or sentiment scores.",
     },
     {
       icon: <DecisionTreeIcon />,
@@ -901,8 +897,9 @@ function TrustSection() {
               Not generic AI advice. Competency-based decision intelligence.
             </h2>
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-slate-600">
-              OrgLens AI uses competency science to translate people data into business decisions:
-              leadership gaps, execution risk, role fit, and organizational fragility.
+              OrgLens AI uses an organizational intelligence competency model
+              designed to help founders understand team structure, leadership
+              coverage, role fit, and organizational risk.
             </p>
           </div>
 
@@ -937,18 +934,12 @@ function TrustSection() {
             <span className="text-indigo-200">You just can&rsquo;t see them yet.</span>
           </h2>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <a
-              href={CHECKOUT_URL}
+            <Link
+              href={DEMO_URL}
               className="inline-flex items-center gap-2 rounded-lg bg-white px-8 py-4 text-base font-bold text-indigo-700 shadow-xl transition-all hover:bg-slate-50"
             >
-              Get My $49 OrgLens Analysis
+              See a Live Demo
               <ArrowRightIcon />
-            </a>
-            <Link
-              href="/app/report"
-              className="inline-flex items-center gap-1 text-base font-semibold text-white underline-offset-4 transition-colors hover:underline"
-            >
-              View Demo Report →
             </Link>
           </div>
         </div>
@@ -992,12 +983,12 @@ function Footer() {
             <p className="text-sm text-slate-500">
               Built for founders who make hard decisions.
             </p>
-            <a
-              href={CHECKOUT_URL}
+            <Link
+              href={DEMO_URL}
               className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-500"
             >
-              Get $49 Analysis →
-            </a>
+              See a Live Demo →
+            </Link>
           </div>
         </div>
 

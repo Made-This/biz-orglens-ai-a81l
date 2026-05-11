@@ -15,7 +15,7 @@ const OG_IMAGE_URL =
 const SITE_URL = "https://orglens-ai.madethis.app";
 const OG_TITLE = "OrgLens AI — Organizational Intelligence for Founders";
 const OG_DESCRIPTION =
-  "Map competencies, rank role fit, and make restructuring decisions in 5 minutes. Powered by HUCAMA psychometrics.";
+  "Map competencies, rank role fit, and make restructuring decisions in 5 minutes. AI-powered organizational intelligence for founders.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

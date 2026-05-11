@@ -52,8 +52,9 @@ export default function SignInPage() {
             </span>
           </h1>
           <p className="mt-3 text-sm text-zinc-400">
-            Explore the full product with sample HUCAMA-backed company data.
-            No sign-up, no credit card.
+            Explore the full product with a sample company dataset built on our
+            organizational intelligence competency model. No sign-up, no credit
+            card.
           </p>
         </div>
 
