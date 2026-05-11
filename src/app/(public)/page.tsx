@@ -22,6 +22,7 @@ import {
   UserPlus,
   Zap,
 } from "lucide-react";
+import HeroOrgChart from "@/components/HeroOrgChart";
 
 const DEMO_URL = "/demo";
 const FOUNDER_SNAPSHOT_CHECKOUT_URL =
@@ -31,6 +32,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <MetricsStrip />
       <PainPoints />
       <ROISection />
       <UrgencyBand />
@@ -50,48 +52,121 @@ function Hero() {
   return (
     <section className="relative overflow-hidden bg-[#0A0A0B]">
       <div className="pointer-events-none absolute inset-0 -z-0">
-        <div className="absolute left-1/3 top-0 h-[520px] w-[720px] -translate-x-1/2 rounded-full bg-indigo-500/15 blur-[140px]" />
+        <div className="absolute left-1/4 top-0 h-[520px] w-[720px] -translate-x-1/2 rounded-full bg-indigo-500/15 blur-[140px]" />
         <div className="absolute right-1/4 bottom-0 h-[400px] w-[520px] rounded-full bg-indigo-700/10 blur-[120px]" />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 md:py-28 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-400">
-            Organizational intelligence for growing teams
-          </p>
-          <h1 className="mt-6 text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
-            See hidden team risks before they slow your{" "}
-            <span className="text-indigo-300">next stage of growth.</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-zinc-400">
-            OrgLens AI helps startups and SMEs with 10–150 employees turn team
-            structure, role-fit signals, competency patterns, and leadership
-            coverage into a clear organizational intelligence report — so
-            leaders can clarify ownership, identify bottlenecks, and make
-            better people decisions before hiring, restructuring, or scaling.
-          </p>
+      <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-10">
+          {/* LEFT COLUMN — text */}
+          <div className="lg:col-span-6 xl:col-span-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-400">
+              Organizational intelligence for growing teams
+            </p>
+            <h1 className="mt-6 text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.4rem]">
+              See hidden team risks before they slow your{" "}
+              <span className="text-indigo-300">next stage of growth.</span>
+            </h1>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-zinc-400 sm:text-lg">
+              OrgLens AI helps startups and SMEs with 10–150 employees turn
+              team structure, role-fit signals, competency patterns, and
+              leadership coverage into a clear organizational intelligence
+              report — so leaders can clarify ownership, identify bottlenecks,
+              and make better people decisions before hiring, restructuring,
+              or scaling.
+            </p>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a
-              href={FOUNDER_SNAPSHOT_CHECKOUT_URL}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-500 px-6 py-3.5 text-base font-semibold text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-400"
-            >
-              Get Founder Snapshot
-              <ArrowRight className="h-4 w-4" />
-            </a>
-            <Link
-              href={DEMO_URL}
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-indigo-400/60 bg-transparent px-6 py-3.5 text-base font-semibold text-indigo-200 transition-all hover:bg-indigo-500/10 hover:text-white"
-            >
-              Preview Demo Report
-            </Link>
+            <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row">
+              <a
+                href={FOUNDER_SNAPSHOT_CHECKOUT_URL}
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-500 px-6 py-3.5 text-base font-semibold text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-400"
+              >
+                Get Founder Snapshot
+                <ArrowRight className="h-4 w-4" />
+              </a>
+              <Link
+                href={DEMO_URL}
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-indigo-400/60 bg-transparent px-6 py-3.5 text-base font-semibold text-indigo-200 transition-all hover:bg-indigo-500/10 hover:text-white"
+              >
+                Preview Demo Report
+              </Link>
+            </div>
+
+            <p className="mt-8 max-w-xl text-sm text-zinc-500">
+              Best fit for growing teams with 20–100 employees. No employment
+              decisions made by AI.
+            </p>
           </div>
 
-          <p className="mt-8 text-sm text-zinc-500">
-            Best fit for growing teams with 20–100 employees. No employment
-            decisions made by AI.
+          {/* RIGHT COLUMN — animated org chart */}
+          <div className="lg:col-span-6 xl:col-span-7">
+            <HeroOrgChart
+              founderSnapshotUrl={FOUNDER_SNAPSHOT_CHECKOUT_URL}
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────────────────────── */
+/* SECTION 1B — METRICS STRIP                  */
+/* ─────────────────────────────────────────── */
+
+function MetricsStrip() {
+  const stats = [
+    {
+      value: "31%",
+      body: "of U.S. employees were engaged in 2024.",
+    },
+    {
+      value: "46%",
+      body: "clearly knew what was expected of them at work.",
+    },
+    {
+      value: "70%",
+      body: "of team engagement variance is tied to managers.",
+    },
+    {
+      value: "23%",
+      body: "higher profitability is associated with highly engaged teams.",
+    },
+  ];
+
+  return (
+    <section className="border-y border-[#1E1E24] bg-[#0B0B0F] py-16 md:py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-400">
+            Why structure matters
+          </p>
+          <p className="mt-4 text-lg leading-relaxed text-zinc-300 sm:text-xl">
+            Research shows why role clarity, leadership coverage, and team
+            structure matter.
           </p>
         </div>
+
+        <div className="mx-auto mt-10 grid max-w-6xl grid-cols-2 gap-4 lg:grid-cols-4">
+          {stats.map((s) => (
+            <div
+              key={s.value}
+              className="rounded-xl border border-[#1E1E24] bg-[#12121A] p-6 transition-all hover:border-indigo-400/40 hover:bg-[#15151F]"
+            >
+              <p className="text-4xl font-bold tracking-tight text-indigo-300 sm:text-5xl">
+                {s.value}
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-zinc-400">
+                {s.body}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <p className="mx-auto mt-8 max-w-3xl text-center text-xs leading-relaxed text-zinc-500">
+          Benchmarks from Gallup workplace research. OrgLens uses these
+          benchmarks as context, not as guaranteed outcomes.
+        </p>
       </div>
     </section>
   );
