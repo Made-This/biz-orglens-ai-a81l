@@ -82,6 +82,7 @@ function IntakeForm() {
   const [mainChallenge, setMainChallenge] = useState("");
   const [decision, setDecision] = useState("");
   const [fileName, setFileName] = useState<string | undefined>(undefined);
+  const [consent, setConsent] = useState(false);
   const [state, setState] = useState<FormState>({ kind: "idle" });
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -122,6 +123,14 @@ function IntakeForm() {
       setState({
         kind: "error",
         message: "Please describe the main organizational challenge.",
+      });
+      return;
+    }
+    if (!consent) {
+      setState({
+        kind: "error",
+        message:
+          "Please confirm the consent statement before submitting your intake.",
       });
       return;
     }
@@ -329,6 +338,40 @@ function IntakeForm() {
             {fileName ?? "PDF or CSV accepted"}
           </span>
         </div>
+        <p className="mt-3 flex items-start gap-2 rounded-md border border-amber-500/20 bg-amber-500/[0.06] px-3 py-2 text-xs leading-relaxed text-amber-200/90">
+          <span aria-hidden="true" className="mt-0.5 text-amber-300">
+            ⚠
+          </span>
+          <span>
+            Please do not upload sensitive personal information unless it is
+            necessary for the analysis and you have authorization to share it.
+          </span>
+        </p>
+      </div>
+
+      {/* Consent */}
+      <div className="sm:col-span-2">
+        <label
+          htmlFor="intake-consent-public"
+          className="flex cursor-pointer items-start gap-3 rounded-lg border border-[#1E1E24] bg-[#111118] p-4 text-sm leading-relaxed text-zinc-300"
+        >
+          <input
+            id="intake-consent-public"
+            type="checkbox"
+            checked={consent}
+            onChange={(e) => setConsent(e.target.checked)}
+            className="mt-1 h-4 w-4 shrink-0 cursor-pointer rounded border border-[#2A2A33] bg-[#0A0A0B] text-indigo-500 accent-indigo-500 focus:ring-1 focus:ring-indigo-400/40"
+            required
+            aria-required="true"
+          />
+          <span>
+            I confirm that I have the right to submit this company and team
+            information for analysis, and that I will use the OrgLens report
+            as decision support rather than as the sole basis for employment
+            decisions.
+            <span className="ml-1 text-rose-400">*</span>
+          </span>
+        </label>
       </div>
 
       {state.kind === "error" && (
@@ -338,8 +381,8 @@ function IntakeForm() {
       <div className="sm:col-span-2">
         <button
           type="submit"
-          disabled={state.kind === "submitting"}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-colors hover:bg-indigo-400 disabled:opacity-60 sm:w-auto"
+          disabled={state.kind === "submitting" || !consent}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-colors hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
         >
           {state.kind === "submitting" ? "Submitting…" : "Submit Team Context"}
           <ArrowRight className="h-4 w-4" />

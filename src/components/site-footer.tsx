@@ -11,6 +11,15 @@ interface SiteFooterProps {
 const FOUNDER_SNAPSHOT_CHECKOUT_URL =
   "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
 
+const LEGAL_LINKS: Array<{ label: string; href: string }> = [
+  { label: "Terms of Service", href: "/legal/terms" },
+  { label: "Privacy Policy", href: "/legal/privacy" },
+  { label: "Responsible AI", href: "/legal/responsible-ai" },
+  { label: "Security", href: "/legal/security" },
+  { label: "Refunds", href: "/legal/refunds" },
+  { label: "Contact", href: "/contact" },
+];
+
 export function SiteFooter({
   productName = "OrgLens AI",
   supportEmail = "team@orglens-ai.madethis.app",
@@ -111,7 +120,7 @@ export function SiteFooter({
               </li>
               <li>
                 <Link
-                  href="/responsible-ai"
+                  href="/legal/responsible-ai"
                   className="text-sm text-zinc-400 transition-colors hover:text-white"
                 >
                   Responsible AI
@@ -144,6 +153,14 @@ export function SiteFooter({
               </li>
               <li>
                 <Link
+                  href="/contact"
+                  className="text-sm text-zinc-400 transition-colors hover:text-white"
+                >
+                  Contact form
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/get-analysis"
                   className="text-sm text-zinc-400 transition-colors hover:text-white"
                 >
@@ -155,13 +172,48 @@ export function SiteFooter({
           </div>
         </div>
 
+        {/* Legal links row */}
+        <div className="mt-12 border-t border-[#1E1E24] pt-6">
+          <nav
+            aria-label="Legal"
+            className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs text-zinc-500 sm:justify-start"
+          >
+            {LEGAL_LINKS.map((link, idx) => (
+              <span key={link.href} className="inline-flex items-center gap-3">
+                <Link
+                  href={link.href}
+                  className="transition-colors hover:text-indigo-300"
+                >
+                  {link.label}
+                </Link>
+                {idx < LEGAL_LINKS.length - 1 && (
+                  <span className="text-zinc-700" aria-hidden="true">
+                    ·
+                  </span>
+                )}
+              </span>
+            ))}
+          </nav>
+
+          {/* Legal disclaimer */}
+          <p className="mt-5 max-w-4xl text-[11px] leading-relaxed text-zinc-600 sm:text-xs">
+            OrgLens AI provides organizational intelligence reports for
+            decision support. It does not make employment decisions and should
+            not be used as the sole basis for hiring, firing, promotion,
+            compensation, or other employment actions. Human judgment and
+            applicable legal compliance remain the customer&rsquo;s
+            responsibility.
+          </p>
+        </div>
+
         {/* Bottom row */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-[#1E1E24] pt-6 sm:flex-row">
+        <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-[#1E1E24] pt-6 sm:flex-row">
           <p className="text-xs text-zinc-600">
-            Decision-support tools for founders. No AI system makes employment decisions.
+            Decision-support tools for founders. No AI system makes employment
+            decisions.
           </p>
           <Link
-            href="/responsible-ai"
+            href="/legal/responsible-ai"
             className="text-xs text-zinc-500 transition-colors hover:text-zinc-300"
           >
             See our Responsible AI commitment →

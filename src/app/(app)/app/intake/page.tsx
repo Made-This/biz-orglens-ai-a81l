@@ -75,6 +75,7 @@ export default function AppIntakePage() {
   const [teamChallenges, setTeamChallenges] = useState("");
   const [founderDependency, setFounderDependency] = useState("");
   const [fileName, setFileName] = useState<string | undefined>(undefined);
+  const [consent, setConsent] = useState(false);
   const [state, setState] = useState<FormState>({ kind: "idle" });
 
   // Prefill email from authenticated user (one-time, when user loads).
@@ -121,6 +122,14 @@ export default function AppIntakePage() {
       setState({
         kind: "error",
         message: "Please describe your biggest team challenges.",
+      });
+      return;
+    }
+    if (!consent) {
+      setState({
+        kind: "error",
+        message:
+          "Please confirm the consent statement before submitting your intake.",
       });
       return;
     }
@@ -500,7 +509,43 @@ export default function AppIntakePage() {
               {fileName ?? "PDF, CSV, TXT, DOCX, or image"}
             </span>
           </div>
+
+          <p className="mt-3 flex items-start gap-2 rounded-md border border-amber-500/20 bg-amber-500/[0.06] px-3 py-2 text-xs leading-relaxed text-amber-200/90">
+            <span aria-hidden="true" className="mt-0.5 text-amber-300">
+              ⚠
+            </span>
+            <span>
+              Please do not upload sensitive personal information unless it is
+              necessary for the analysis and you have authorization to share
+              it.
+            </span>
+          </p>
         </FormSection>
+
+        {/* Consent */}
+        <div className="rounded-2xl border border-[#1E1E24] bg-[#111118] p-5 md:p-6">
+          <label
+            htmlFor="intake-consent"
+            className="flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-zinc-300"
+          >
+            <input
+              id="intake-consent"
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              className="mt-1 h-4 w-4 shrink-0 cursor-pointer rounded border border-[#2A2A33] bg-[#0A0A0B] text-indigo-500 accent-indigo-500 focus:ring-1 focus:ring-indigo-400/40"
+              required
+              aria-required="true"
+            />
+            <span>
+              I confirm that I have the right to submit this company and team
+              information for analysis, and that I will use the OrgLens report
+              as decision support rather than as the sole basis for employment
+              decisions.
+              <span className="ml-1 text-rose-400">*</span>
+            </span>
+          </label>
+        </div>
 
         {state.kind === "error" && (
           <p className="rounded-md border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-300">
@@ -511,8 +556,8 @@ export default function AppIntakePage() {
         <div className="flex items-center gap-3">
           <button
             type="submit"
-            disabled={state.kind === "submitting"}
-            className="inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-colors hover:bg-indigo-400 disabled:opacity-60"
+            disabled={state.kind === "submitting" || !consent}
+            className="inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-colors hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {state.kind === "submitting" ? "Submitting…" : "Submit Intake"}
             {state.kind !== "submitting" && (

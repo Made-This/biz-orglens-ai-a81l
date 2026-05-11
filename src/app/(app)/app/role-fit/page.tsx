@@ -1025,9 +1025,9 @@ function DefaultRoleFit({ onActivateDemo }: { onActivateDemo: () => void }) {
               Methodology
             </p>
             <p className="mt-2 text-xs leading-relaxed text-zinc-400">
-              Fit scores are computed against the Great 8 competency model
-              using HUCAMA psychometric inputs and behavioral signal analysis
-              across the team.
+              Fit scores are computed from a structured competency model using
+              role-fit indicators and behavioral signal analysis across the
+              team.
             </p>
           </div>
         </aside>
@@ -1694,7 +1694,7 @@ function DemoRoleFit({ onClose }: { onClose: () => void }) {
               <span className="text-zinc-700">·</span>
               <span>30 employees</span>
               <span className="text-zinc-700">·</span>
-              <span>Great 8 competency model · HUCAMA</span>
+              <span>Structured competency signals · Role-fit indicators</span>
             </p>
           </div>
 
@@ -1939,8 +1939,8 @@ function DemoRoleFit({ onClose }: { onClose: () => void }) {
                 Methodology
               </p>
               <p className="mt-2 text-xs leading-relaxed text-zinc-400">
-                Fit scores combine HUCAMA psychometric inputs and Great 8
-                behavioral signals weighted by role-specific competency
+                Fit scores combine structured competency signals and
+                role-fit indicators weighted by role-specific competency
                 requirements.
               </p>
             </div>
@@ -1956,9 +1956,9 @@ function DemoRoleFit({ onClose }: { onClose: () => void }) {
             Run role-fit on every role in your organization
           </h3>
           <p className="mx-auto mt-2 max-w-2xl text-sm text-zinc-400">
-            Upload your team&apos;s HUCAMA reports, get back fit-scored
-            candidate rankings for every key role — strengths, gaps, and
-            development paths included.
+            Upload your team&apos;s competency signals, get back role-fit
+            indicators for every key role — strengths, gaps, and development
+            paths included.
           </p>
           <a
             href={CHECKOUT_URL}

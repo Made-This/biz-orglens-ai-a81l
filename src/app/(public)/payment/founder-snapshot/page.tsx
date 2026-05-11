@@ -136,10 +136,10 @@ export default function FounderSnapshotPaymentPage() {
               </p>
             </div>
 
-            <div className="mt-6 rounded-2xl border border-[#1E1E24] bg-[#0F0F12] p-5 text-xs leading-relaxed text-zinc-500">
-              OrgLens reports are designed to support founder judgment, not
-              replace it. They should be used as decision-support tools, not
-              as the sole basis for employment decisions.
+            <div className="mt-6 rounded-2xl border border-[#1E1E24] bg-[#0F0F12] p-5 text-xs italic leading-relaxed text-zinc-500">
+              OrgLens reports are designed to support founder and leadership
+              judgment, not replace it. They should not be used as the sole
+              basis for employment decisions.
             </div>
           </div>
         </div>

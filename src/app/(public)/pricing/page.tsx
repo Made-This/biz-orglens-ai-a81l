@@ -144,16 +144,15 @@ export default function PricingPage() {
 
         {/* Trust copy */}
         <div className="mx-auto mt-12 max-w-3xl rounded-2xl border border-[#1E1E24] bg-[#0F0F12] p-6 text-center">
-          <p className="text-sm leading-relaxed text-zinc-400">
-            OrgLens reports are designed to support founder judgment, not
-            replace it. Reports should be used as decision-support tools, not
-            as the sole basis for hiring, firing, promotion, compensation, or
-            other employment decisions.
+          <p className="text-sm italic leading-relaxed text-zinc-400">
+            OrgLens reports are designed to support founder and leadership
+            judgment, not replace it. They should not be used as the sole
+            basis for employment decisions.
           </p>
           <p className="mt-3 text-xs text-zinc-500">
             Read our full{" "}
             <Link
-              href="/responsible-ai"
+              href="/legal/responsible-ai"
               className="text-indigo-300 hover:text-indigo-200"
             >
               Responsible AI commitment

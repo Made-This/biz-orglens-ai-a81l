@@ -174,6 +174,15 @@ export default defineSchema({
     .index("by_userId", ["userId"])
     .index("by_sessionId", ["sessionId"]),
 
+  // Contact form submissions from /contact.
+  contactSubmissions: defineTable({
+    name: v.string(),
+    email: v.string(),
+    subject: v.string(),
+    message: v.string(),
+    createdAt: v.number(),
+  }).index("by_createdAt", ["createdAt"]),
+
   // Per-customer workspace record — one per paid purchase.
   customerWorkspaces: defineTable({
     userId: v.id("users"),
