@@ -1,8 +1,9 @@
 "use client";
 
 import { useAuthActions } from "@convex-dev/auth/react";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useConvexAuth } from "convex/react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
@@ -22,13 +23,24 @@ function SignInInner() {
   const { signIn } = useAuthActions();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { isAuthenticated, isLoading: authLoading } = useConvexAuth();
   const redirectParam = searchParams.get("redirect");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const safeRedirect = isSafeRedirect(redirectParam)
     ? redirectParam
-    : "/app/workspace";
+    : "/app/demo";
+
+  // After a successful sign-in, when auth state propagates, navigate to the
+  // redirect target. This guards against the case where the form submit
+  // resolves before useConvexAuth reflects the new session.
+  useEffect(() => {
+    if (submitted && !authLoading && isAuthenticated) {
+      router.push(safeRedirect);
+    }
+  }, [submitted, authLoading, isAuthenticated, router, safeRedirect]);
 
   return (
     <div className="relative overflow-hidden px-4 py-12 md:py-20">
@@ -63,6 +75,7 @@ function SignInInner() {
                 const formData = new FormData(e.currentTarget);
                 try {
                   await signIn("password", formData);
+                  setSubmitted(true);
                   router.push(safeRedirect);
                 } catch {
                   setError("Invalid email or password. Please try again.");

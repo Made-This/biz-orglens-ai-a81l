@@ -5,6 +5,7 @@ import {
   Briefcase,
   Building2,
   Compass,
+  HardHat,
   Lightbulb,
   Stethoscope,
   Users,
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
 type UseCase = {
   icon: React.ComponentType<{ className?: string }>;
   title: string;
+  badge?: string;
   paragraphs: string[];
   painBefore: string[];
   whatWeDeliver: string[];
@@ -59,6 +61,27 @@ const USE_CASES: UseCase[] = [
       "Operating model snapshot for a growing team",
       "Leadership coverage view across functions",
       "Team structure risks that will surface as you scale",
+    ],
+  },
+  {
+    icon: HardHat,
+    title: "Traditional Construction Company Navigating AI-Augmented Change",
+    badge: "Traditional Business · AI Transformation",
+    paragraphs: [
+      "Your company is modernizing operations with AI-enabled tools, new workflows, and changing team responsibilities. As field operations, office functions, and leadership expectations shift, you need a clearer view of role ownership, leadership coverage, and structural risk.",
+      "OrgLens helps traditional businesses going through digital and AI-enabled transformation understand whether their org structure is keeping pace with operational change. It surfaces role overlap, accountability gaps, and leadership risks before they create costly execution problems.",
+    ],
+    painBefore: [
+      "Long-standing roles no longer match the new workflow",
+      "Unclear ownership between operations, office teams, and technology initiatives",
+      "Digital and AI initiatives added without clear leadership responsibility",
+      "Managers stretched between legacy processes and new systems",
+    ],
+    whatWeDeliver: [
+      "Org map showing operational and leadership coverage",
+      "Role clarity view across legacy and modernizing functions",
+      "Team-structure risk summary during transformation",
+      "Practical recommendations before restructuring or adding new leadership roles",
     ],
   },
   {
@@ -166,13 +189,22 @@ export default function UseCasesPage() {
                 key={uc.title}
                 className="rounded-3xl border border-[#1E1E24] bg-[#0F0F12] p-8 md:p-10"
               >
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-300 ring-1 ring-inset ring-indigo-400/30">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-300 ring-1 ring-inset ring-indigo-400/30">
                     <Icon className="h-6 w-6" />
                   </div>
-                  <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                    {uc.title}
-                  </h2>
+                  <div className="min-w-0 flex-1">
+                    {uc.badge && (
+                      <span className="inline-flex items-center rounded-full border border-indigo-400/40 bg-indigo-500/10 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-widest text-indigo-200">
+                        {uc.badge}
+                      </span>
+                    )}
+                    <h2
+                      className={`${uc.badge ? "mt-2 " : ""}text-2xl font-bold tracking-tight text-white sm:text-3xl`}
+                    >
+                      {uc.title}
+                    </h2>
+                  </div>
                 </div>
 
                 <div className="mt-6 space-y-4 text-base leading-relaxed text-zinc-300">

@@ -68,7 +68,8 @@ export function ContactClient() {
     } catch {
       setState({
         kind: "error",
-        message: "Something went wrong. Please try again in a moment.",
+        message:
+          "We couldn't send your message right now. Please try again or email us directly at team@orglens-ai.madethis.app.",
       });
     }
   }
@@ -153,10 +154,10 @@ export function ContactClient() {
                 <div className="mt-8 rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.06] p-6 text-sm text-emerald-200">
                   <p className="flex items-center gap-2 font-semibold">
                     <CheckCircle2 className="h-5 w-5 text-emerald-300" />
-                    Your message has been received.
+                    Thanks — your message has been sent.
                   </p>
                   <p className="mt-3 text-emerald-200/80">
-                    We&rsquo;ll respond within 1–2 business days.
+                    We typically respond within 1–2 business days.
                   </p>
                   <Link
                     href="/"

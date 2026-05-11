@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, ArrowRight } from "lucide-react";
+import { AlertTriangle, ArrowRight, ChevronRight } from "lucide-react";
 
 /* ─────────────────────────────────────────── */
 /* Types                                       */
 /* ─────────────────────────────────────────── */
 
-type RiskTone = "amber" | "red" | "orange" | "yellow";
+type RiskTone = "amber" | "red";
 
 type OrgNode = {
   id: string;
@@ -17,11 +17,6 @@ type OrgNode = {
   x: number;
   /** percentage of container height (0–100) */
   y: number;
-  risk?: {
-    label: string;
-    tooltip: string;
-    tone: RiskTone;
-  };
 };
 
 type Edge = {
@@ -29,107 +24,96 @@ type Edge = {
   to: string;
 };
 
+type RiskBadge = {
+  /** node id to attach to; for "overlap" type, this is the midpoint between nodes */
+  nodeId: string;
+  /** for amber overlap badges between two nodes */
+  pairNodeId?: string;
+  label: string;
+  tooltip: string;
+  tone: RiskTone;
+  /** position relative to the node: "above" or "below" */
+  position?: "above" | "below";
+  /** show red pulsing dot next to badge */
+  withDot?: boolean;
+};
+
 /* ─────────────────────────────────────────── */
-/* Org chart data                              */
+/* Org chart data — 7 nodes, identical layout  */
+/* on both views                               */
 /* ─────────────────────────────────────────── */
 
 const NODES: OrgNode[] = [
-  {
-    id: "ceo",
-    role: "Founder / CEO",
-    x: 50,
-    y: 9,
-    risk: {
-      label: "Founder Bottleneck",
-      tooltip: "Decision-making concentrated at the top",
-      tone: "amber",
-    },
-  },
-  {
-    id: "ops",
-    role: "Operations Lead",
-    x: 14,
-    y: 42,
-    risk: {
-      label: "Ownership Gap",
-      tooltip: "Key function lacks clear owner",
-      tone: "red",
-    },
-  },
-  {
-    id: "product",
-    role: "Product Lead",
-    x: 38,
-    y: 42,
-    risk: {
-      label: "Role Overlap",
-      tooltip: "Responsibilities unclear between roles",
-      tone: "yellow",
-    },
-  },
-  {
-    id: "eng",
-    role: "Engineering Lead",
-    x: 62,
-    y: 42,
-    risk: {
-      label: "Key-Person Dependency",
-      tooltip: "Critical knowledge held by one person",
-      tone: "orange",
-    },
-  },
-  {
-    id: "finance",
-    role: "Finance / People Lead",
-    x: 86,
-    y: 42,
-    risk: {
-      label: "Scaling Risk",
-      tooltip: "Structure may not support next growth stage",
-      tone: "orange",
-    },
-  },
-  {
-    id: "cs",
-    role: "Customer Success Lead",
-    x: 38,
-    y: 80,
-    risk: {
-      label: "Leadership Coverage Gap",
-      tooltip: "Team lacks management coverage",
-      tone: "red",
-    },
-  },
-  {
-    id: "sales",
-    role: "Sales / Growth Lead",
-    x: 62,
-    y: 80,
-  },
+  { id: "ceo", role: "Founder / CEO", x: 50, y: 10 },
+  { id: "ops", role: "Operations Lead", x: 13, y: 46 },
+  { id: "product", role: "Product Lead", x: 37, y: 46 },
+  { id: "eng", role: "Engineering Lead", x: 63, y: 46 },
+  { id: "sales", role: "Growth / Sales Lead", x: 87, y: 46 },
+  { id: "cs", role: "Customer Success", x: 28, y: 84 },
+  { id: "finance", role: "Finance / People", x: 72, y: 84 },
 ];
 
 const EDGES: Edge[] = [
   { from: "ceo", to: "ops" },
   { from: "ceo", to: "product" },
   { from: "ceo", to: "eng" },
-  { from: "ceo", to: "finance" },
-  { from: "product", to: "cs" },
-  { from: "eng", to: "sales" },
+  { from: "ceo", to: "sales" },
+  { from: "ops", to: "cs" },
+  { from: "sales", to: "finance" },
 ];
 
-/* ─────────────────────────────────────────── */
-/* Risk tone styling                           */
-/* ─────────────────────────────────────────── */
-
-const TONE_STYLES: Record<RiskTone, string> = {
-  amber:
-    "bg-amber-500/20 text-amber-200 ring-1 ring-inset ring-amber-400/40 shadow-[0_0_10px_-2px_rgba(245,158,11,0.5)]",
-  red: "bg-red-500/20 text-red-200 ring-1 ring-inset ring-red-400/40 shadow-[0_0_10px_-2px_rgba(239,68,68,0.5)]",
-  orange:
-    "bg-orange-500/20 text-orange-200 ring-1 ring-inset ring-orange-400/40 shadow-[0_0_10px_-2px_rgba(249,115,22,0.5)]",
-  yellow:
-    "bg-yellow-500/20 text-yellow-100 ring-1 ring-inset ring-yellow-400/40 shadow-[0_0_10px_-2px_rgba(234,179,8,0.45)]",
-};
+const RISK_BADGES: RiskBadge[] = [
+  {
+    nodeId: "ceo",
+    label: "Founder Bottleneck",
+    tooltip:
+      "Critical decisions still routed through the founder slow delegation and growth.",
+    tone: "red",
+    position: "above",
+    withDot: true,
+  },
+  {
+    nodeId: "ops",
+    label: "Leadership Coverage Gap",
+    tooltip: "Key operational areas lack dedicated leadership coverage.",
+    tone: "amber",
+    position: "below",
+  },
+  {
+    nodeId: "product",
+    pairNodeId: "eng",
+    label: "Role Overlap",
+    tooltip:
+      "Product and Engineering scope overlap increases coordination cost.",
+    tone: "amber",
+    position: "below",
+  },
+  {
+    nodeId: "sales",
+    label: "Sales Execution Risk",
+    tooltip:
+      "No dedicated sales leader — ownership unclear between founder and growth function.",
+    tone: "red",
+    position: "below",
+    withDot: true,
+  },
+  {
+    nodeId: "sales",
+    label: "Ownership Gap",
+    tooltip:
+      "Accountability for revenue and pipeline is shared but not clearly owned.",
+    tone: "red",
+    position: "above",
+  },
+  {
+    nodeId: "finance",
+    label: "Key-Person Dependency",
+    tooltip:
+      "Single point of failure in Finance and People functions.",
+    tone: "amber",
+    position: "below",
+  },
+];
 
 /* ─────────────────────────────────────────── */
 /* Component                                   */
@@ -143,47 +127,35 @@ export default function HeroOrgChart({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // small delay so the entry animations are visible after hydration
     const t = window.setTimeout(() => setMounted(true), 60);
     return () => window.clearTimeout(t);
   }, []);
 
-  const nodeById = (id: string) => NODES.find((n) => n.id === id)!;
-
   const summaryRows: {
-    tone: "red" | "yellow";
+    tone: "red" | "amber";
     label: string;
     value: string;
   }[] = [
     { tone: "red", label: "Founder dependency", value: "High" },
-    { tone: "yellow", label: "Ownership clarity", value: "Medium risk" },
-    { tone: "red", label: "Leadership coverage", value: "Gap detected" },
-    {
-      tone: "yellow",
-      label: "Role-fit review",
-      value: "Recommended before next hire",
-    },
+    { tone: "red", label: "Sales leadership coverage", value: "Gap detected" },
+    { tone: "amber", label: "Ownership clarity", value: "Medium risk" },
+    { tone: "amber", label: "Role-fit review", value: "Recommended" },
   ];
 
   return (
     <div className="relative">
       {/* keyframes scoped to this component */}
       <style>{`
-        @keyframes pulse-soft {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.55; }
+        @keyframes pulse-badge {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+        }
+        @keyframes pulse-dot {
+          0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(239,68,68,0.55); }
+          70% { opacity: 0.85; box-shadow: 0 0 0 6px rgba(239,68,68,0); }
         }
         @keyframes draw-line {
           to { stroke-dashoffset: 0; }
-        }
-        .orglens-node {
-          opacity: 0;
-          transform: translate(-50%, -50%) scale(0.92);
-          transition: opacity 600ms ease-out, transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .orglens-node.is-in {
-          opacity: 1;
-          transform: translate(-50%, -50%) scale(1);
         }
         .orglens-line {
           stroke-dasharray: 220;
@@ -193,7 +165,10 @@ export default function HeroOrgChart({
           animation: draw-line 900ms ease-out forwards;
         }
         .orglens-badge {
-          animation: pulse-soft 2.4s ease-in-out infinite;
+          animation: pulse-badge 2s ease-in-out infinite;
+        }
+        .orglens-red-dot {
+          animation: pulse-dot 1.6s ease-out infinite;
         }
         .orglens-row {
           opacity: 0;
@@ -206,7 +181,7 @@ export default function HeroOrgChart({
         }
       `}</style>
 
-      {/* Frame */}
+      {/* Outer glass card */}
       <div className="relative rounded-2xl border border-white/10 bg-slate-900/60 p-3 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)] backdrop-blur sm:p-4">
         {/* Window chrome */}
         <div className="mb-3 flex items-center justify-between rounded-xl border border-white/[0.06] bg-slate-950/60 px-3 py-2">
@@ -216,74 +191,25 @@ export default function HeroOrgChart({
             <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
           </div>
           <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500">
-            OrgLens · Team Risk Preview
+            OrgLens · Org Chart Comparison
           </p>
           <p className="text-[10px] font-medium text-zinc-600">Live</p>
         </div>
 
-        {/* Org map */}
-        <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-gradient-to-b from-slate-900/70 to-slate-950/80 p-2 sm:p-3">
-          <div
-            className="relative w-full"
-            style={{ aspectRatio: "16 / 11" }}
-            aria-label="Organizational structure preview with highlighted risks"
-          >
-            {/* SVG connectors */}
-            <svg
-              className="absolute inset-0 h-full w-full"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-            >
-              <defs>
-                <linearGradient
-                  id="lineGradient"
-                  x1="0%"
-                  y1="0%"
-                  x2="0%"
-                  y2="100%"
-                >
-                  <stop offset="0%" stopColor="#818cf8" stopOpacity="0.9" />
-                  <stop offset="100%" stopColor="#6366f1" stopOpacity="0.35" />
-                </linearGradient>
-              </defs>
-              {EDGES.map((edge, i) => {
-                const from = nodeById(edge.from);
-                const to = nodeById(edge.to);
-                // Offset to start/end at node edges instead of centers
-                const yFrom = from.y + 5;
-                const yTo = to.y - 5;
-                return (
-                  <path
-                    key={`${edge.from}-${edge.to}`}
-                    d={`M ${from.x} ${yFrom} C ${from.x} ${yFrom + 6}, ${to.x} ${yTo - 6}, ${to.x} ${yTo}`}
-                    stroke="url(#lineGradient)"
-                    strokeWidth="0.35"
-                    fill="none"
-                    vectorEffect="non-scaling-stroke"
-                    className={`orglens-line ${mounted ? "is-in" : ""}`}
-                    style={{
-                      animationDelay: `${300 + i * 120}ms`,
-                    }}
-                  />
-                );
-              })}
-            </svg>
-
-            {/* Nodes */}
-            {NODES.map((n, idx) => (
-              <div
-                key={n.id}
-                className={`orglens-node ${mounted ? "is-in" : ""} absolute`}
-                style={{
-                  left: `${n.x}%`,
-                  top: `${n.y}%`,
-                  transitionDelay: `${idx * 110}ms`,
-                }}
-              >
-                <NodeCard node={n} />
-              </div>
-            ))}
-          </div>
+        {/* Two mini charts side by side */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <MiniOrgChart
+            label="Traditional View"
+            sublabel="Static org chart · no signals"
+            showRisks={false}
+            mounted={mounted}
+          />
+          <MiniOrgChart
+            label="OrgLens Risk View"
+            sublabel="Same structure · risks surfaced"
+            showRisks
+            mounted={mounted}
+          />
         </div>
 
         {/* Risk summary + recommendation row */}
@@ -308,14 +234,14 @@ export default function HeroOrgChart({
                       className={`inline-block h-2 w-2 rounded-full ${
                         row.tone === "red"
                           ? "bg-red-400 shadow-[0_0_8px_rgba(239,68,68,0.7)]"
-                          : "bg-yellow-400 shadow-[0_0_8px_rgba(234,179,8,0.7)]"
+                          : "bg-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.7)]"
                       }`}
                     />
                     {row.label}
                   </span>
                   <span
                     className={`font-medium ${
-                      row.tone === "red" ? "text-red-300" : "text-yellow-200"
+                      row.tone === "red" ? "text-red-300" : "text-amber-200"
                     }`}
                   >
                     {row.value}
@@ -331,7 +257,8 @@ export default function HeroOrgChart({
               Recommended Next Step
             </p>
             <p className="mt-2 text-xs leading-relaxed text-zinc-200">
-              Review team structure before adding the next leadership role.
+              Review structure and ownership before the next hire or sales
+              expansion.
             </p>
             <Link
               href={founderSnapshotUrl}
@@ -340,6 +267,9 @@ export default function HeroOrgChart({
               Get Founder Snapshot
               <ArrowRight className="h-3 w-3" />
             </Link>
+            <div className="mt-2 hidden sm:block">
+              <ChevronRight className="h-3 w-3 text-indigo-300/60" />
+            </div>
           </div>
         </div>
       </div>
@@ -348,36 +278,218 @@ export default function HeroOrgChart({
 }
 
 /* ─────────────────────────────────────────── */
-/* Node Card                                   */
+/* Mini Org Chart                              */
 /* ─────────────────────────────────────────── */
 
-function NodeCard({ node }: { node: OrgNode }) {
+function MiniOrgChart({
+  label,
+  sublabel,
+  showRisks,
+  mounted,
+}: {
+  label: string;
+  sublabel: string;
+  showRisks: boolean;
+  mounted: boolean;
+}) {
+  const nodeById = (id: string) => NODES.find((n) => n.id === id)!;
+
   return (
-    <div className="relative">
-      {/* Card */}
-      <div className="min-w-[112px] rounded-lg border border-white/10 bg-slate-800/80 px-2.5 py-1.5 text-center shadow-[0_8px_24px_-12px_rgba(0,0,0,0.8)] backdrop-blur sm:min-w-[128px] sm:px-3 sm:py-2">
-        <p className="whitespace-nowrap text-[10px] font-semibold leading-tight text-white sm:text-xs">
+    <div
+      className={`relative overflow-hidden rounded-xl border border-white/10 p-2 sm:p-3 ${
+        showRisks
+          ? "bg-gradient-to-b from-slate-900/70 to-slate-950/80"
+          : "bg-slate-950/40"
+      }`}
+    >
+      <div className="mb-2 flex items-center justify-between px-1">
+        <p
+          className={`text-[10px] font-semibold uppercase tracking-[0.16em] ${
+            showRisks ? "text-indigo-300" : "text-zinc-500"
+          }`}
+        >
+          {label}
+        </p>
+        <p className="hidden text-[9px] text-zinc-500 sm:block">{sublabel}</p>
+      </div>
+
+      <div
+        className="relative w-full"
+        style={{ aspectRatio: "5 / 5" }}
+        aria-label={
+          showRisks
+            ? "OrgLens risk view: same org structure with red and amber risk markers."
+            : "Traditional view: static org chart with no risk markers."
+        }
+      >
+        {/* SVG connectors */}
+        <svg
+          className="absolute inset-0 h-full w-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient
+              id={`lineGradient-${showRisks ? "risk" : "trad"}`}
+              x1="0%"
+              y1="0%"
+              x2="0%"
+              y2="100%"
+            >
+              {showRisks ? (
+                <>
+                  <stop offset="0%" stopColor="#818cf8" stopOpacity="0.9" />
+                  <stop offset="100%" stopColor="#6366f1" stopOpacity="0.4" />
+                </>
+              ) : (
+                <>
+                  <stop offset="0%" stopColor="#71717a" stopOpacity="0.6" />
+                  <stop offset="100%" stopColor="#52525b" stopOpacity="0.3" />
+                </>
+              )}
+            </linearGradient>
+          </defs>
+          {EDGES.map((edge, i) => {
+            const from = nodeById(edge.from);
+            const to = nodeById(edge.to);
+            const yFrom = from.y + 5;
+            const yTo = to.y - 5;
+            return (
+              <path
+                key={`${edge.from}-${edge.to}`}
+                d={`M ${from.x} ${yFrom} C ${from.x} ${yFrom + 6}, ${to.x} ${yTo - 6}, ${to.x} ${yTo}`}
+                stroke={`url(#lineGradient-${showRisks ? "risk" : "trad"})`}
+                strokeWidth="0.4"
+                fill="none"
+                vectorEffect="non-scaling-stroke"
+                className={`orglens-line ${mounted ? "is-in" : ""}`}
+                style={{
+                  animationDelay: `${300 + i * 100}ms`,
+                }}
+              />
+            );
+          })}
+        </svg>
+
+        {/* Nodes */}
+        {NODES.map((n) => (
+          <MiniNode
+            key={n.id}
+            node={n}
+            muted={!showRisks}
+          />
+        ))}
+
+        {/* Risk badges (only on risk view) */}
+        {showRisks &&
+          RISK_BADGES.map((b, i) => {
+            const node = nodeById(b.nodeId);
+            // For paired badge, center between two nodes
+            let x = node.x;
+            const y = node.y;
+            if (b.pairNodeId) {
+              const pair = nodeById(b.pairNodeId);
+              x = (node.x + pair.x) / 2;
+            }
+            return (
+              <RiskBadgePin
+                key={`${b.label}-${i}`}
+                x={x}
+                y={y}
+                badge={b}
+              />
+            );
+          })}
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────── */
+/* Mini Node                                   */
+/* ─────────────────────────────────────────── */
+
+function MiniNode({ node, muted }: { node: OrgNode; muted: boolean }) {
+  return (
+    <div
+      className="absolute -translate-x-1/2 -translate-y-1/2"
+      style={{
+        left: `${node.x}%`,
+        top: `${node.y}%`,
+      }}
+    >
+      <div
+        className={`min-w-[68px] rounded-md border px-1.5 py-1 text-center backdrop-blur sm:min-w-[80px] sm:px-2 sm:py-1 ${
+          muted
+            ? "border-zinc-700/60 bg-zinc-800/60 opacity-70"
+            : "border-white/15 bg-slate-800/85 shadow-[0_4px_14px_-6px_rgba(0,0,0,0.7)]"
+        }`}
+      >
+        <p
+          className={`whitespace-nowrap text-[8px] font-semibold leading-tight sm:text-[9px] ${
+            muted ? "text-zinc-400" : "text-white"
+          }`}
+        >
           {node.role}
         </p>
       </div>
+    </div>
+  );
+}
 
-      {/* Risk badge */}
-      {node.risk && (
-        <div className="group absolute left-1/2 top-full z-10 mt-1 -translate-x-1/2">
+/* ─────────────────────────────────────────── */
+/* Risk Badge Pin                              */
+/* ─────────────────────────────────────────── */
+
+function RiskBadgePin({
+  x,
+  y,
+  badge,
+}: {
+  x: number;
+  y: number;
+  badge: RiskBadge;
+}) {
+  const isAbove = badge.position === "above";
+  const toneClasses =
+    badge.tone === "red"
+      ? "bg-red-500/25 text-red-100 ring-1 ring-inset ring-red-400/60 shadow-[0_0_10px_-2px_rgba(239,68,68,0.6)]"
+      : "bg-amber-500/25 text-amber-100 ring-1 ring-inset ring-amber-400/60 shadow-[0_0_10px_-2px_rgba(245,158,11,0.5)]";
+
+  // Offset above vs below the node
+  const offsetY = isAbove ? -16 : 16;
+
+  return (
+    <div
+      className="absolute z-10 -translate-x-1/2"
+      style={{
+        left: `${x}%`,
+        top: `calc(${y}% + ${offsetY}px)`,
+        transform: "translate(-50%, -50%)",
+      }}
+    >
+      <div className="group relative inline-flex items-center gap-1">
+        {badge.withDot && (
           <span
-            className={`orglens-badge inline-flex cursor-default items-center whitespace-nowrap rounded-full px-2 py-[3px] text-[9px] font-semibold tracking-wide ${TONE_STYLES[node.risk.tone]}`}
-          >
-            {node.risk.label}
-          </span>
-          {/* Tooltip */}
-          <div
-            role="tooltip"
-            className="pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 w-44 -translate-x-1/2 rounded-md border border-white/10 bg-slate-950/95 px-2.5 py-1.5 text-[10px] leading-snug text-zinc-200 opacity-0 shadow-xl backdrop-blur transition-opacity duration-150 group-hover:opacity-100"
-          >
-            {node.risk.tooltip}
-          </div>
+            aria-hidden
+            className="orglens-red-dot inline-block h-1.5 w-1.5 rounded-full bg-red-500"
+          />
+        )}
+        <span
+          className={`orglens-badge inline-flex cursor-default items-center whitespace-nowrap rounded-full px-1.5 py-[2px] text-[8px] font-semibold tracking-wide sm:text-[9px] ${toneClasses}`}
+        >
+          {badge.label}
+        </span>
+        {/* Tooltip */}
+        <div
+          role="tooltip"
+          className={`pointer-events-none absolute left-1/2 z-30 w-48 -translate-x-1/2 rounded-md border border-white/10 bg-slate-950/95 px-2.5 py-1.5 text-[10px] leading-snug text-zinc-200 opacity-0 shadow-xl backdrop-blur transition-opacity duration-150 group-hover:opacity-100 ${
+            isAbove ? "bottom-full mb-2" : "top-full mt-2"
+          }`}
+        >
+          {badge.tooltip}
         </div>
-      )}
+      </div>
     </div>
   );
 }

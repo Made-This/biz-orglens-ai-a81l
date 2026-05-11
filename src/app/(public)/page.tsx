@@ -2,27 +2,25 @@ import Link from "next/link";
 import {
   AlertTriangle,
   ArrowRight,
-  Award,
   CheckCircle2,
-  ClipboardCheck,
   Compass,
   Gauge,
   Map as MapIcon,
   Network,
-  PieChart,
   Repeat,
   ScanSearch,
   ShieldCheck,
   Sparkles,
   Target,
-  TrendingDown,
   UserCheck,
   UserCog,
   UserMinus,
   UserPlus,
-  Zap,
+  Award,
+  ClipboardCheck,
 } from "lucide-react";
 import HeroOrgChart from "@/components/HeroOrgChart";
+import ROICalculator from "@/components/ROICalculator";
 
 const DEMO_URL = "/demo";
 const FOUNDER_SNAPSHOT_CHECKOUT_URL =
@@ -32,10 +30,9 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <MetricsStrip />
       <PainPoints />
-      <ROISection />
-      <UrgencyBand />
+      <MetricsStrip />
+      <ROICalculator founderSnapshotUrl={FOUNDER_SNAPSHOT_CHECKOUT_URL} />
       <WhenToUse />
       <ReportContents />
       <PricingCTA />
@@ -98,75 +95,13 @@ function Hero() {
             </p>
           </div>
 
-          {/* RIGHT COLUMN — animated org chart */}
+          {/* RIGHT COLUMN — side-by-side org chart comparison */}
           <div className="lg:col-span-6 xl:col-span-7">
             <HeroOrgChart
               founderSnapshotUrl={FOUNDER_SNAPSHOT_CHECKOUT_URL}
             />
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─────────────────────────────────────────── */
-/* SECTION 1B — METRICS STRIP                  */
-/* ─────────────────────────────────────────── */
-
-function MetricsStrip() {
-  const stats = [
-    {
-      value: "31%",
-      body: "of U.S. employees were engaged in 2024.",
-    },
-    {
-      value: "46%",
-      body: "clearly knew what was expected of them at work.",
-    },
-    {
-      value: "70%",
-      body: "of team engagement variance is tied to managers.",
-    },
-    {
-      value: "23%",
-      body: "higher profitability is associated with highly engaged teams.",
-    },
-  ];
-
-  return (
-    <section className="border-y border-[#1E1E24] bg-[#0B0B0F] py-16 md:py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-400">
-            Why structure matters
-          </p>
-          <p className="mt-4 text-lg leading-relaxed text-zinc-300 sm:text-xl">
-            Research shows why role clarity, leadership coverage, and team
-            structure matter.
-          </p>
-        </div>
-
-        <div className="mx-auto mt-10 grid max-w-6xl grid-cols-2 gap-4 lg:grid-cols-4">
-          {stats.map((s) => (
-            <div
-              key={s.value}
-              className="rounded-xl border border-[#1E1E24] bg-[#12121A] p-6 transition-all hover:border-indigo-400/40 hover:bg-[#15151F]"
-            >
-              <p className="text-4xl font-bold tracking-tight text-indigo-300 sm:text-5xl">
-                {s.value}
-              </p>
-              <p className="mt-3 text-sm leading-relaxed text-zinc-400">
-                {s.body}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <p className="mx-auto mt-8 max-w-3xl text-center text-xs leading-relaxed text-zinc-500">
-          Benchmarks from Gallup workplace research. OrgLens uses these
-          benchmarks as context, not as guaranteed outcomes.
-        </p>
       </div>
     </section>
   );
@@ -182,31 +117,43 @@ function PainPoints() {
       icon: UserCog,
       title: "Founder Bottleneck",
       desc: "If every important decision still routes through the founder, the company cannot scale cleanly. OrgLens helps identify where ownership, decision rights, or leadership coverage may be missing.",
+      hover:
+        "When critical decisions remain concentrated in the founder, growth slows and delegation becomes fragile. Research consistently shows that founder dependency is one of the top structural risks in scaling companies.",
     },
     {
       icon: AlertTriangle,
       title: "Unclear Ownership",
       desc: "When roles overlap or no one owns a key function, execution slows down. OrgLens helps reveal where accountability is unclear across the team.",
+      hover:
+        "Role ambiguity is a leading cause of execution drag as teams grow. When no one clearly owns a function, accountability gaps develop — often invisible until a major hire or restructure fails.",
     },
     {
       icon: UserMinus,
       title: "Wrong Person, Wrong Seat",
       desc: "A strong person in the wrong role can still create drag. OrgLens highlights role-fit signals and competency patterns that may affect execution.",
+      hover:
+        "A high-performing individual placed in a mismatched role still creates drag. Role-fit misalignment is often discovered only after six months of underperformance — at significant cost.",
     },
     {
       icon: UserPlus,
       title: "Hiring Before Structure",
       desc: "Adding headcount without understanding the current structure can multiply confusion. OrgLens helps founders see what should be clarified before the next hire.",
+      hover:
+        "Adding headcount without first understanding structural gaps can multiply confusion. McKinsey and Deloitte research consistently links unclear org design to poor ROI on new hires.",
     },
     {
       icon: Network,
       title: "Leadership Coverage Gaps",
       desc: "As teams grow, informal coordination breaks down. OrgLens helps identify where the company may need stronger management, operating, or functional leadership.",
+      hover:
+        "Gallup research shows that managers account for at least 70% of variance in team engagement. As teams grow past 15–20 people, informal coordination breaks down — leadership coverage gaps become structural risks.",
     },
     {
       icon: ScanSearch,
       title: "Hidden Scaling Risk",
       desc: "The org may look fine on paper, but risk often hides in reporting lines, overloaded people, unclear roles, and founder dependency. OrgLens turns those signals into a clear report.",
+      hover:
+        "The most costly org risks are often invisible on a standard org chart: overloaded people, founder dependency, role confusion, and unowned functions. OrgLens turns these hidden signals into a readable diagnostic.",
     },
   ];
 
@@ -235,7 +182,7 @@ function PainPoints() {
             return (
               <div
                 key={p.title}
-                className="rounded-xl border border-[#1E1E24] border-l-2 border-l-indigo-500/70 bg-[#12121A] p-7 transition-all hover:border-indigo-400/60 hover:bg-[#15151F]"
+                className="group rounded-xl border border-[#1E1E24] border-l-2 border-l-indigo-500/70 bg-[#12121A] p-7 transition-all hover:border-indigo-400/60 hover:bg-[#15151F]"
               >
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-300 ring-1 ring-inset ring-indigo-400/30">
                   <Icon className="h-5 w-5" />
@@ -246,6 +193,12 @@ function PainPoints() {
                 <p className="mt-2 text-sm leading-relaxed text-zinc-400">
                   {p.desc}
                 </p>
+                {/* Hover content — always visible on mobile, expands on hover desktop */}
+                <div className="mt-4 border-l-2 border-indigo-500/30 pl-3 transition-all duration-300 md:max-h-0 md:overflow-hidden md:opacity-0 md:group-hover:max-h-60 md:group-hover:opacity-100">
+                  <p className="text-xs leading-relaxed text-zinc-500">
+                    {p.hover}
+                  </p>
+                </div>
               </div>
             );
           })}
@@ -256,141 +209,62 @@ function PainPoints() {
 }
 
 /* ─────────────────────────────────────────── */
-/* SECTION 3 — ROI                             */
+/* SECTION 3 — METRICS STRIP                   */
 /* ─────────────────────────────────────────── */
 
-function ROISection() {
-  const items = [
+function MetricsStrip() {
+  const stats = [
     {
-      icon: UserPlus,
-      title: "Avoid hiring into confusion",
-      desc: "Before adding a new role, understand whether the real problem is headcount, ownership, leadership coverage, or process clarity.",
+      value: "31%",
+      body: "of U.S. employees were engaged in 2024.",
     },
     {
-      icon: TrendingDown,
-      title: "Reduce founder bottlenecks",
-      desc: "See where the company still depends too much on the founder and where decision-making needs to move into the team.",
+      value: "46%",
+      body: "clearly knew what was expected of them at work.",
     },
     {
-      icon: Target,
-      title: "Improve role clarity",
-      desc: "Turn vague people concerns into a structured view of roles, responsibilities, gaps, and risks.",
+      value: "70%",
+      body: "of team engagement variance is tied to managers.",
     },
     {
-      icon: UserCheck,
-      title: "Make better use of current talent",
-      desc: "Before replacing or hiring, understand whether existing team members are in roles that match the company's current needs.",
-    },
-    {
-      icon: PieChart,
-      title: "Save consulting cost",
-      desc: "Get a fast organizational intelligence snapshot before paying for expensive org-design consulting or fractional HR advisory.",
-    },
-    {
-      icon: Zap,
-      title: "Move faster with confidence",
-      desc: "Use the report to support hiring, restructuring, promotion, or leadership planning conversations.",
+      value: "23%",
+      body: "higher profitability is associated with highly engaged teams.",
     },
   ];
 
   return (
-    <section className="border-y border-[#1E1E24] bg-[#0B0B0F] py-20 md:py-24">
+    <section className="border-y border-[#1E1E24] bg-[#0B0B0F] py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-400">
-            The ROI
+            Why it matters
           </p>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            The cost of unclear roles is bigger than the cost of the report.
-          </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-zinc-400">
-            One unclear hire, one overloaded founder, or one unresolved
-            ownership gap can cost far more than a lightweight organizational
-            review.
+          <p className="mt-4 text-lg leading-relaxed text-zinc-300 sm:text-xl">
+            Research shows why role clarity, leadership coverage, and team
+            structure matter.
           </p>
         </div>
 
-        <div className="mx-auto mt-14 grid max-w-6xl grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((i) => {
-            const Icon = i.icon;
-            return (
-              <div
-                key={i.title}
-                className="rounded-xl border border-[#1E1E24] bg-[#12121A] p-7 transition-all hover:border-indigo-400/40 hover:bg-[#15151F]"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-300 ring-1 ring-inset ring-indigo-400/30">
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-white">
-                      {i.title}
-                    </h3>
-                  </div>
-                </div>
-                <p className="mt-4 text-sm leading-relaxed text-zinc-400">
-                  {i.desc}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─────────────────────────────────────────── */
-/* SECTION 4 — URGENCY BAND                    */
-/* ─────────────────────────────────────────── */
-
-function UrgencyBand() {
-  return (
-    <section className="relative overflow-hidden bg-[#0A0A0B] py-20 md:py-24">
-      <div className="pointer-events-none absolute inset-0 -z-0">
-        <div className="absolute left-1/2 top-1/2 h-[420px] w-[820px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-500/[0.12] blur-[140px]" />
-      </div>
-      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-indigo-400/30 bg-gradient-to-b from-indigo-500/[0.10] to-[#0E0E14] p-10 shadow-[0_0_80px_-25px_rgba(99,102,241,0.5)] md:p-14">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-300">
-              Why now
-            </p>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              The best time to review your team structure is before the next
-              hire.
-            </h2>
-            <div className="mx-auto mt-6 max-w-2xl space-y-4 text-base leading-relaxed text-zinc-300">
-              <p>
-                Most teams wait until the pain is obvious: missed handoffs,
-                unclear ownership, slow decisions, founder burnout, or a key
-                hire that does not work out. By then, the cost is already
-                higher.
+        <div className="mx-auto mt-10 grid max-w-6xl grid-cols-2 gap-4 lg:grid-cols-4">
+          {stats.map((s) => (
+            <div
+              key={s.value}
+              className="rounded-xl border border-[#1E1E24] bg-[#12121A] p-6 transition-all hover:border-indigo-400/40 hover:bg-[#15151F]"
+            >
+              <p className="text-4xl font-bold tracking-tight text-indigo-300 sm:text-5xl">
+                {s.value}
               </p>
-              <p>
-                OrgLens gives founders and operators a faster way to see where
-                the team may be misaligned before making the next people
-                decision.
+              <p className="mt-3 text-sm leading-relaxed text-zinc-400">
+                {s.body}
               </p>
             </div>
-
-            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <a
-                href={FOUNDER_SNAPSHOT_CHECKOUT_URL}
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-500 px-6 py-3.5 text-base font-semibold text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-400"
-              >
-                Get Founder Snapshot
-                <ArrowRight className="h-4 w-4" />
-              </a>
-              <Link
-                href={DEMO_URL}
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-indigo-400/60 bg-transparent px-6 py-3.5 text-base font-semibold text-indigo-200 transition-all hover:bg-indigo-500/10 hover:text-white"
-              >
-                Preview Demo Report
-              </Link>
-            </div>
-          </div>
+          ))}
         </div>
+
+        <p className="mx-auto mt-8 max-w-3xl text-center text-xs leading-relaxed text-zinc-500">
+          Benchmarks from Gallup workplace research. OrgLens uses these
+          benchmarks as context, not as guaranteed outcomes.
+        </p>
       </div>
     </section>
   );
@@ -435,7 +309,7 @@ function WhenToUse() {
   ];
 
   return (
-    <section className="border-y border-[#1E1E24] bg-[#0B0B0F] py-20 md:py-24">
+    <section className="bg-[#0A0A0B] py-20 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-400">
@@ -488,7 +362,7 @@ function ReportContents() {
   ];
 
   return (
-    <section className="bg-[#0A0A0B] py-20 md:py-24">
+    <section className="border-y border-[#1E1E24] bg-[#0B0B0F] py-20 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-400">
@@ -529,7 +403,7 @@ function ReportContents() {
 
 function PricingCTA() {
   return (
-    <section className="border-y border-[#1E1E24] bg-[#0B0B0F] py-20 md:py-24">
+    <section className="bg-[#0A0A0B] py-20 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-400">
@@ -662,4 +536,3 @@ function ResponsibleAINote() {
     </section>
   );
 }
-
