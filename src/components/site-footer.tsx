@@ -55,7 +55,7 @@ export function SiteFooter({
             <ul className="mt-4 space-y-2.5">
               <li>
                 <Link
-                  href="/app/report"
+                  href="/app"
                   className="text-sm text-zinc-400 transition-colors hover:text-white"
                 >
                   Demo Report

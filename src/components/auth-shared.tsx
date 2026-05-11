@@ -17,41 +17,39 @@ export function SignInValuePanel() {
         recommendations.
       </p>
 
-      <div className="mt-6 rounded-xl border border-[#1E1E24] bg-[#111113] p-5">
+      <div className="mt-6 rounded-xl border border-indigo-400/40 bg-indigo-500/[0.08] p-5 shadow-[0_0_40px_-15px_rgba(99,102,241,0.45)]">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-300">
-          New to OrgLens?
+          No account yet?
         </p>
-        <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+        <p className="mt-2 text-sm leading-relaxed text-zinc-300">
           Explore a sample report first with{" "}
           <span className="text-white">NovaCloud Health</span>, a fictional
-          demo company showing how OrgLens works for a growing team. OrgLens is
-          built for startups and SMEs with 10–150 employees.
+          demo company showing how OrgLens works for a growing team. OrgLens
+          is built for startups and SMEs with 10–150 employees.
         </p>
-        <div className="mt-4 flex flex-wrap gap-3">
+        <Link
+          href="/app"
+          className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-colors hover:bg-indigo-400 sm:w-auto"
+        >
+          Try Demo — No Login Required
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+        <div className="mt-3 flex flex-wrap gap-3 text-xs">
           <Link
             href="/app"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-400/50 bg-indigo-500/10 px-4 py-2 text-xs font-semibold text-indigo-200 transition-colors hover:bg-indigo-500/20 hover:text-white"
+            className="font-medium text-indigo-200 transition-colors hover:text-white"
           >
-            View Demo Report
-            <ArrowRight className="h-3.5 w-3.5" />
+            View Demo Report →
           </Link>
+          <span className="text-zinc-700">·</span>
           <Link
             href="/payment/founder-snapshot"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-500 px-4 py-2 text-xs font-semibold text-white shadow-[0_0_20px_-5px_rgba(99,102,241,0.6)] transition-colors hover:bg-indigo-400"
+            className="font-medium text-indigo-200 transition-colors hover:text-white"
           >
-            Get Founder Snapshot
-            <ArrowRight className="h-3.5 w-3.5" />
+            Get Founder Snapshot →
           </Link>
         </div>
       </div>
-
-      <Link
-        href="/app"
-        className="mt-5 inline-flex w-fit items-center gap-1.5 text-xs font-medium text-zinc-500 transition-colors hover:text-indigo-300"
-      >
-        Try Demo — No Login Required
-        <ArrowRight className="h-3.5 w-3.5" />
-      </Link>
     </div>
   );
 }

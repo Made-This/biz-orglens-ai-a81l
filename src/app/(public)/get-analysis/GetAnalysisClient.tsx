@@ -135,7 +135,7 @@ export function GetAnalysisClient() {
           </p>
           <div className="mt-8 flex justify-center">
             <Link
-              href="/app/report"
+              href="/app"
               className="inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-400"
             >
               View Demo Report
@@ -283,7 +283,7 @@ function AdvisoryForm() {
         </p>
         <p className="mt-3 text-emerald-200/80">
           Your request was received. While you wait, you can{" "}
-          <Link href="/app/report" className="underline hover:text-white">
+          <Link href="/app" className="underline hover:text-white">
             view the demo report
           </Link>
           .

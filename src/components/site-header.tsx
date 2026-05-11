@@ -17,7 +17,7 @@ interface SiteHeaderProps {
 // "My Workspace" only renders for authenticated users.
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Demo Report", href: "/app/report" },
+  { label: "Demo Report", href: "/app" },
   { label: "Use Cases", href: "/use-cases" },
   { label: "Pricing", href: "/pricing" },
   { label: "Insights", href: "/insights" },

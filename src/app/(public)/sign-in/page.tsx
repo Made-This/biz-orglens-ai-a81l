@@ -117,6 +117,31 @@ export default function SignInPage() {
               </p>
             </div>
 
+            {/* Divider */}
+            <div className="my-6 flex items-center gap-3 text-[10px] font-medium uppercase tracking-widest text-zinc-600">
+              <span className="h-px flex-1 bg-[#1E1E24]" />
+              Or
+              <span className="h-px flex-1 bg-[#1E1E24]" />
+            </div>
+
+            {/* Try Demo — No Login Required */}
+            <Link
+              href="/app"
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-indigo-400/50 bg-indigo-500/10 px-4 py-3 text-sm font-semibold text-indigo-200 transition-all hover:bg-indigo-500/20 hover:text-white"
+            >
+              Try Demo — No Login Required
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <p className="mt-2 text-center text-[11px] text-zinc-500">
+              <Link
+                href="/app"
+                className="text-zinc-500 underline-offset-2 hover:text-indigo-300 hover:underline"
+              >
+                View Demo Report
+              </Link>{" "}
+              · See how OrgLens works on a fictional team
+            </p>
+
             <p className="mt-6 text-center text-sm text-zinc-500">
               Don&apos;t have an account?{" "}
               <Link

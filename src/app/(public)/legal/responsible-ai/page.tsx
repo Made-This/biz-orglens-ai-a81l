@@ -101,7 +101,7 @@ export default function LegalResponsibleAIPage() {
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href="/app/report"
+              href="/app"
               className="inline-flex items-center gap-2 rounded-lg border border-indigo-400/50 px-6 py-3 text-sm font-semibold text-indigo-200 transition-all hover:bg-indigo-500/10 hover:text-white"
             >
               View Demo Report

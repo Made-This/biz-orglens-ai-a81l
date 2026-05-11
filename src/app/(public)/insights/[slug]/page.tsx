@@ -153,7 +153,7 @@ export default async function InsightPostPage({ params }: PageProps) {
             Want to see organizational intelligence in practice? Explore the OrgLens demo report.
           </p>
           <Link
-            href="/app/report"
+            href="/app"
             className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400 sm:w-auto"
           >
             View Demo Report
