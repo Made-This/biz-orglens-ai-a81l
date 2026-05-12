@@ -12,10 +12,12 @@ import {
   type PF48Factor,
 } from "./hucamaExtractor";
 
-// pdf-parse has no TypeScript declarations; we type-ignore the import.
+// pdf-parse/lib/pdf-parse bypasses the top-level debug file-loading code in
+// the package index. No TypeScript declarations are available, so we suppress
+// the missing-module error.
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import pdfParse from "pdf-parse";
+import pdfParse from "pdf-parse/lib/pdf-parse";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 /*  Main analysis action                                                       */
