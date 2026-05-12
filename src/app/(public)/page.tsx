@@ -25,6 +25,10 @@ import ROICalculator from "@/components/ROICalculator";
 const DEMO_URL = "/demo";
 const FOUNDER_SNAPSHOT_CHECKOUT_URL =
   "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
+const FULL_REPORT_CHECKOUT_URL =
+  "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md77k46snb81k8f7vgmm46hbzx86gc8y";
+const ADVISORY_CHECKOUT_URL =
+  "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7c6ccpy7gdd50t7fw9a7w1fd86gtxy";
 
 export default function HomePage() {
   return (
@@ -398,8 +402,59 @@ function ReportContents() {
 }
 
 /* ─────────────────────────────────────────── */
-/* SECTION 7 — PRICING / PURCHASE URGENCY      */
+/* SECTION 7 — PRICING / TIER COMPARISON       */
 /* ─────────────────────────────────────────── */
+
+const PRICING_TIERS = [
+  {
+    name: "Quick Scan",
+    price: "$49",
+    subtitle: "For founders who need clarity fast",
+    features: [
+      "Competency heatmap across your team",
+      "Role-fit rankings (Great 8 model)",
+      "3-scenario org comparison",
+      "Risk summary with gap identification",
+      "Instant delivery — results in minutes",
+    ],
+    cta: "Get Your Analysis",
+    href: FOUNDER_SNAPSHOT_CHECKOUT_URL,
+    ribbon: "Most Popular",
+    highlighted: false,
+  },
+  {
+    name: "Full Report",
+    price: "$249",
+    subtitle: "For founders preparing for a raise or restructure",
+    features: [
+      "Everything in Quick Scan",
+      "Human-reviewed analysis and annotations",
+      "Founder memo export (board-ready format)",
+      "Detailed leadership coverage assessment",
+      "Priority delivery — 48 hours",
+    ],
+    cta: "Get Full Report",
+    href: FULL_REPORT_CHECKOUT_URL,
+    ribbon: null,
+    highlighted: true,
+  },
+  {
+    name: "Advisory Session",
+    price: "$999",
+    subtitle: "For founders who want expert guidance",
+    features: [
+      "Everything in Full Report",
+      "90-minute 1:1 strategic review session",
+      "Restructuring recommendations with rationale",
+      "Hiring prioritization framework",
+      "30-day follow-up check-in",
+    ],
+    cta: "Book Advisory",
+    href: ADVISORY_CHECKOUT_URL,
+    ribbon: null,
+    highlighted: false,
+  },
+] as const;
 
 function PricingCTA() {
   return (
@@ -407,108 +462,77 @@ function PricingCTA() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-400">
-            Get started
+            Pricing
           </p>
           <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Start with a snapshot before your next people decision.
+            Start with the right level of depth.
           </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-zinc-400">
+            From instant analysis to expert-led advisory — pick the level of
+            support that matches your next decision.
+          </p>
         </div>
 
-        <div className="mx-auto mt-14 grid max-w-5xl grid-cols-1 gap-5 md:grid-cols-2">
-          {/* Card 1 — Paid */}
-          <div className="relative rounded-2xl border border-indigo-400/40 bg-gradient-to-b from-indigo-500/[0.12] to-[#0F0F12] p-8 shadow-[0_0_60px_-15px_rgba(99,102,241,0.45)]">
-            <span className="absolute -top-3 left-8 inline-flex items-center rounded-full border border-indigo-400/40 bg-indigo-500 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white">
-              Recommended
-            </span>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
-              Founder Snapshot
-            </p>
-            <p className="mt-4 text-3xl font-bold tracking-tight text-white">
-              $49
-              <span className="ml-2 text-sm font-medium text-zinc-500">
-                early-access price
-              </span>
-            </p>
-            <h3 className="mt-5 text-lg font-semibold leading-snug text-white">
-              Start with a $49 Founder Snapshot before your next hire,
-              restructure, or leadership decision.
-            </h3>
-            <p className="mt-4 text-sm leading-relaxed text-zinc-400">
-              Early-access price. Designed for startups and SMEs with 10–150
-              employees.
-            </p>
-            <ul className="mt-6 space-y-2.5">
-              {[
-                "Org map and reporting-line view",
-                "Role-fit and leadership coverage signals",
-                "Founder dependency and team risks",
-                "Recommended next steps",
-              ].map((line) => (
-                <li
-                  key={line}
-                  className="flex items-start gap-2.5 text-sm text-zinc-300"
-                >
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" />
-                  <span>{line}</span>
-                </li>
-              ))}
-            </ul>
-            <a
-              href={FOUNDER_SNAPSHOT_CHECKOUT_URL}
-              className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
+        <div className="mx-auto mt-14 grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-3">
+          {PRICING_TIERS.map((tier) => (
+            <div
+              key={tier.name}
+              className={
+                tier.highlighted
+                  ? "relative flex flex-col rounded-2xl border border-indigo-400/60 bg-gradient-to-b from-indigo-500/[0.12] to-[#0F0F12] p-8 shadow-[0_0_60px_-15px_rgba(99,102,241,0.45)]"
+                  : "relative flex flex-col rounded-2xl border border-[#1E1E24] bg-[#0F0F12] p-8"
+              }
             >
-              Get Founder Snapshot
-              <ArrowRight className="h-4 w-4" />
-            </a>
-          </div>
-
-          {/* Card 2 — Free demo */}
-          <div className="relative rounded-2xl border border-[#1E1E24] bg-[#0F0F12] p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
-              Free Demo Report
-            </p>
-            <p className="mt-4 text-3xl font-bold tracking-tight text-white">
-              Free
-              <span className="ml-2 text-sm font-medium text-zinc-500">
-                no signup
-              </span>
-            </p>
-            <h3 className="mt-5 text-lg font-semibold leading-snug text-white">
-              Preview the demo first.
-            </h3>
-            <p className="mt-4 text-sm leading-relaxed text-zinc-400">
-              See exactly what the report looks like using NovaCloud Health,
-              our fictional demo company.
-            </p>
-            <ul className="mt-6 space-y-2.5">
-              {[
-                "Full sample report walkthrough",
-                "Org map, role-fit, and risk views",
-                "Founder-style recommendations",
-                "No login or payment required",
-              ].map((line) => (
-                <li
-                  key={line}
-                  className="flex items-start gap-2.5 text-sm text-zinc-300"
-                >
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" />
-                  <span>{line}</span>
-                </li>
-              ))}
-            </ul>
-            <Link
-              href={DEMO_URL}
-              className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-indigo-400/50 bg-transparent px-4 py-3 text-sm font-semibold text-indigo-200 transition-all hover:bg-indigo-500/10 hover:text-white"
-            >
-              Preview Demo Report
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+              {tier.ribbon && (
+                <span className="absolute -top-3 left-6 inline-flex items-center rounded-full border border-indigo-400/40 bg-indigo-500 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white">
+                  {tier.ribbon}
+                </span>
+              )}
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                {tier.name}
+              </p>
+              <p className="mt-4 text-3xl font-bold tracking-tight text-white">
+                {tier.price}
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+                {tier.subtitle}
+              </p>
+              <ul className="mt-6 flex-1 space-y-2.5">
+                {tier.features.map((f) => (
+                  <li
+                    key={f}
+                    className="flex items-start gap-2.5 text-sm text-zinc-300"
+                  >
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={tier.href}
+                className={
+                  tier.highlighted
+                    ? "mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-all hover:bg-indigo-400"
+                    : "mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-indigo-400/50 bg-transparent px-4 py-3 text-sm font-semibold text-indigo-200 transition-all hover:bg-indigo-500/10 hover:text-white"
+                }
+              >
+                {tier.cta}
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            </div>
+          ))}
         </div>
 
         <p className="mx-auto mt-10 max-w-2xl text-center text-sm text-zinc-500">
-          All reports are decision-support tools. No AI system makes
-          employment decisions.
+          All reports are decision-support tools. No AI system makes employment
+          decisions.{" "}
+          <Link
+            href={DEMO_URL}
+            className="text-indigo-400 underline-offset-2 hover:text-indigo-300 hover:underline"
+          >
+            Preview the free demo report
+          </Link>{" "}
+          before buying.
         </p>
       </div>
     </section>

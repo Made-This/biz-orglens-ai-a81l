@@ -1,6 +1,13 @@
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 
+const FOUNDER_SNAPSHOT_CHECKOUT_URL =
+  "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
+const FULL_REPORT_CHECKOUT_URL =
+  "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md77k46snb81k8f7vgmm46hbzx86gc8y";
+const ADVISORY_CHECKOUT_URL =
+  "https://grandiose-goshawk-617.convex.site/checkout/orglens-ai/md7c6ccpy7gdd50t7fw9a7w1fd86gtxy";
+
 type Tier = {
   name: string;
   badge?: string;
@@ -17,72 +24,57 @@ type Tier = {
 
 const tiers: Tier[] = [
   {
-    name: "Free Demo Report",
-    badge: "Free",
-    description:
-      "Explore a full sample report for NovaCloud Health — one example of how OrgLens can analyze a growing team.",
-    features: [
-      "Sample org map (NovaCloud Health)",
-      "Role-fit signal summary",
-      "Leadership coverage snapshot",
-      "Team risk indicators",
-    ],
-    ctaLabel: "Preview Demo Report",
-    ctaHref: "/demo",
-    tone: "ghost",
-    ctaSubtext: "Create a free account to unlock the full demo.",
-  },
-  {
-    name: "Founder Snapshot",
-    badge: "$49 early access",
+    name: "Quick Scan",
+    badge: "$49",
     badgeOriginal: "Normally $149",
     ribbon: "Most Popular",
     description:
-      "A lightweight organizational intelligence report for founders and SME leaders who want a fast read on team structure, role-fit signals, ownership gaps, and scaling risks.",
+      "For founders who need clarity fast. Get a fast read on team structure, role-fit signals, ownership gaps, and scaling risks — delivered in minutes.",
     features: [
-      "Team structure review",
-      "Role-fit signal summary",
-      "Top organizational risks",
-      "Founder dependency observations",
-      "Recommended next steps",
-      "Founder-ready summary report",
+      "Competency heatmap across your team",
+      "Role-fit rankings (Great 8 model)",
+      "3-scenario org comparison",
+      "Risk summary with gap identification",
+      "Instant delivery — results in minutes",
     ],
-    ctaLabel: "Get Founder Snapshot",
-    ctaHref: "/payment/founder-snapshot",
-    tone: "highlighted",
-  },
-  {
-    name: "Full OrgLens Report",
-    badge: "$249",
-    description:
-      "A deeper report covering org structure, leadership coverage, role-fit signals, competency patterns, team risks, and recommended next steps for growing teams.",
-    features: [
-      "Org map review",
-      "Role-fit analysis",
-      "Leadership coverage",
-      "Competency signal summary",
-      "Team structure risks",
-      "Scaling readiness observations",
-      "Recommendations",
-      "Downloadable or shareable report",
-    ],
-    ctaLabel: "Run Full Analysis",
-    ctaHref: "/payment/full-report",
+    ctaLabel: "Get Your Analysis",
+    ctaHref: FOUNDER_SNAPSHOT_CHECKOUT_URL,
+    ctaExternal: true,
     tone: "standard",
   },
   {
-    name: "Founder Advisory Review",
-    badge: "Starting at $999",
+    name: "Full Report",
+    badge: "$249",
+    ribbon: undefined,
     description:
-      "Full report plus a founder/operator review session and action plan for hiring, restructuring, or scaling decisions.",
+      "For founders preparing for a raise or restructure. Human-reviewed analysis with detailed coverage, a board-ready founder memo, and 48-hour delivery.",
     features: [
-      "Full OrgLens Report",
-      "Founder review session (60 min)",
-      "Action plan",
-      "Hiring, restructuring, or leadership coverage recommendations",
+      "Everything in Quick Scan",
+      "Human-reviewed analysis and annotations",
+      "Founder memo export (board-ready format)",
+      "Detailed leadership coverage assessment",
+      "Priority delivery — 48 hours",
     ],
-    ctaLabel: "Request Advisory Review",
-    ctaHref: "/advisory",
+    ctaLabel: "Get Full Report",
+    ctaHref: FULL_REPORT_CHECKOUT_URL,
+    ctaExternal: true,
+    tone: "highlighted",
+  },
+  {
+    name: "Advisory Session",
+    badge: "$999",
+    description:
+      "For founders who want expert guidance. Everything in Full Report plus a 90-minute 1:1 strategic review, restructuring recommendations, and a 30-day follow-up.",
+    features: [
+      "Everything in Full Report",
+      "90-minute 1:1 strategic review session",
+      "Restructuring recommendations with rationale",
+      "Hiring prioritization framework",
+      "30-day follow-up check-in",
+    ],
+    ctaLabel: "Book Advisory",
+    ctaHref: ADVISORY_CHECKOUT_URL,
+    ctaExternal: true,
     tone: "premium",
   },
 ];
@@ -131,14 +123,14 @@ export default function PricingPage() {
             Simple, founder-friendly pricing.
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-zinc-400">
-            Built for startups and SMEs with 10–150 employees. Start with the
-            free demo and upgrade when you&rsquo;re ready to see whether your
-            team is ready for the next stage of growth.
+            Three tiers for founders at different stages — from instant AI
+            analysis to expert-led 1:1 advisory. Pick the depth that matches
+            your next decision.
           </p>
         </div>
 
         {/* Tier grid */}
-        <div className="mx-auto mt-16 grid max-w-7xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto mt-16 grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {tiers.map((t) => (
             <TierCard key={t.name} tier={t} />
           ))}
@@ -189,16 +181,17 @@ export default function PricingPage() {
             Not sure which one fits?
           </h2>
           <p className="mt-4 text-base text-zinc-400">
-            Tell us about your team and we&rsquo;ll recommend the right report.
+            Preview the free demo report to see exactly what OrgLens delivers
+            before you buy.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link
-              href="/advisory"
+            <a
+              href={FOUNDER_SNAPSHOT_CHECKOUT_URL}
               className="inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-400"
             >
-              Request Advisory Review
+              Start with Quick Scan — $49
               <ArrowRight className="h-4 w-4" />
-            </Link>
+            </a>
             <Link
               href="/demo"
               className="inline-flex items-center gap-2 rounded-lg border border-indigo-400/50 px-6 py-3 text-sm font-semibold text-indigo-200 transition-all hover:bg-indigo-500/10 hover:text-white"
