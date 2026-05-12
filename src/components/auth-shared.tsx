@@ -9,39 +9,31 @@ export function SignInValuePanel() {
         OrgLens workspace
       </span>
       <h1 className="mt-4 text-3xl font-bold tracking-tight text-white md:text-4xl">
-        Sign in to unlock the full OrgLens demo report or access your
-        workspace.
+        Sign in to access your OrgLens workspace.
       </h1>
       <p className="mt-4 text-sm leading-relaxed text-zinc-400 md:text-base">
-        Free account gives you full demo access. Paid customers can access
-        their intake form, report status, and final report.
+        Paid customers can access their intake form, report status, and final
+        report. The public demo is available without any login.
       </p>
 
       <div className="mt-6 rounded-xl border border-indigo-400/40 bg-indigo-500/[0.08] p-5 shadow-[0_0_40px_-15px_rgba(99,102,241,0.45)]">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-300">
-          New here?
+          Not a customer yet?
         </p>
         <p className="mt-2 text-sm leading-relaxed text-zinc-300">
-          Explore the public preview first — see how OrgLens analyzes{" "}
-          <span className="text-white">AtlasFlow Technologies</span>, a fictional
-          demo company. Sign in (free) to unlock the full demo report. OrgLens
-          is built for startups and SMEs with 10–150 employees.
+          Browse the full public demo for{" "}
+          <span className="text-white">AtlasFlow Technologies</span> — no login
+          required. OrgLens is built for startups and SMEs with 10–150
+          employees.
         </p>
         <Link
           href="/demo"
           className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.6)] transition-colors hover:bg-indigo-400 sm:w-auto"
         >
-          View Public Demo Preview
+          View Public Demo
           <ArrowRight className="h-4 w-4" />
         </Link>
         <div className="mt-3 flex flex-wrap gap-3 text-xs">
-          <Link
-            href="/app/demo"
-            className="font-medium text-indigo-200 transition-colors hover:text-white"
-          >
-            Continue to Full Demo →
-          </Link>
-          <span className="text-zinc-700">·</span>
           <Link
             href="/pricing"
             className="font-medium text-indigo-200 transition-colors hover:text-white"

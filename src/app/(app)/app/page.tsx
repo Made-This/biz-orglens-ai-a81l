@@ -8,11 +8,10 @@ import { useConvexAuth } from "convex/react";
  * /app — entry route for the OrgLens app surface.
  *
  * Behavior:
- *   - Not signed in → redirect to the public demo preview at /demo
- *   - Signed in → redirect to the full demo report at /app/demo
+ *   - Not signed in → redirect to the public demo at /demo
+ *   - Signed in → redirect to the workspace at /app/workspace
  *
- * This prevents anyone from landing on a blank dashboard and routes
- * visitors and customers cleanly into the right tier of the funnel.
+ * The public demo is accessible without login at /demo.
  */
 export default function AppEntryPage() {
   const router = useRouter();
@@ -21,7 +20,7 @@ export default function AppEntryPage() {
   useEffect(() => {
     if (isLoading) return;
     if (isAuthenticated) {
-      router.replace("/app/demo");
+      router.replace("/app/workspace");
     } else {
       router.replace("/demo");
     }

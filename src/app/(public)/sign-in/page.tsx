@@ -31,7 +31,7 @@ function SignInInner() {
 
   const safeRedirect = isSafeRedirect(redirectParam)
     ? redirectParam
-    : "/app/demo";
+    : "/app";
 
   // After a successful sign-in, when auth state propagates, navigate to the
   // redirect target. This guards against the case where the form submit
@@ -142,32 +142,18 @@ function SignInInner() {
               </p>
             </div>
 
-            {/* Divider */}
-            <div className="my-6 flex items-center gap-3 text-[10px] font-medium uppercase tracking-widest text-zinc-600">
-              <span className="h-px flex-1 bg-[#1E1E24]" />
-              Or
-              <span className="h-px flex-1 bg-[#1E1E24]" />
-            </div>
-
-            {/* Continue to Full Demo */}
-            <Link
-              href="/app/demo"
-              className="flex w-full items-center justify-center gap-2 rounded-lg border border-indigo-400/50 bg-indigo-500/10 px-4 py-3 text-sm font-semibold text-indigo-200 transition-all hover:bg-indigo-500/20 hover:text-white"
-            >
-              Continue to Full Demo
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <p className="mt-2 text-center text-[11px] text-zinc-500">
+            {/* Demo link */}
+            <p className="mt-4 text-center text-[11px] text-zinc-500">
               <Link
                 href="/demo"
                 className="text-zinc-500 underline-offset-2 hover:text-indigo-300 hover:underline"
               >
-                Or browse the public demo preview
+                View the public demo
               </Link>{" "}
               · No login required
             </p>
 
-            <p className="mt-6 text-center text-sm text-zinc-500">
+            <p className="mt-4 text-center text-sm text-zinc-500">
               Don&apos;t have an account?{" "}
               <Link
                 href={`/sign-up${
