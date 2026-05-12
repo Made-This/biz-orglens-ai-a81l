@@ -201,16 +201,35 @@ export default function AnalysisPage() {
         Back to workspace
       </Link>
 
-      {/* Banner */}
-      <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-amber-500/25 bg-amber-500/[0.06] px-5 py-4 md:flex-row md:items-center">
-        <div className="flex items-start gap-3">
-          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
-          <p className="text-sm text-zinc-200">
-            Analysis based on uploaded reports. PDF parsing is in beta —
-            results reflect demo data until full parsing is enabled.
-          </p>
+      {/* Banner — amber for demo data, green for real extracted data */}
+      {analysis.usedMockData === false ? (
+        <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.06] px-5 py-4 md:flex-row md:items-center">
+          <div className="flex items-start gap-3">
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-300" />
+            <p className="text-sm text-zinc-200">
+              <span className="font-semibold text-emerald-300">Analyzed from your uploaded reports.</span>{" "}
+              Competency scores extracted directly from your HUCAMA PDF.
+            </p>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-amber-500/25 bg-amber-500/[0.06] px-5 py-4 md:flex-row md:items-center">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
+            <p className="text-sm text-zinc-200">
+              We couldn&rsquo;t extract scores from your PDF — showing sample
+              data.{" "}
+              <a
+                href="mailto:team@orglens-ai.madethis.app"
+                className="underline underline-offset-2 hover:text-white"
+              >
+                Contact us
+              </a>{" "}
+              if you need help.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Header */}
       <header className="mt-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">

@@ -201,9 +201,7 @@ export default defineSchema({
     .index("by_userId", ["userId"])
     .index("by_userId_uploadedAt", ["userId", "uploadedAt"]),
 
-  // Org analysis results produced from a HUCAMA upload. For now this is
-  // populated with simulated NovaCloud-style data — real PDF parsing will be
-  // wired into convex/analysis.ts in a later release.
+  // Org analysis results produced from a HUCAMA upload.
   analyses: defineTable({
     userId: v.id("users"),
     uploadId: v.id("analysisUploads"),
@@ -213,11 +211,14 @@ export default defineSchema({
       v.literal("complete"),
       v.literal("error")
     ),
-    // Mock scores — will be replaced with real PDF parsing later.
     orgMapData: v.optional(v.string()), // JSON string
     roleFitData: v.optional(v.string()), // JSON string
     riskSummary: v.optional(v.string()), // JSON string
     reportMarkdown: v.optional(v.string()),
+    // true  → scores came from mock NovaCloud demo data (PDF parse failed or unknown format)
+    // false → scores extracted from the actual uploaded PDF
+    // undefined → legacy row created before this field was added (treated as mock)
+    usedMockData: v.optional(v.boolean()),
   })
     .index("by_userId", ["userId"])
     .index("by_uploadId", ["uploadId"]),

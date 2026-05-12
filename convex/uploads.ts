@@ -94,11 +94,11 @@ export const triggerAnalysis = mutation({
 
     await ctx.db.patch(uploadId, { status: "processing" });
 
-    // Schedule the mock analysis to run shortly so the UI gets to render the
-    // processing state for a moment. The action handles all downstream writes.
+    // Schedule the PDF analysis action. It will parse the uploaded file and
+    // fall back to demo data automatically if parsing fails.
     await ctx.scheduler.runAfter(
       1500,
-      internal.analysis.runMockAnalysis,
+      internal.analysis.runAnalysis,
       { uploadId }
     );
 
@@ -124,10 +124,11 @@ export const _writeAnalysisResult = internalMutation({
     roleFitData: v.string(),
     riskSummary: v.string(),
     reportMarkdown: v.string(),
+    usedMockData: v.optional(v.boolean()),
   },
   handler: async (
     ctx,
-    { uploadId, userId, orgMapData, roleFitData, riskSummary, reportMarkdown }
+    { uploadId, userId, orgMapData, roleFitData, riskSummary, reportMarkdown, usedMockData }
   ) => {
     const analysisId: Id<"analyses"> = await ctx.db.insert("analyses", {
       userId,
@@ -138,6 +139,7 @@ export const _writeAnalysisResult = internalMutation({
       roleFitData,
       riskSummary,
       reportMarkdown,
+      usedMockData,
     });
     await ctx.db.patch(uploadId, {
       status: "complete",
