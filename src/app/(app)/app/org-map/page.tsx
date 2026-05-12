@@ -527,7 +527,7 @@ function DefaultOrgMap({ onActivateDemo }: { onActivateDemo: () => void }) {
 }
 
 // ===========================================================================
-// DEMO ORG MAP — Alpha Investment Group, full-feature unlocked experience
+// DEMO ORG MAP — AtlasFlow Technologies, full-feature unlocked experience
 // ===========================================================================
 
 type DemoMode = "Leadership" | "Execution" | "Adaptability" | "Stability" | "Risk";
@@ -958,14 +958,14 @@ function DemoOrgMap({ onClose }: { onClose: () => void }) {
             <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-400">
               <span className="inline-flex items-center gap-1.5">
                 <Building2 className="h-3.5 w-3.5 text-indigo-400" />
-                <strong className="text-white">NovaCloud Health</strong>
+                <strong className="text-white">AtlasFlow Technologies</strong>
               </span>
               <span className="text-zinc-700">·</span>
-              <span>28 employees</span>
+              <span>42 employees</span>
               <span className="text-zinc-700">·</span>
               <span className="inline-flex items-center gap-1.5">
                 <Network className="h-3.5 w-3.5 text-indigo-400" />
-                US Health Tech · B2B SaaS
+                Fictional B2B SaaS · Software
               </span>
             </p>
           </div>
@@ -1202,7 +1202,7 @@ function DemoBanner({ onClose }: { onClose: () => void }) {
               Demo Mode — Organizational Capability Analysis
             </p>
             <p className="mt-0.5 text-[11px] leading-snug text-indigo-100/90">
-              Fully unlocked preview · NovaCloud Health · 28 employees
+              Fully unlocked preview · AtlasFlow Technologies · 42 employees
             </p>
           </div>
         </div>

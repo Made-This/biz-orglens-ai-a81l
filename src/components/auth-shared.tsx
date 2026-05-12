@@ -23,7 +23,7 @@ export function SignInValuePanel() {
         </p>
         <p className="mt-2 text-sm leading-relaxed text-zinc-300">
           Explore the public preview first — see how OrgLens analyzes{" "}
-          <span className="text-white">NovaCloud Health</span>, a fictional
+          <span className="text-white">AtlasFlow Technologies</span>, a fictional
           demo company. Sign in (free) to unlock the full demo report. OrgLens
           is built for startups and SMEs with 10–150 employees.
         </p>

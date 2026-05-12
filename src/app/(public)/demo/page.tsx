@@ -69,7 +69,7 @@ export default function DemoPreviewPage() {
             Demo
           </span>
           <span className="text-zinc-300">
-            NovaCloud Health — Fictional demo company · OrgLens AI
+            AtlasFlow Technologies — Fictional demo company · OrgLens AI
           </span>
         </div>
       </div>
@@ -89,9 +89,9 @@ export default function DemoPreviewPage() {
             <span className="text-indigo-300">without signing up.</span>
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-zinc-400">
-            Browse a partial preview of the OrgLens AI report for NovaCloud
-            Health, a fictional 28-person health-tech startup. Sign in free to
-            unlock the full demo.
+            Browse a partial preview of the OrgLens AI report for AtlasFlow
+            Technologies, a fictional 42-person B2B SaaS company. Sign in free
+            to unlock the full demo.
           </p>
         </div>
 
@@ -104,11 +104,10 @@ export default function DemoPreviewPage() {
                   Company overview
                 </p>
                 <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
-                  NovaCloud Health
+                  AtlasFlow Technologies
                 </h2>
                 <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400">
-                  NovaCloud Health is a fictional demo company used to show how
-                  OrgLens works for a growing team.
+                  AtlasFlow Technologies is a fictional B2B SaaS company with 42 employees, growing from founder-led sales into a more structured operating model.
                 </p>
               </div>
               <div className="grid grid-cols-3 gap-4 md:min-w-[320px]">
@@ -117,7 +116,7 @@ export default function DemoPreviewPage() {
                     Employees
                   </p>
                   <p className="mt-1 font-mono text-lg font-semibold text-white">
-                    28
+                    42
                   </p>
                 </div>
                 <div className="rounded-xl border border-[#1E1E24] bg-[#0A0A0B] p-3 text-center">
@@ -125,16 +124,16 @@ export default function DemoPreviewPage() {
                     Industry
                   </p>
                   <p className="mt-1 text-sm font-semibold text-white">
-                    Health Tech
+                    B2B SaaS
                   </p>
-                  <p className="text-[10px] text-zinc-500">SaaS</p>
+                  <p className="text-[10px] text-zinc-500">Software</p>
                 </div>
                 <div className="rounded-xl border border-[#1E1E24] bg-[#0A0A0B] p-3 text-center">
                   <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-500">
                     Stage
                   </p>
                   <p className="mt-1 text-sm font-semibold text-white">
-                    Series A
+                    Growth
                   </p>
                 </div>
               </div>
@@ -229,11 +228,11 @@ export default function DemoPreviewPage() {
                 Partial org map
               </p>
               <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
-                NovaCloud Health — Leadership view
+                AtlasFlow Technologies — Leadership view
               </h2>
             </div>
             <p className="text-xs text-zinc-500">
-              Showing 5 of 28 team members
+              Showing 5 of 42 team members
             </p>
           </div>
 
@@ -290,9 +289,9 @@ export default function DemoPreviewPage() {
                 </div>
                 <div className="space-y-2 opacity-30 blur-[2px]">
                   <OrgNode name="—" role="Head of Operations" tone="amber" />
-                  <OrgNode name="—" role="Clinical Ops Lead" tone="amber" compact />
-                  <OrgNode name="—" role="VP Sales" tone="amber" compact />
-                  <OrgNode name="—" role="Account Executive" tone="amber" compact />
+                  <OrgNode name="—" role="Growth Lead" tone="amber" compact />
+                  <OrgNode name="—" role="Sales Manager" tone="amber" compact />
+                  <OrgNode name="—" role="Finance & Strategy Lead" tone="amber" compact />
                 </div>
               </div>
             </div>
@@ -301,7 +300,7 @@ export default function DemoPreviewPage() {
             <div className="mt-6 flex items-center justify-center gap-2 rounded-xl border border-dashed border-indigo-500/30 bg-indigo-500/[0.04] px-4 py-3 text-xs text-zinc-400">
               <Lock className="h-3.5 w-3.5 text-indigo-300" />
               <span>
-                23 more team members + full reporting structure available in the
+                37 more team members + full reporting structure available in the
                 full demo
               </span>
             </div>
@@ -319,7 +318,7 @@ export default function DemoPreviewPage() {
                 Top role-fit matches
               </h2>
             </div>
-            <p className="text-xs text-zinc-500">Showing 3 of 28 members</p>
+            <p className="text-xs text-zinc-500">Showing 3 of 42 members</p>
           </div>
 
           <div className="relative mt-6 overflow-hidden rounded-2xl border border-[#1E1E24] bg-[#0F0F12]">
@@ -365,7 +364,7 @@ export default function DemoPreviewPage() {
                     <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-[#0F0F12]/85 backdrop-blur-[2px]">
                       <Lock className="h-5 w-5 text-indigo-300" />
                       <p className="mt-2 text-sm text-zinc-300">
-                        25 more team members…
+                        39 more team members…
                       </p>
                       <Link
                         href={SIGN_IN_URL}
@@ -466,7 +465,7 @@ export default function DemoPreviewPage() {
               Full demo · free account
             </p>
             <h3 className="mt-3 text-2xl font-bold tracking-tight text-white md:text-3xl">
-              Unlock all 6 sections of the NovaCloud Health report
+              Unlock all 6 sections of the AtlasFlow Technologies report
             </h3>
             <p className="mx-auto mt-3 max-w-xl text-sm text-zinc-400">
               No payment required to view the full demo. Free account gives you

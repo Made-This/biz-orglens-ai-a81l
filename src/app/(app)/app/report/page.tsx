@@ -259,20 +259,17 @@ function SampleReportIntro() {
         </p>
         <h2 className="mt-3 text-xl font-bold tracking-tight text-white md:text-2xl">
           This is a sample OrgLens analysis for a fictional company,
-          NovaCloud Health.
+          AtlasFlow Technologies.
         </h2>
         <div className="mt-4 rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
             Company context
           </p>
           <p className="mt-2 text-sm leading-relaxed text-zinc-300">
-            NovaCloud Health is a US-based health tech startup building
-            AI-enabled workflow software for clinics and care operations
-            teams. The company is moving from founder-led execution to a more
-            scalable operating model.
+            AtlasFlow Technologies is a fictional B2B SaaS company with 42 employees. The company is growing from founder-led sales and product decisions into a more structured operating model. The leadership team wants to clarify ownership, reduce founder dependency, strengthen sales leadership, and understand whether the current org structure is ready for the next stage of growth.
           </p>
           <p className="mt-3 text-xs leading-relaxed text-zinc-500">
-            NovaCloud Health is a fictional demo company. OrgLens can be used
+            This is a fictional demo company. No real employee or company data is shown. OrgLens can be used
             by startups and SMEs across industries, including software,
             healthcare services, professional services, e-commerce, education,
             fintech, and other knowledge-work businesses.
@@ -313,10 +310,10 @@ function DemoBanner({ onClose }: { onClose: () => void }) {
           </div>
           <div>
             <p className="text-sm font-semibold leading-tight">
-              Demo Mode — NovaCloud Health Sample Decision Report
+              Demo Mode — AtlasFlow Technologies Sample Decision Report
             </p>
             <p className="mt-0.5 text-xs leading-snug opacity-80">
-              Fully unlocked preview · US Health Tech startup · 28 employees
+              Fully unlocked preview · Fictional B2B SaaS company · 42 employees
             </p>
           </div>
         </div>
@@ -380,7 +377,7 @@ function ReportHeader() {
           Organizational Analysis Report
         </h1>
         <p className="mt-2 text-sm text-zinc-400">
-          NovaCloud Health
+          AtlasFlow Technologies
           <span className="mx-2 text-zinc-700">·</span>
           Confidential
           <span className="mx-2 text-zinc-700">·</span>
@@ -445,26 +442,26 @@ function ExecutiveSummary() {
     {
       icon: ShieldAlert,
       tone: "rose" as const,
-      label: "Leadership Coverage",
-      text: "Leadership coverage gap in Clinical Operations (58% → target 76%).",
+      label: "Sales Leadership Gap",
+      text: "Sales execution risk detected: the founder is still driving strategic sales decisions, while the Growth Lead and Sales Manager split pipeline ownership without clear leadership coverage.",
     },
     {
       icon: AlertTriangle,
       tone: "amber" as const,
-      label: "Scaling Risk",
-      text: "Execution stability: Medium risk under current founder-led structure.",
+      label: "Ownership Gap",
+      text: "Unclear boundary between Growth, Sales, and Customer Success functions creates execution confusion.",
     },
     {
       icon: Users,
       tone: "rose" as const,
-      label: "Role Misalignment",
-      text: "Elena Torres: role misalignment flagged — below threshold on 6 of 8 competencies.",
+      label: "Key-Person Dependency",
+      text: "Jordan Lee (CTO) is a single point of failure for all technical decisions. No identified successor.",
     },
     {
       icon: Crown,
       tone: "indigo" as const,
-      label: "Founder Dependency",
-      text: "Top 3 performers (Alex Morgan, Jordan Lee, Taylor Brooks) cover ~40% of critical delivery.",
+      label: "Founder Bottleneck",
+      text: "Top 3 performers (Jordan Lee, Alex Morgan, Taylor Brooks) overall scores 7.94 / 7.76 / 7.64.",
     },
   ];
 
@@ -510,26 +507,25 @@ function ExecutiveSummary() {
             Company Profile
           </div>
           <h3 className="mt-3 text-xl font-bold text-white">
-            NovaCloud Health
+            AtlasFlow Technologies
           </h3>
           <dl className="mt-6 space-y-4">
             <div className="flex justify-between gap-4 border-b border-white/[0.06] pb-3">
               <dt className="text-xs uppercase tracking-widest text-zinc-500">Headcount</dt>
-              <dd className="font-mono text-sm font-semibold text-white">28</dd>
+              <dd className="font-mono text-sm font-semibold text-white">42</dd>
             </div>
             <div className="flex justify-between gap-4 border-b border-white/[0.06] pb-3">
               <dt className="text-xs uppercase tracking-widest text-zinc-500">Sector</dt>
-              <dd className="text-sm font-medium text-zinc-200">Health Tech · B2B SaaS</dd>
+              <dd className="text-sm font-medium text-zinc-200">B2B SaaS · Software</dd>
             </div>
             <div className="flex justify-between gap-4 border-b border-white/[0.06] pb-3">
               <dt className="text-xs uppercase tracking-widest text-zinc-500">Stage</dt>
-              <dd className="text-sm font-medium text-zinc-200">Seed → Series A</dd>
+              <dd className="text-sm font-medium text-zinc-200">Growth</dd>
             </div>
             <div className="flex flex-col gap-2">
               <dt className="text-xs uppercase tracking-widest text-zinc-500">Objective</dt>
               <dd className="text-sm leading-relaxed text-zinc-200">
-                Move from founder-led execution to a structured leadership
-                model — and stress-test scaling readiness.
+                Clarify ownership, reduce founder dependency, strengthen sales leadership, and assess org readiness for next stage.
               </dd>
             </div>
           </dl>
@@ -575,12 +571,10 @@ function ExecutiveSummary() {
               Recommended Scenario
             </p>
             <h3 className="mt-2 text-xl font-bold text-white md:text-2xl">
-              Scenario B — Balanced
+              Scenario B — Structured Growth
             </h3>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-zinc-200">
-              Maintains NovaCloud&apos;s 28-person structure with clear
-              functional leads and shared accountability. Preserves execution
-              continuity while reducing founder dependency.
+              Clarify sales ownership, define cross-functional handoffs, and reduce founder dependency before expanding headcount. Preserves AtlasFlow&apos;s 42-person structure while improving leadership coverage and execution clarity.
             </p>
           </div>
           <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-500/30 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-emerald-100 ring-1 ring-inset ring-emerald-400/40">
@@ -920,34 +914,34 @@ function Section3OrgMap() {
     {
       name: "Engineering & Product",
       stats: [
-        { label: "Leadership", value: 89 },
-        { label: "Execution", value: 91 },
-        { label: "Adaptability", value: 87 },
-        { label: "Stability", value: 83 },
+        { label: "Leadership", value: 87 },
+        { label: "Execution", value: 89 },
+        { label: "Adaptability", value: 82 },
+        { label: "Stability", value: 84 },
       ],
       summary: "Strong across all dimensions",
       tone: "emerald" as const,
     },
     {
-      name: "Clinical Operations",
+      name: "Sales & Growth",
       stats: [
-        { label: "Leadership", value: 58 },
-        { label: "Execution", value: 76 },
-        { label: "Adaptability", value: 72 },
-        { label: "Stability", value: 69 },
+        { label: "Leadership", value: 62 },
+        { label: "Execution", value: 74 },
+        { label: "Adaptability", value: 71 },
+        { label: "Stability", value: 68 },
       ],
-      summary: "Leadership coverage gap; founder dependency",
+      summary: "Sales leadership gap; ownership unclear",
       tone: "rose" as const,
     },
     {
-      name: "Customer Success & GTM",
+      name: "Operations & Customer Success",
       stats: [
-        { label: "Leadership", value: 78 },
-        { label: "Execution", value: 82 },
-        { label: "Adaptability", value: 85 },
-        { label: "Stability", value: 71 },
+        { label: "Leadership", value: 77 },
+        { label: "Execution", value: 80 },
+        { label: "Adaptability", value: 83 },
+        { label: "Stability", value: 72 },
       ],
-      summary: "Balanced; mild stability gap",
+      summary: "Solid; operations scope needs clarification",
       tone: "amber" as const,
     },
   ];
@@ -997,70 +991,77 @@ function Section3OrgMap() {
             name="Alex Morgan"
             role="Founder & CEO"
             dots={baseDots("green", "green", "green", "green")}
-            score="7.8/10"
+            score="7.8/9"
           />
 
           {/* Direct reports */}
           <div className="ml-4 space-y-3 border-l border-white/[0.08] pl-5 md:ml-6 md:pl-7">
-            <OrgNode
-              name="Jordan Lee"
-              role="CTO"
-              dots={baseDots("green", "green", "green", "green")}
-              score="7.5/10"
-            />
+            <div>
+              <OrgNode
+                name="Jordan Lee"
+                role="CTO"
+                dots={baseDots("green", "green", "green", "green")}
+                score="7.9/9"
+              />
+              <div className="ml-4 mt-3 space-y-3 border-l border-white/[0.08] pl-5 md:ml-6 md:pl-7">
+                <OrgNode
+                  name="Morgan Chen"
+                  role="Engineering Lead"
+                  dots={baseDots("green", "green", "amber", "amber")}
+                  score="7.6/9"
+                />
+                <OrgNode
+                  name="Taylor Brooks"
+                  role="Head of Product"
+                  dots={baseDots("green", "green", "green", "amber")}
+                  score="7.6/9"
+                />
+              </div>
+            </div>
 
             <div>
               <OrgNode
                 name="Casey Miller"
                 role="Head of Operations"
                 dots={baseDots("green", "green", "amber", "green")}
-                score="6.6/10"
+                score="7.6/9"
               />
               <div className="ml-4 mt-3 space-y-3 border-l border-white/[0.08] pl-5 md:ml-6 md:pl-7">
                 <OrgNode
-                  name="Morgan Chen"
-                  role="Engineering Lead"
+                  name="Sam Parker"
+                  role="Finance & Strategy Lead"
                   dots={baseDots("green", "green", "green", "amber")}
-                  score="6.4/10"
+                  score="7.6/9"
                 />
                 <OrgNode
-                  name="Chris Bennett"
-                  role="Senior Engineer"
+                  name="Dana Reed"
+                  role="People Operations Lead"
                   dots={baseDots("amber", "green", "green", "green")}
-                  score="6.2/10"
-                />
-                <OrgNode
-                  atRisk
-                  name="Elena Torres"
-                  role="Clinical Specialist"
-                  dots={baseDots("red", "red", "amber", "amber")}
-                  score="3.8/10"
-                />
-              </div>
-            </div>
-
-            <div>
-              <OrgNode
-                name="Riley Johnson"
-                role="Customer Success Lead"
-                dots={baseDots("green", "green", "green", "amber")}
-                score="6.5/10"
-              />
-              <div className="ml-4 mt-3 space-y-3 border-l border-white/[0.08] pl-5 md:ml-6 md:pl-7">
-                <OrgNode
-                  name="Avery Wilson"
-                  role="Clinical Operations Lead"
-                  dots={baseDots("amber", "amber", "green", "red")}
-                  score="5.6/10"
+                  score="7.5/9"
                 />
               </div>
             </div>
 
             <OrgNode
-              name="Taylor Brooks"
-              role="Head of Product"
-              dots={baseDots("green", "green", "amber", "green")}
-              score="7.2/10"
+              atRisk
+              name="Jamie Carter"
+              role="Growth Lead"
+              dots={baseDots("green", "amber", "green", "amber")}
+              score="7.6/9"
+            />
+            <OrgNode
+              atRisk
+              name="Avery Wilson"
+              role="Sales Manager"
+              dots={baseDots("amber", "amber", "green", "amber")}
+              score="7.5/9"
+            />
+            <OrgNode
+              atRisk
+              name="Riley Johnson"
+              role="Customer Success Lead"
+              dots={baseDots("amber", "green", "green", "amber")}
+              score="7.5/9"
             />
           </div>
         </div>
@@ -1105,42 +1106,28 @@ interface DemoCandidate {
 
 const DEMO_ROLES: Record<RoleKey, { label: string; candidates: DemoCandidate[] }> = {
   engineering: {
-    label: "Head of Engineering",
+    label: "CTO / Tech Lead",
     candidates: [
       {
         name: "Jordan Lee",
         fit: 95,
-        strengths: ["Strategic Thinking", "Stakeholder Influence"],
-        gaps: ["Acting with Consideration"],
-        insight: "Top engineering leadership profile. Dominant technical and stakeholder posture.",
+        strengths: ["Evaluating Information", "Creating Solutions"],
+        gaps: ["Supporting Individuals"],
+        insight: "Top technical leadership profile. Dominant analytical and innovation posture. Key-person risk — succession planning needed.",
       },
       {
         name: "Morgan Chen",
-        fit: 91,
-        strengths: ["Execution Rigor", "Drive"],
-        gaps: ["Team Leadership"],
-        insight: "Execution-strong deputy candidate. Develop people-leadership for next step.",
+        fit: 89,
+        strengths: ["Evaluating Info", "Creating Solutions"],
+        gaps: ["Exerting Influence"],
+        insight: "Strong deputy candidate for CTO. Develop stakeholder influence for succession readiness.",
       },
       {
-        name: "Chris Bennett",
-        fit: 90,
-        strengths: ["Execution Focus", "Structure"],
-        gaps: ["Innovation"],
-        insight: "Highly structured; pair with creative profiles for product breadth.",
-      },
-      {
-        name: "Priya Nair",
-        fit: 84,
-        strengths: ["Analytical Rigor", "Communication"],
-        gaps: ["Detail Orientation"],
-        insight: "Strong analytical communicator; better suited to data-platform leadership.",
-      },
-      {
-        name: "Owen Fletcher",
-        fit: 81,
-        strengths: ["Reliability", "Delivery"],
-        gaps: ["Influence"],
-        insight: "Strong infrastructure anchor; better aligned to DevOps & SRE leadership.",
+        name: "Taylor Brooks",
+        fit: 82,
+        strengths: ["Creating Solutions", "Evaluating Info"],
+        gaps: ["Structuring Work"],
+        insight: "Product-oriented technical leader. Better suited to VP Product than CTO track.",
       },
     ],
   },
@@ -1149,50 +1136,50 @@ const DEMO_ROLES: Record<RoleKey, { label: string; candidates: DemoCandidate[] }
     candidates: [
       {
         name: "Casey Miller",
-        fit: 94,
-        strengths: ["People Leadership", "Delivery", "Standards"],
-        gaps: ["Analytical Depth"],
-        insight: "Highest operational fit. Add analytical support to relieve cognitive load.",
+        fit: 93,
+        strengths: ["Structuring Work", "Supporting Individuals"],
+        gaps: ["Evaluating Information"],
+        insight: "Highest operational fit. Operations scope needs clarification vs. Finance and People functions.",
       },
       {
         name: "Sam Parker",
-        fit: 88,
-        strengths: ["Planning", "Strategy"],
-        gaps: ["Team Motivation"],
-        insight: "Strong process leader; pair with energetic culture-builder.",
+        fit: 86,
+        strengths: ["Evaluating Info", "Structuring Work"],
+        gaps: ["Supporting Individuals"],
+        insight: "Strong finance-ops hybrid. Ideal as Casey Miller's strategic partner.",
       },
       {
-        name: "Morgan Chen",
-        fit: 79,
-        strengths: ["Execution", "Drive"],
-        gaps: ["People Development"],
-        insight: "Execution-anchored fallback; better as ops contingency than primary lead.",
+        name: "Dana Reed",
+        fit: 74,
+        strengths: ["Supporting Individuals", "Interacting with People"],
+        gaps: ["Structuring Work"],
+        insight: "People-first operator. Better aligned to People Operations than broader ops.",
       },
     ],
   },
   product: {
-    label: "Head of Product",
+    label: "Sales Leadership",
     candidates: [
       {
-        name: "Taylor Brooks",
-        fit: 96,
-        strengths: ["Depth", "Customer Focus", "Innovation"],
-        gaps: ["Speed"],
-        insight: "Ideal head of product. Manage scope to mitigate speed risk.",
+        name: "Jamie Carter",
+        fit: 87,
+        strengths: ["Driving Success", "Exerting Influence"],
+        gaps: ["Structuring Work"],
+        insight: "Strong growth and pipeline instinct. Role overlap with Avery Wilson needs resolution before next hire.",
       },
       {
-        name: "Natalie Adams",
-        fit: 85,
-        strengths: ["Analysis", "Structure"],
-        gaps: ["Product Breadth"],
-        insight: "Strong methodological fit; broaden product scope progressively.",
+        name: "Avery Wilson",
+        fit: 78,
+        strengths: ["Interacting with People", "Exerting Influence"],
+        gaps: ["Evaluating Information"],
+        insight: "Relationship-driven sales profile. Needs clearer ownership boundary vs. Growth Lead.",
       },
       {
-        name: "Sophia Grant",
-        fit: 77,
-        strengths: ["Design Vision"],
-        gaps: ["Product Operations"],
-        insight: "Better suited to design leadership than product operations.",
+        name: "Alex Morgan",
+        fit: 72,
+        strengths: ["Driving Success", "Exerting Influence"],
+        gaps: ["Structuring Work"],
+        insight: "Founder-as-sales-driver creates bottleneck. Transition sales ownership to dedicated leader.",
       },
     ],
   },
@@ -1372,12 +1359,12 @@ function Section5Scenarios() {
       pillClass: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
       pillLabel: "Moderate Risk ✓",
       stats: [
-        { label: "Team Structure", value: "28-person structure preserved" },
-        { label: "Leadership Model", value: "Clear functional leads, shared accountability" },
-        { label: "Execution Effect", value: "Stable → Strong (+18%)" },
+        { label: "Team Structure", value: "42-person structure preserved" },
+        { label: "Leadership Model", value: "Clear functional leads, defined sales ownership" },
+        { label: "Execution Effect", value: "Stable → Strong (+22%)" },
       ],
       tradeoff:
-        "Minor short-term adjustment cost; sustainable scaling capability into Series A.",
+        "Minor short-term adjustment cost; sustainable scaling capability for next growth stage.",
       recommended: true,
     },
     {
@@ -1472,28 +1459,28 @@ function Section6CompetencyImpact() {
 
   const rows = [
     {
-      label: "Leadership Coverage",
-      before: 58,
-      after: 76,
-      insight: "Morgan Chen promoted to Operations deputy closes the leadership gap.",
+      label: "Sales Leadership Coverage",
+      before: 52,
+      after: 74,
+      insight: "Defining clear pipeline ownership between Growth Lead and Sales Manager closes the gap.",
     },
     {
       label: "Execution Strength",
-      before: 71,
-      after: 84,
-      insight: "Role redesign frees top performers from low-fit allocation.",
+      before: 68,
+      after: 83,
+      insight: "Reducing founder involvement in sales decisions frees up leadership bandwidth.",
     },
     {
-      label: "Stability Index",
-      before: 65,
-      after: 72,
-      insight: "Workload redistribution reduces burnout risk in Clinical Ops.",
+      label: "Ownership Clarity",
+      before: 61,
+      after: 79,
+      insight: "Cross-functional handoff definitions between Sales, Growth, and CS reduce friction.",
     },
     {
-      label: "Adaptability Score",
-      before: 62,
-      after: 78,
-      insight: "Role repositioning unlocks Avery Wilson's clinical operator profile.",
+      label: "Tech Resilience",
+      before: 58,
+      after: 74,
+      insight: "Cross-training Morgan Chen as CTO deputy reduces key-person dependency on Jordan Lee.",
     },
   ];
 
@@ -1607,48 +1594,48 @@ function Section6CompetencyImpact() {
 function Section7RiskIntel() {
   const risks = [
     {
-      title: "Founder Dependency",
+      title: "Founder Bottleneck",
       severity: "HIGH",
       severityClass: "bg-rose-500/15 text-rose-300 ring-rose-500/30",
       borderClass: "border-l-rose-500",
       team: "Leadership",
       detail:
-        "~40% of delivery capability concentrated in 2 people (Alex Morgan, Jordan Lee). No succession depth across functional leads.",
+        "Alex Morgan (Founder & CEO) is still driving strategic sales decisions. Creates bottleneck that limits the company's ability to scale beyond founder-led revenue.",
       action:
-        "Develop Morgan Chen as Engineering deputy. Cross-train Chris Bennett on stakeholder management.",
+        "Transition sales decision-making to designated Sales Manager and Growth Lead. Create clear escalation path for strategic deals only.",
     },
     {
-      title: "Burnout Risk",
-      severity: "MEDIUM",
-      severityClass: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
-      borderClass: "border-l-amber-500",
-      team: "Clinical Operations, Engineering",
-      detail:
-        "Casey Miller's 360 feedback shows urgency pressure passed to team. Sustained high load for 12+ months without structured recovery.",
-      action:
-        "Redistribute 2 direct reports. Add structured recovery protocols.",
-    },
-    {
-      title: "Execution Imbalance",
-      severity: "MEDIUM",
-      severityClass: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
-      borderClass: "border-l-amber-500",
-      team: "Clinical Operations",
-      detail:
-        "Avery Wilson (relationship-oriented profile) in delivery-heavy clinical role. Low implementer score creates execution gaps.",
-      action:
-        "Redesign role toward clinical partnerships and onboarding. Pair with execution-strong specialist.",
-    },
-    {
-      title: "Role Misalignment",
+      title: "Sales Leadership Gap",
       severity: "HIGH",
       severityClass: "bg-rose-500/15 text-rose-300 ring-rose-500/30",
       borderClass: "border-l-rose-500",
-      team: "Clinical Operations",
+      team: "Sales, Growth",
       detail:
-        "Elena Torres scoring below threshold on 6 of 8 competency dimensions. Role-fit score: 34%. Exit or reassignment risk.",
+        "No dedicated sales leader. Jamie Carter (Growth) and Avery Wilson (Sales) split pipeline ownership without clear coverage. Risk of missed targets and conflicting priorities.",
       action:
-        "Performance review with structured support plan. Consider role redesign or transition plan.",
+        "Clarify sales ownership and leadership coverage before hiring additional sales roles or expanding pipeline targets.",
+    },
+    {
+      title: "Customer Handoff Risk",
+      severity: "MEDIUM",
+      severityClass: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
+      borderClass: "border-l-amber-500",
+      team: "Sales, Customer Success",
+      detail:
+        "Handoff process from Sales to Customer Success (Riley Johnson) is undefined. Risk of churn at the onboarding stage as accounts fall through the gap between teams.",
+      action:
+        "Define a documented handoff SOP between Sales and Customer Success before next growth cycle.",
+    },
+    {
+      title: "Key-Person Dependency",
+      severity: "HIGH",
+      severityClass: "bg-rose-500/15 text-rose-300 ring-rose-500/30",
+      borderClass: "border-l-rose-500",
+      team: "Engineering",
+      detail:
+        "Jordan Lee (CTO) is the sole technical decision-maker. No identified successor. Loss or unavailability would materially impact product delivery and technical direction.",
+      action:
+        "Develop Morgan Chen as CTO deputy. Document Jordan Lee's institutional knowledge and decision frameworks.",
     },
   ];
 
@@ -1708,20 +1695,20 @@ function Section8FounderMemo() {
 
   const findings = [
     {
-      title: "LEADERSHIP COVERAGE IN CLINICAL OPS",
-      body: "Current leadership coverage in Clinical Operations stands at 58% — below the 70% threshold required for sustainable execution at NovaCloud's growth stage. The primary risk is over-reliance on Casey Miller as a single point of leadership with insufficient succession depth.",
+      title: "FOUNDER BOTTLENECK — SALES DECISIONS",
+      body: "Alex Morgan (Founder & CEO) is still driving strategic sales decisions at AtlasFlow Technologies. This creates a bottleneck that prevents the company from scaling its revenue operations beyond founder-led growth. Transition of sales decision authority is the highest-priority structural action.",
     },
     {
-      title: "ROLE MISALIGNMENT — ELENA TORRES",
-      body: "Elena Torres' competency profile scores below role requirements on 6 of 8 dimensions in the organizational intelligence competency model. Continuation in the current role creates drag on the Clinical Operations team. Immediate intervention recommended.",
+      title: "SALES LEADERSHIP GAP",
+      body: "There is no dedicated sales leader at AtlasFlow. Jamie Carter (Growth Lead) and Avery Wilson (Sales Manager) split pipeline ownership without a clear coverage model. This creates execution risk on revenue targets and is likely contributing to pipeline inconsistency.",
     },
     {
-      title: "FOUNDER DEPENDENCY",
-      body: "Alex Morgan and Jordan Lee together account for ~40% of NovaCloud's high-execution delivery capacity. Loss of either would materially impact product delivery and customer-facing timelines.",
+      title: "KEY-PERSON DEPENDENCY — JORDAN LEE",
+      body: "Jordan Lee (CTO) is the sole technical decision-maker at AtlasFlow. No successor or deputy is identified. Loss or unavailability of Jordan Lee would materially impact product delivery, technical architecture decisions, and customer-facing timelines.",
     },
     {
-      title: "AVERY WILSON — MISAPPLIED TALENT",
-      body: "Wilson's behavioral indicators (high relationship orientation, strong networker score, pioneering profile) position her as an exceptional clinical partnerships and customer-alignment driver. The current role under-utilizes this profile. Redesigning toward clinical partnerships and onboarding would deliver higher returns.",
+      title: "CUSTOMER HANDOFF RISK",
+      body: "The transition from Sales to Customer Success (Riley Johnson) is currently undefined. This is a structural gap that creates churn risk at the onboarding stage. Customers won by Sales may not receive adequate onboarding without a defined handoff protocol.",
     },
   ];
 
@@ -1730,26 +1717,26 @@ function Section8FounderMemo() {
       label: "Priority 1",
       window: "Immediate — 0–30 days",
       items: [
-        "Initiate Elena Torres performance review with structured support plan",
-        "Begin Morgan Chen leadership development track",
-        "Redistribute 1–2 direct reports from Casey Miller",
+        "Clarify sales ownership: define pipeline responsibility boundary between Jamie Carter and Avery Wilson",
+        "Create founder delegation plan for sales decisions",
+        "Document Jordan Lee's institutional knowledge and technical decision frameworks",
       ],
     },
     {
       label: "Priority 2",
       window: "Short-term — 30–60 days",
       items: [
-        "Redesign Avery Wilson's role toward clinical partnerships and onboarding",
-        "Implement cross-training: Chris Bennett on stakeholder management",
-        "Document Jordan Lee's institutional knowledge (succession risk mitigation)",
+        "Define and document Sales-to-Customer-Success handoff process",
+        "Begin Morgan Chen CTO deputy development track",
+        "Clarify Casey Miller's Operations scope relative to Finance and People functions",
       ],
     },
     {
       label: "Priority 3",
       window: "Structural — 60–90 days",
       items: [
-        "Implement Scenario B: Balanced structure",
-        "Introduce 2 new role definitions aligned to AI-augmented workflow",
+        "Implement Scenario B: Structured Growth — clarify all cross-functional ownership",
+        "Evaluate Product/Engineering prioritization process and establish shared roadmap protocol",
         "Re-run OrgLens analysis post-restructuring to measure improvement",
       ],
     },
@@ -1772,7 +1759,7 @@ function Section8FounderMemo() {
                   Confidential — Founder Memo
                 </p>
                 <p className="mt-1 text-sm font-semibold tracking-wide text-white">
-                  NovaCloud Health
+                  AtlasFlow Technologies
                 </p>
               </div>
             </div>
@@ -1826,9 +1813,9 @@ function Section8FounderMemo() {
               Executive Summary
             </h3>
             <p className="mt-3 text-sm leading-relaxed text-zinc-700 md:text-base">
-              NovaCloud Health presents a strong competency foundation with
-              identifiable execution risk concentrated in the Clinical
-              Operations function. This memo outlines our findings, recommended
+              AtlasFlow Technologies presents a strong competency foundation with
+              identifiable structural risk concentrated in sales leadership, cross-functional ownership, and technical key-person dependency.
+              This memo outlines our findings, recommended
               scaling path, and priority actions for the next 90 days.
             </p>
           </section>
@@ -1898,11 +1885,11 @@ function Section8FounderMemo() {
               Restructuring Guidance
             </h3>
             <p className="mt-3 text-sm leading-relaxed text-zinc-700 md:text-base">
-              Scenario B (Balanced) is recommended as the risk-adjusted optimal
-              path. It preserves NovaCloud&apos;s 28-person structure while
-              improving leadership coverage from 58% to 76% and execution
-              stability from Medium to Strong. Unlike Scenario A (Lean), it
-              does not create founder dependency. Unlike Scenario C
+              Scenario B (Structured Growth) is recommended as the risk-adjusted optimal
+              path. It preserves AtlasFlow&apos;s 42-person structure while
+              improving sales leadership coverage from 52% to 74% and execution
+              clarity from Medium to Strong. Unlike Scenario A (Lean), it
+              does not increase founder dependency. Unlike Scenario C
               (AI-Native), it does not require a 60-day tooling transition.
             </p>
           </section>
