@@ -18,6 +18,7 @@ import {
   ClipboardList,
   Activity,
   Upload,
+  Sparkles,
 } from "lucide-react";
 import { useConvexAuth } from "convex/react";
 import { cn } from "@/lib/utils";
@@ -46,6 +47,11 @@ const navItems: NavItem[] = [
     label: "Full Report",
     icon: FileText,
     lens: "Premium",
+  },
+  {
+    href: "/app/demo",
+    label: "Demo Report",
+    icon: Sparkles,
   },
 ];
 

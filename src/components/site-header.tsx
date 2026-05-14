@@ -18,7 +18,7 @@ interface SiteHeaderProps {
 // "Demo Report" always links to the public demo at /demo.
 const baseNavLinks = [
   { label: "Home", href: "/" },
-  { label: "Demo Report", href: "/demo" },
+  { label: "Demo Report", href: "/app/demo" },
   { label: "Use Cases", href: "/use-cases" },
   { label: "Pricing", href: "/pricing" },
   { label: "Insights", href: "/insights" },
