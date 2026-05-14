@@ -1,22 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   AlertTriangle,
   ArrowRight,
+  ArrowUpRight,
+  Briefcase,
+  Building2,
   CheckCircle2,
+  ChevronDown,
+  Crown,
   FileText,
   Network,
   ShieldAlert,
   ShieldCheck,
   Sparkles,
   Target,
+  Users,
+  X,
 } from "lucide-react";
 
 const CHECKOUT_URL =
   "https://madethis.com/checkout/orglens-ai/md7aftkyt1kn4qx4mgpeg4w2ts86cse5";
 
+// ---------- TYPES ----------
 type SectionKey =
   | "overview"
   | "org-map"
@@ -36,11 +44,121 @@ const SECTIONS: { key: SectionKey; label: string; icon: typeof Sparkles }[] = [
   { key: "decision", label: "Decision Report", icon: FileText },
 ];
 
+// ---------- ANIMATED BAR ----------
+function AnimatedBar({
+  value,
+  tone,
+  delay = 0,
+  active,
+}: {
+  value: number;
+  tone: "green" | "amber" | "red" | "indigo" | "gray";
+  delay?: number;
+  active: boolean;
+}) {
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    if (!active) {
+      setWidth(0);
+      return;
+    }
+    const t = setTimeout(() => setWidth(value), delay);
+    return () => clearTimeout(t);
+  }, [active, value, delay]);
+
+  const colors: Record<typeof tone, string> = {
+    green: "bg-gradient-to-r from-emerald-500 to-emerald-400",
+    amber: "bg-gradient-to-r from-amber-500 to-amber-400",
+    red: "bg-gradient-to-r from-rose-500 to-rose-400",
+    indigo: "bg-gradient-to-r from-indigo-500 to-indigo-400",
+    gray: "bg-gradient-to-r from-zinc-500 to-zinc-400",
+  };
+
+  return (
+    <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-white/[0.04]">
+      <div
+        className={`h-full ${colors[tone]} transition-all duration-1000 ease-out`}
+        style={{ width: `${width}%` }}
+      />
+    </div>
+  );
+}
+
+// ---------- IN-VIEW HOOK ----------
+function useInView<T extends HTMLElement>(opts?: IntersectionObserverInit) {
+  const ref = useRef<T | null>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    if (!ref.current || inView) return;
+    const node = ref.current;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setInView(true);
+        });
+      },
+      { threshold: 0.1, ...opts }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [inView, opts]);
+
+  return { ref, inView };
+}
+
+// ---------- PAGE ----------
 export default function AppDemoPage() {
   const [active, setActive] = useState<SectionKey>("overview");
+  const [bannerDismissed, setBannerDismissed] = useState(false);
+
+  const handleSectionChange = (key: SectionKey) => {
+    setActive(key);
+    if (typeof window !== "undefined") {
+      const el = document.getElementById("demo-content");
+      if (el) el.scrollTop = 0;
+    }
+  };
 
   return (
     <div className="dark flex h-screen flex-col overflow-hidden bg-[#0A0A0B] text-zinc-100">
+      {/* Demo banner */}
+      {!bannerDismissed && (
+        <div className="w-full bg-indigo-900 text-white shrink-0">
+          <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-3.5 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/10 text-lg">
+                📊
+              </div>
+              <div>
+                <p className="text-sm font-semibold leading-tight">
+                  Demo Mode — Sample Organizational Analysis
+                </p>
+                <p className="mt-0.5 text-xs leading-snug opacity-80">
+                  This is a fully unlocked preview. Real analysis costs $49.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <a
+                href={CHECKOUT_URL}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-500 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-indigo-400"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Unlock Real Analysis — $49
+              </a>
+              <button
+                onClick={() => setBannerDismissed(true)}
+                aria-label="Close demo banner"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-white transition-colors hover:bg-white/20"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Sticky header */}
       <header className="shrink-0 border-b border-[#1E1E24] bg-[#0A0A0B]/90 backdrop-blur-xl">
         <div className="flex h-14 items-center justify-between gap-4 px-5">
@@ -53,18 +171,43 @@ export default function AppDemoPage() {
             </Link>
             <span className="text-zinc-700">/</span>
             <span className="truncate text-xs text-zinc-400">
-              AtlasFlow Technologies — OrgLens Demo Report
+              Alpha Investment Group — OrgLens Demo Report
             </span>
           </div>
           <a
             href={CHECKOUT_URL}
             className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-indigo-500 px-3.5 py-2 text-xs font-semibold text-white shadow-[0_0_30px_-8px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-400"
           >
-            Get Your Analysis — $49
+            Unlock Real Analysis — $49
             <ArrowRight className="h-3.5 w-3.5" />
           </a>
         </div>
       </header>
+
+      {/* Mobile tab bar */}
+      <div className="shrink-0 border-b border-[#1E1E24] bg-[#0A0A0B] md:hidden">
+        <div className="flex overflow-x-auto px-3 py-2 gap-1">
+          {SECTIONS.map((s) => {
+            const Icon = s.icon;
+            const isActive = active === s.key;
+            return (
+              <button
+                key={s.key}
+                type="button"
+                onClick={() => handleSectionChange(s.key)}
+                className={`inline-flex shrink-0 items-center gap-1.5 rounded-md px-3 py-2 text-xs font-medium transition-colors whitespace-nowrap ${
+                  isActive
+                    ? "bg-indigo-500/10 text-indigo-300 ring-1 ring-inset ring-indigo-500/30"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5 shrink-0" />
+                {s.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       {/* Body */}
       <div className="flex min-h-0 flex-1">
@@ -82,7 +225,7 @@ export default function AppDemoPage() {
                   <button
                     key={s.key}
                     type="button"
-                    onClick={() => setActive(s.key)}
+                    onClick={() => handleSectionChange(s.key)}
                     className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
                       isActive
                         ? "bg-indigo-500/10 text-indigo-300 ring-1 ring-inset ring-indigo-500/30"
@@ -101,802 +244,786 @@ export default function AppDemoPage() {
           <div className="shrink-0 border-t border-[#1E1E24] p-4">
             <a
               href={CHECKOUT_URL}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_0_30px_-8px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-400"
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_0_30px_-8px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-400"
             >
-              Get Your Analysis — $49
-              <ArrowRight className="h-4 w-4" />
+              <Sparkles className="h-4 w-4" />
+              Unlock Real Analysis — $49
             </a>
             <p className="mt-2 text-center text-[10px] text-zinc-600">
-              Same report · Your team · Your data
+              One-time payment · Instant access
             </p>
           </div>
         </aside>
 
-        {/* Content column */}
-        <div className="flex min-w-0 flex-1 flex-col">
-          {/* Mobile scrollable tab bar */}
-          <div className="shrink-0 overflow-x-auto border-b border-[#1E1E24] bg-[#0A0A0B] md:hidden">
-            <div className="inline-flex min-w-max items-center gap-1 p-2">
-              {SECTIONS.map((s) => {
-                const Icon = s.icon;
-                const isActive = active === s.key;
-                return (
-                  <button
-                    key={s.key}
-                    type="button"
-                    onClick={() => setActive(s.key)}
-                    className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium transition-colors ${
-                      isActive
-                        ? "bg-indigo-500/15 text-indigo-300 ring-1 ring-inset ring-indigo-400/40"
-                        : "text-zinc-400 hover:bg-[#16161A] hover:text-white"
-                    }`}
-                  >
-                    <Icon className="h-3.5 w-3.5" />
-                    {s.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+        {/* Main content */}
+        <main
+          id="demo-content"
+          className="flex-1 overflow-y-auto bg-[#0D0D0F] px-5 py-8 md:px-8 md:py-10"
+        >
+          {active === "overview" && <SectionOverview />}
+          {active === "org-map" && <SectionOrgMap />}
+          {active === "role-fit" && <SectionRoleFit />}
+          {active === "leadership" && <SectionLeadership />}
+          {active === "risks" && <SectionRisks />}
+          {active === "recommendations" && <SectionRecommendations />}
+          {active === "decision" && <SectionDecision />}
+        </main>
+      </div>
+    </div>
+  );
+}
 
-          {/* Section content */}
-          <div className="flex-1 overflow-y-auto px-6 py-8 md:px-10">
-            {active === "overview" && <OverviewSection />}
-            {active === "org-map" && <OrgMapSection />}
-            {active === "role-fit" && <RoleFitSection />}
-            {active === "leadership" && <LeadershipSection />}
-            {active === "risks" && <RisksSection />}
-            {active === "recommendations" && <RecommendationsSection />}
-            {active === "decision" && <DecisionSection />}
+// ---------- SECTION TITLE ----------
+function SectionTitle({
+  num,
+  title,
+  subtitle,
+}: {
+  num: string;
+  title: string;
+  subtitle?: string;
+}) {
+  return (
+    <div className="mb-8">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400">
+        Section {num}
+      </p>
+      <h2 className="mt-2 text-2xl font-bold tracking-tight text-white md:text-3xl">
+        {title}
+      </h2>
+      {subtitle && <p className="mt-2 text-sm text-zinc-400">{subtitle}</p>}
+    </div>
+  );
+}
+
+// =============================================================
+// SECTION 1: OVERVIEW (Executive Summary + Org Metrics)
+// =============================================================
+function SectionOverview() {
+  const findings = [
+    {
+      icon: ShieldAlert,
+      tone: "rose" as const,
+      label: "Leadership Gap",
+      text: "Leadership coverage gap in Operations (58% → target 76%).",
+    },
+    {
+      icon: AlertTriangle,
+      tone: "amber" as const,
+      label: "Execution Risk",
+      text: "Execution stability: Medium risk under current structure.",
+    },
+    {
+      icon: Users,
+      tone: "rose" as const,
+      label: "Role Misalignment",
+      text: "Yuzhe Zhao: role misalignment flagged — below threshold on 6/8 competencies.",
+    },
+    {
+      icon: Crown,
+      tone: "indigo" as const,
+      label: "Talent Concentration",
+      text: "Top 3 performers (Chifong Dong, Eric Li, Lili Mao) covering 40% of critical delivery.",
+    },
+  ];
+
+  const toneStyles: Record<
+    "indigo" | "rose" | "amber" | "cyan",
+    { ring: string; bg: string; iconBg: string; iconText: string }
+  > = {
+    indigo: {
+      ring: "ring-indigo-500/20",
+      bg: "bg-indigo-500/[0.05]",
+      iconBg: "bg-indigo-500/15",
+      iconText: "text-indigo-300",
+    },
+    rose: {
+      ring: "ring-rose-500/20",
+      bg: "bg-rose-500/[0.05]",
+      iconBg: "bg-rose-500/15",
+      iconText: "text-rose-300",
+    },
+    amber: {
+      ring: "ring-amber-500/20",
+      bg: "bg-amber-500/[0.05]",
+      iconBg: "bg-amber-500/15",
+      iconText: "text-amber-300",
+    },
+    cyan: {
+      ring: "ring-cyan-500/20",
+      bg: "bg-cyan-500/[0.05]",
+      iconBg: "bg-cyan-500/15",
+      iconText: "text-cyan-300",
+    },
+  };
+
+  const metrics = [
+    { metric: "Leadership Coverage", before: "58%", after: "76%", change: "+18%", dir: "up" },
+    { metric: "Execution Stability", before: "Medium", after: "Strong", change: "Improved", dir: "up" },
+    { metric: "Adaptability Score", before: "6.2 / 10", after: "7.8 / 10", change: "+1.6", dir: "up" },
+    { metric: "Organizational Risk", before: "High", after: "Moderate", change: "Reduced", dir: "down" },
+    { metric: "Team Balance Score", before: "54%", after: "71%", change: "+17%", dir: "up" },
+  ];
+
+  return (
+    <div className="space-y-10">
+      <SectionTitle num="01" title="Executive Summary" />
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        {/* Company card */}
+        <div className="lg:col-span-4 rounded-xl border border-white/[0.08] bg-[#111116] p-6">
+          <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
+            <Building2 className="h-3.5 w-3.5" />
+            Company Profile
           </div>
+          <h3 className="mt-3 text-xl font-bold text-white">Alpha Investment Group</h3>
+          <dl className="mt-6 space-y-4">
+            <div className="flex justify-between gap-4 border-b border-white/[0.06] pb-3">
+              <dt className="text-xs uppercase tracking-widest text-zinc-500">Headcount</dt>
+              <dd className="font-mono text-sm font-semibold text-white">30</dd>
+            </div>
+            <div className="flex justify-between gap-4 border-b border-white/[0.06] pb-3">
+              <dt className="text-xs uppercase tracking-widest text-zinc-500">Sector</dt>
+              <dd className="text-sm font-medium text-zinc-200">Investment / Finance</dd>
+            </div>
+            <div className="flex flex-col gap-2">
+              <dt className="text-xs uppercase tracking-widest text-zinc-500">Objective</dt>
+              <dd className="text-sm leading-relaxed text-zinc-200">
+                Reduce burn without destroying execution capability
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        {/* Key findings */}
+        <div className="lg:col-span-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {findings.map((f, i) => {
+            const Icon = f.icon;
+            const s = toneStyles[f.tone];
+            return (
+              <div
+                key={i}
+                className={`rounded-xl border border-white/[0.08] ${s.bg} p-5 ring-1 ring-inset ${s.ring}`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${s.iconBg}`}>
+                    <Icon className={`h-4 w-4 ${s.iconText}`} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+                      Finding {i + 1} · {f.label}
+                    </p>
+                    <p className="mt-1.5 text-sm leading-relaxed text-zinc-200">{f.text}</p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Recommended scenario */}
+      <div className="relative overflow-hidden rounded-2xl border border-emerald-500/40 bg-gradient-to-br from-emerald-600/[0.18] via-indigo-700/[0.10] to-[#0f0f14] p-7 shadow-[0_0_60px_-20px_rgba(16,185,129,0.6)]">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-emerald-500/20 blur-[80px]" />
+        <div className="relative flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-emerald-300">
+              Recommended Scenario
+            </p>
+            <h3 className="mt-2 text-xl font-bold text-white md:text-2xl">
+              Scenario B — Balanced Redesign
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-zinc-200">
+              Balances cost reduction with organizational resilience. Maintains leadership continuity
+              while removing structural redundancy.
+            </p>
+          </div>
+          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-500/30 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-emerald-100 ring-1 ring-inset ring-emerald-400/40">
+            <CheckCircle2 className="h-3 w-3" />
+            High Confidence
+          </span>
+        </div>
+      </div>
+
+      {/* Org Metrics */}
+      <div>
+        <SectionTitle
+          num="02"
+          title="Organizational Metrics"
+          subtitle="Before vs After — net deltas under Scenario B (Balanced Redesign)"
+        />
+        <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#111116]">
+          <div className="flex items-center justify-between border-b border-white/[0.08] bg-emerald-500/[0.06] px-6 py-3">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-300 ring-1 ring-inset ring-emerald-500/30">
+              <CheckCircle2 className="h-3 w-3" />
+              Scenario B Applied
+            </span>
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+              5 metrics tracked
+            </span>
+          </div>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-white/[0.08] bg-white/[0.02] text-left text-[10px] uppercase tracking-widest text-zinc-500">
+                <th className="px-6 py-4 font-semibold">Metric</th>
+                <th className="px-6 py-4 font-semibold">Before</th>
+                <th className="px-6 py-4 font-semibold">After Scenario B</th>
+                <th className="px-6 py-4 text-right font-semibold">Change</th>
+              </tr>
+            </thead>
+            <tbody>
+              {metrics.map((r, i) => (
+                <tr
+                  key={r.metric}
+                  className={`${i !== metrics.length - 1 ? "border-b border-white/[0.05]" : ""} transition-colors hover:bg-white/[0.02]`}
+                >
+                  <td className="px-6 py-4 font-medium text-white">{r.metric}</td>
+                  <td className="px-6 py-4 font-mono text-zinc-400">{r.before}</td>
+                  <td className="px-6 py-4 font-mono font-semibold text-indigo-300">{r.after}</td>
+                  <td className="px-6 py-4 text-right">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 font-mono text-[11px] font-bold text-emerald-300 ring-1 ring-inset ring-emerald-500/30">
+                      {r.dir === "up" ? "↑" : "↓"} {r.change}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   );
 }
 
-/* ─────────────────────────────────────────── */
-/*  OVERVIEW                                    */
-/* ─────────────────────────────────────────── */
+// =============================================================
+// SECTION 2: ORG MAP
+// =============================================================
+type DotTone = "green" | "amber" | "red";
 
-function OverviewSection() {
-  const metrics = [
-    { label: "Team Size", value: "42", tone: "indigo" as const },
-    { label: "Avg Role-Fit Score", value: "79%", tone: "emerald" as const },
-    { label: "Risk Signals Identified", value: "6", tone: "amber" as const },
-  ];
-
-  const insights: { tone: "warn" | "good" | "bad"; title: string; body: string }[] = [
-    {
-      tone: "warn",
-      title: "Sales Leadership Gap",
-      body: "Sales execution risk detected: the founder is still driving strategic sales decisions, while the Growth Lead and Sales Manager split pipeline ownership without clear leadership coverage.",
-    },
-    {
-      tone: "good",
-      title: "Role Fit Signal",
-      body: "Top role-fit match: Jordan Lee (CTO) — overall score 7.94 across evaluating info, creating solutions, and structuring work.",
-    },
-    {
-      tone: "bad",
-      title: "Founder Bottleneck",
-      body: "Founder still involved in too many sales decisions. High founder dependency limits structured operating model transition.",
-    },
-  ];
-
+function CompetencyDots({ dots }: { dots: { label: string; tone: DotTone }[] }) {
+  const toneClass: Record<DotTone, string> = {
+    green: "bg-emerald-500",
+    amber: "bg-amber-500",
+    red: "bg-rose-500",
+  };
   return (
-    <div className="space-y-10">
-      {/* Company summary */}
-      <section className="rounded-2xl border border-[#1E1E24] bg-[#0F0F12] p-6 md:p-8">
-        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-          <div className="flex-1">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400">
-              Company summary
-            </p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
-              AtlasFlow Technologies
-            </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400">
-              AtlasFlow Technologies is a fictional B2B SaaS company with 42
-              employees. The company is growing from founder-led sales and
-              product decisions into a more structured operating model. The
-              leadership team wants to clarify ownership, reduce founder
-              dependency, strengthen sales leadership, and understand whether
-              the current org structure is ready for the next stage of growth.
-            </p>
-          </div>
-          <div className="grid grid-cols-3 gap-3 md:min-w-[320px]">
-            <SummaryStat label="Stage" value="Growth" />
-            <SummaryStat label="Sector" value="B2B SaaS" sub="Software" />
-            <SummaryStat label="Team" value="42" />
-          </div>
-        </div>
-      </section>
-
-      {/* Key metrics */}
-      <section>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400">
-          Key metrics
-        </p>
-        <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
-          The headlines for AtlasFlow Technologies
-        </h3>
-        <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
-          {metrics.map((m) => (
-            <div
-              key={m.label}
-              className="rounded-2xl border border-[#1E1E24] bg-[#0F0F12] p-6"
-            >
-              <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-500">
-                {m.label}
-              </p>
-              <p
-                className={`mt-2 font-mono text-3xl font-bold ${
-                  m.tone === "emerald"
-                    ? "text-emerald-300"
-                    : m.tone === "amber"
-                      ? "text-amber-300"
-                      : "text-indigo-300"
-                }`}
-              >
-                {m.value}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Insight cards */}
-      <section>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400">
-          Top insights
-        </p>
-        <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
-          What OrgLens surfaces
-        </h3>
-        <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
-          {insights.map((i) => {
-            const tone =
-              i.tone === "good"
-                ? {
-                    border: "border-emerald-500/30",
-                    bg: "from-emerald-500/[0.06]",
-                    badge:
-                      "bg-emerald-500/15 text-emerald-200 border-emerald-400/40",
-                  }
-                : i.tone === "warn"
-                  ? {
-                      border: "border-amber-500/30",
-                      bg: "from-amber-500/[0.06]",
-                      badge:
-                        "bg-amber-500/15 text-amber-200 border-amber-400/40",
-                    }
-                  : {
-                      border: "border-rose-500/30",
-                      bg: "from-rose-500/[0.06]",
-                      badge: "bg-rose-500/15 text-rose-200 border-rose-400/40",
-                    };
-            return (
-              <div
-                key={i.title}
-                className={`rounded-2xl border ${tone.border} bg-gradient-to-b ${tone.bg} to-[#0F0F12] p-6`}
-              >
-                <span
-                  className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-widest ${tone.badge}`}
-                >
-                  {i.title}
-                </span>
-                <p className="mt-4 text-sm leading-relaxed text-zinc-200">
-                  {i.body}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Disclaimer */}
-      <section className="rounded-xl border border-[#1E1E24] bg-[#0F0F12] p-5">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
-          Fictional demo company
-        </p>
-        <p className="mt-2 text-xs leading-relaxed text-zinc-500">
-          AtlasFlow Technologies is a fictional company used to illustrate how
-          OrgLens works. No real employee or company data is shown. Any
-          resemblance to real organizations is coincidental. OrgLens can be
-          used by startups and SMEs with 10–150 employees across software,
-          healthcare services, professional services, e-commerce, education,
-          fintech, and other knowledge-work businesses.
-        </p>
-      </section>
+    <div className="flex items-center gap-1.5">
+      {dots.map((d) => (
+        <span
+          key={d.label}
+          className="flex items-center gap-0.5 text-[10px] font-mono font-semibold text-zinc-400"
+          title={`${d.label}: ${d.tone}`}
+        >
+          <span className={`h-2 w-2 rounded-full ${toneClass[d.tone]}`} />
+          {d.label}
+        </span>
+      ))}
     </div>
   );
 }
 
-function SummaryStat({
-  label,
-  value,
-  sub,
+function OrgNode({
+  name,
+  role,
+  dots,
+  score,
+  atRisk,
+  isCEO,
 }: {
-  label: string;
-  value: string;
-  sub?: string;
-}) {
-  return (
-    <div className="rounded-xl border border-[#1E1E24] bg-[#0A0A0B] p-3 text-center">
-      <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-500">
-        {label}
-      </p>
-      <p className="mt-1 text-sm font-semibold text-white">{value}</p>
-      {sub && <p className="text-[10px] text-zinc-500">{sub}</p>}
-    </div>
-  );
-}
-
-/* ─────────────────────────────────────────── */
-/*  ORG MAP                                     */
-/* ─────────────────────────────────────────── */
-
-interface OrgNodeData {
   name: string;
   role: string;
-  tone: "green" | "amber" | "red";
-}
-
-interface OrgGroup {
-  parent: OrgNodeData;
-  children: OrgNodeData[];
-}
-
-const ORG_GROUPS: OrgGroup[] = [
-  {
-    parent: { name: "Jordan Lee", role: "CTO", tone: "green" },
-    children: [
-      { name: "Morgan Chen", role: "Engineering Lead", tone: "green" },
-      { name: "Taylor Brooks", role: "Head of Product", tone: "amber" },
-    ],
-  },
-  {
-    parent: { name: "Casey Miller", role: "Head of Operations", tone: "green" },
-    children: [
-      { name: "Sam Parker", role: "Finance & Strategy Lead", tone: "green" },
-      { name: "Dana Reed", role: "People Operations Lead", tone: "green" },
-    ],
-  },
-  {
-    parent: { name: "Jamie Carter", role: "Growth Lead", tone: "amber" },
-    children: [],
-  },
-  {
-    parent: { name: "Avery Wilson", role: "Sales Manager", tone: "amber" },
-    children: [],
-  },
-  {
-    parent: {
-      name: "Riley Johnson",
-      role: "Customer Success Lead",
-      tone: "amber",
-    },
-    children: [],
-  },
-];
-
-function OrgMapSection() {
-  const competencyHeatmap: {
-    label: string;
-    score: number;
-    tone: "green" | "amber" | "red";
-  }[] = [
-    { label: "Driving Success", score: 7.8, tone: "green" },
-    { label: "Exerting Influence", score: 7.7, tone: "green" },
-    { label: "Evaluating Information", score: 7.6, tone: "green" },
-    { label: "Coping with Pressure", score: 7.4, tone: "green" },
-    { label: "Interacting with People", score: 7.6, tone: "green" },
-    { label: "Creating Solutions", score: 7.6, tone: "green" },
-    { label: "Structuring Work", score: 7.6, tone: "green" },
-    { label: "Supporting Individuals", score: 7.6, tone: "amber" },
-  ];
-
-  return (
-    <div className="space-y-10">
-      <section>
-        <div className="flex items-end justify-between">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400">
-              Full org chart
-            </p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
-              AtlasFlow Technologies — Reporting structure
-            </h2>
-          </div>
-          <p className="text-xs text-zinc-500">42 team members</p>
-        </div>
-
-        <div className="mt-6 rounded-2xl border border-[#1E1E24] bg-[#0F0F12] p-6 md:p-8">
-          {/* CEO */}
-          <div className="flex flex-col items-center">
-            <OrgMapNode
-              node={{ name: "Alex Morgan", role: "Founder & CEO", tone: "green" }}
-              large
-            />
-            <div className="my-3 h-5 w-px bg-[#1E1E24]" />
-          </div>
-
-          {/* Direct reports */}
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {ORG_GROUPS.map((g, gi) => (
-              <div key={gi} className="flex flex-col items-center">
-                <OrgMapNode node={g.parent} />
-                {g.children.length > 0 && (
-                  <div className="my-2 h-3 w-px bg-[#1E1E24]" />
-                )}
-                <div className="w-full space-y-2">
-                  {g.children.map((c, ci) => (
-                    <OrgMapNode key={ci} node={c} compact />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Competency heatmap */}
-      <section>
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400">
-            Competency heatmap
-          </p>
-          <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
-            Team-wide competency averages
-          </h3>
-          <p className="mt-2 max-w-2xl text-sm text-zinc-400">
-            Average score across AtlasFlow Technologies&rsquo; leadership team
-            on the Great 8 competency model (1–9 scale).
-          </p>
-        </div>
-
-        <div className="mt-6 grid grid-cols-1 gap-2.5 rounded-2xl border border-[#1E1E24] bg-[#0F0F12] p-5 md:grid-cols-2">
-          {competencyHeatmap.map((c) => {
-            const barColor =
-              c.tone === "green"
-                ? "bg-emerald-500"
-                : c.tone === "amber"
-                  ? "bg-amber-400"
-                  : "bg-rose-500";
-            const textColor =
-              c.tone === "green"
-                ? "text-emerald-300"
-                : c.tone === "amber"
-                  ? "text-amber-300"
-                  : "text-rose-300";
-            return (
-              <div key={c.label} className="flex items-center gap-3">
-                <span className="w-44 shrink-0 text-xs text-zinc-300">
-                  {c.label}
-                </span>
-                <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/[0.04]">
-                  <div
-                    className={`h-full ${barColor}`}
-                    style={{ width: `${(c.score / 10) * 100}%` }}
-                  />
-                </div>
-                <span
-                  className={`w-10 shrink-0 text-right font-mono text-xs font-semibold ${textColor}`}
-                >
-                  {c.score.toFixed(1)}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-    </div>
-  );
-}
-
-function OrgMapNode({
-  node,
-  large,
-  compact,
-}: {
-  node: OrgNodeData;
-  large?: boolean;
-  compact?: boolean;
+  dots: { label: string; tone: DotTone }[];
+  score?: string;
+  atRisk?: boolean;
+  isCEO?: boolean;
 }) {
-  const dot =
-    node.tone === "green"
-      ? "bg-emerald-500"
-      : node.tone === "amber"
-        ? "bg-amber-400"
-        : "bg-rose-500";
   return (
     <div
-      className={`relative flex w-full max-w-[280px] items-center gap-3 rounded-xl border border-[#1E1E24] bg-[#0A0A0B] ${
-        large ? "px-5 py-3" : compact ? "px-3 py-2" : "px-4 py-2.5"
+      className={`flex flex-col gap-2 rounded-lg border bg-[#111116] p-3.5 transition-colors hover:border-indigo-500/30 sm:flex-row sm:items-center sm:justify-between ${
+        atRisk
+          ? "border-rose-500/40 bg-rose-500/[0.05]"
+          : isCEO
+            ? "border-indigo-500/40 bg-indigo-500/[0.06]"
+            : "border-white/[0.08]"
       }`}
     >
-      <span className={`h-2 w-2 shrink-0 rounded-full ${dot}`} />
       <div className="min-w-0">
-        <p
-          className={`truncate font-medium text-white ${
-            large ? "text-sm" : compact ? "text-[11px]" : "text-xs"
-          }`}
-        >
-          {node.name}
-        </p>
-        <p
-          className={`truncate text-zinc-500 ${
-            large ? "text-[11px]" : "text-[10px]"
-          }`}
-        >
-          {node.role}
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="truncate text-sm font-bold text-white">{name}</p>
+          {isCEO && (
+            <span className="inline-flex items-center rounded-full bg-indigo-500/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-indigo-200 ring-1 ring-inset ring-indigo-500/40">
+              CEO
+            </span>
+          )}
+          {atRisk && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-rose-500/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-rose-200 ring-1 ring-inset ring-rose-500/40">
+              <AlertTriangle className="h-2.5 w-2.5" />
+              At Risk
+            </span>
+          )}
+        </div>
+        <p className="mt-0.5 truncate text-[11px] text-zinc-500">{role}</p>
+      </div>
+      <div className="flex shrink-0 items-center gap-3">
+        <CompetencyDots dots={dots} />
+        {score && (
+          <span
+            className={`shrink-0 rounded-md px-2 py-1 font-mono text-[11px] font-bold ${
+              atRisk
+                ? "bg-rose-500/15 text-rose-300 ring-1 ring-inset ring-rose-500/30"
+                : "bg-emerald-500/15 text-emerald-300 ring-1 ring-inset ring-emerald-500/30"
+            }`}
+          >
+            {score}
+          </span>
+        )}
       </div>
     </div>
   );
 }
 
-/* ─────────────────────────────────────────── */
-/*  ROLE FIT                                    */
-/* ─────────────────────────────────────────── */
-
-interface RoleFitRow {
-  name: string;
-  role: string;
-  fit: number;
-  topSignal: string;
-}
-
-const ROLE_FIT_ROWS: RoleFitRow[] = [
-  {
-    name: "Jordan Lee",
-    role: "CTO",
-    fit: 94,
-    topSignal: "Evaluating Information · Creating Solutions",
-  },
-  {
-    name: "Alex Morgan",
-    role: "Founder & CEO",
-    fit: 91,
-    topSignal: "Exerting Influence · Driving Success",
-  },
-  {
-    name: "Taylor Brooks",
-    role: "Head of Product",
-    fit: 86,
-    topSignal: "Creating Solutions · Evaluating Information",
-  },
-  {
-    name: "Morgan Chen",
-    role: "Engineering Lead",
-    fit: 84,
-    topSignal: "Evaluating Information · Creating Solutions",
-  },
-  {
-    name: "Sam Parker",
-    role: "Finance & Strategy Lead",
-    fit: 82,
-    topSignal: "Evaluating Information · Structuring Work",
-  },
-  {
-    name: "Casey Miller",
-    role: "Head of Operations",
-    fit: 80,
-    topSignal: "Structuring Work · Supporting Individuals",
-  },
-  {
-    name: "Jamie Carter",
-    role: "Growth Lead",
-    fit: 78,
-    topSignal: "Exerting Influence · Driving Success",
-  },
-  {
-    name: "Riley Johnson",
-    role: "Customer Success Lead",
-    fit: 76,
-    topSignal: "Interacting with People · Supporting Individuals",
-  },
-  {
-    name: "Avery Wilson",
-    role: "Sales Manager",
-    fit: 73,
-    topSignal: "Interacting with People · Exerting Influence",
-  },
-  {
-    name: "Dana Reed",
-    role: "People Operations Lead",
-    fit: 71,
-    topSignal: "Supporting Individuals · Interacting with People",
-  },
-];
-
-function RoleFitSection() {
+function HeatBar({ value, label }: { value: number; label: string }) {
+  const t = value >= 75 ? "emerald" : value >= 65 ? "amber" : "rose";
+  const cls = {
+    emerald: { bar: "bg-gradient-to-r from-emerald-500 to-emerald-400", text: "text-emerald-300" },
+    amber: { bar: "bg-gradient-to-r from-amber-500 to-amber-400", text: "text-amber-300" },
+    rose: { bar: "bg-gradient-to-r from-rose-500 to-rose-400", text: "text-rose-300" },
+  }[t];
   return (
-    <div className="space-y-6">
-      <div>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400">
-          Role fit rankings
-        </p>
-        <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
-          Leadership team · AtlasFlow Technologies
-        </h2>
-        <p className="mt-2 max-w-2xl text-sm text-zinc-400">
-          Each team member&rsquo;s overall role-fit score against their current
-          role, with the top competency signals contributing to the score.
-        </p>
+    <div>
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">{label}</span>
+        <span className={`font-mono text-[11px] font-bold ${cls.text}`}>{value}%</span>
       </div>
-
-      <div className="overflow-hidden rounded-2xl border border-[#1E1E24] bg-[#0F0F12]">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-[#1E1E24] bg-[#0A0A0B] text-left text-[10px] font-medium uppercase tracking-widest text-zinc-500">
-              <th className="w-12 px-5 py-3">#</th>
-              <th className="px-5 py-3">Name</th>
-              <th className="px-5 py-3">Role</th>
-              <th className="hidden px-5 py-3 md:table-cell">Top Signals</th>
-              <th className="px-5 py-3 text-right">Fit Score</th>
-            </tr>
-          </thead>
-          <tbody className="text-sm">
-            {[...ROLE_FIT_ROWS]
-              .sort((a, b) => b.fit - a.fit)
-              .map((r, i) => {
-                const scoreColor =
-                  r.fit >= 85
-                    ? "text-emerald-300"
-                    : r.fit >= 75
-                      ? "text-indigo-300"
-                      : r.fit >= 70
-                        ? "text-amber-300"
-                        : "text-rose-300";
-                return (
-                  <tr
-                    key={r.name}
-                    className="border-b border-[#1E1E24] last:border-b-0 hover:bg-[#13131A]"
-                  >
-                    <td className="px-5 py-3 font-mono text-xs text-zinc-500">
-                      {i + 1}
-                    </td>
-                    <td className="px-5 py-3 font-medium text-white">
-                      {r.name}
-                    </td>
-                    <td className="px-5 py-3 text-zinc-400">{r.role}</td>
-                    <td className="hidden px-5 py-3 text-xs text-zinc-500 md:table-cell">
-                      {r.topSignal}
-                    </td>
-                    <td
-                      className={`px-5 py-3 text-right font-mono font-semibold ${scoreColor}`}
-                    >
-                      {r.fit}%
-                    </td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table>
+      <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.04]">
+        <div className={`h-full ${cls.bar}`} style={{ width: `${value}%` }} />
       </div>
     </div>
   );
 }
 
-/* ─────────────────────────────────────────── */
-/*  LEADERSHIP COVERAGE                         */
-/* ─────────────────────────────────────────── */
+function SectionOrgMap() {
+  const baseDots = (l: DotTone, e: DotTone, a: DotTone, s: DotTone) => [
+    { label: "L", tone: l },
+    { label: "E", tone: e },
+    { label: "A", tone: a },
+    { label: "S", tone: s },
+  ];
 
-function LeadershipSection() {
-  const items: { tone: "good" | "warn"; title: string; body: string }[] = [
+  const teams = [
     {
-      tone: "good",
-      title: "Strong",
-      body: "Leading, Driving Success, Coping with Pressure",
+      name: "Investment Team",
+      stats: [
+        { label: "Leadership", value: 89 },
+        { label: "Execution", value: 91 },
+        { label: "Adaptability", value: 87 },
+        { label: "Stability", value: 83 },
+      ],
+      summary: "Strong across all dimensions",
+      tone: "emerald" as const,
     },
     {
-      tone: "warn",
-      title: "Gap: Interacting with People",
-      body: "Only 2 of 6 leaders score above 7.5",
+      name: "Operations Team",
+      stats: [
+        { label: "Leadership", value: 58 },
+        { label: "Execution", value: 76 },
+        { label: "Adaptability", value: 72 },
+        { label: "Stability", value: 69 },
+      ],
+      summary: "Leadership gap; risk concentration",
+      tone: "rose" as const,
     },
     {
-      tone: "warn",
-      title: "Gap: Evaluating Information",
-      body: "Strategic analysis coverage thin below VP level",
+      name: "Research Team",
+      stats: [
+        { label: "Leadership", value: 78 },
+        { label: "Execution", value: 82 },
+        { label: "Adaptability", value: 85 },
+        { label: "Stability", value: 71 },
+      ],
+      summary: "Balanced; mild stability gap",
+      tone: "amber" as const,
     },
   ];
 
+  const teamToneClass: Record<"emerald" | "amber" | "rose", string> = {
+    emerald: "border-emerald-500/30 bg-emerald-500/[0.05]",
+    amber: "border-amber-500/30 bg-amber-500/[0.05]",
+    rose: "border-rose-500/30 bg-rose-500/[0.05]",
+  };
+
   return (
-    <div className="space-y-6">
-      <div>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400">
-          Leadership coverage
-        </p>
-        <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
-          Where leadership is strong, where it&rsquo;s thin
-        </h2>
-        <p className="mt-2 max-w-2xl text-sm text-zinc-400">
-          A read on the senior team&rsquo;s competency coverage across the
-          Great 8 model.
-        </p>
+    <div className="space-y-8">
+      <SectionTitle
+        num="03"
+        title="Competency Org Map"
+        subtitle="Leadership · Execution · Adaptability · Stability — visualized across the org"
+      />
+
+      {/* Legend */}
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-xl border border-white/[0.08] bg-[#111116] px-5 py-3 text-xs text-zinc-400">
+        <span className="font-semibold uppercase tracking-widest text-zinc-500">Legend</span>
+        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald-500" />Strong</span>
+        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-amber-500" />Watch</span>
+        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-rose-500" />At Risk</span>
+        <span className="ml-auto font-mono text-[10px] tracking-wider text-zinc-500">
+          L = Leadership · E = Execution · A = Adaptability · S = Stability
+        </span>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-        {items.map((i) => {
-          const tone =
-            i.tone === "good"
-              ? {
-                  border: "border-emerald-500/30",
-                  bg: "from-emerald-500/[0.06]",
-                  icon: ShieldCheck,
-                  iconColor: "text-emerald-300",
-                }
-              : {
-                  border: "border-amber-500/30",
-                  bg: "from-amber-500/[0.06]",
-                  icon: AlertTriangle,
-                  iconColor: "text-amber-300",
-                };
-          const Icon = tone.icon;
-          return (
-            <div
-              key={i.title}
-              className={`rounded-2xl border ${tone.border} bg-gradient-to-b ${tone.bg} to-[#0F0F12] p-6`}
-            >
-              <div
-                className={`flex h-10 w-10 items-center justify-center rounded-lg bg-white/[0.04] ${tone.iconColor}`}
-              >
-                <Icon className="h-5 w-5" />
-              </div>
-              <h3 className="mt-4 text-base font-semibold text-white">
-                {i.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-300">
-                {i.body}
-              </p>
-            </div>
-          );
-        })}
-      </div>
+      {/* Org tree */}
+      <div className="rounded-xl border border-white/[0.08] bg-[#111116] p-5 md:p-7">
+        <div className="space-y-3">
+          <OrgNode
+            isCEO
+            name="Wenjing Li"
+            role="Chief Executive Officer"
+            dots={baseDots("green", "green", "green", "green")}
+          />
 
-      {/* Great 8 coverage grid */}
-      <div>
-        <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400">
-          Great 8 coverage — leadership team
-        </p>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          {[
-            { name: "Driving Success", covered: true },
-            { name: "Exerting Influence", covered: true },
-            { name: "Evaluating Information", covered: false },
-            { name: "Coping with Pressure", covered: true },
-            { name: "Interacting with People", covered: false },
-            { name: "Creating Solutions", covered: true },
-            { name: "Structuring Work", covered: true },
-            { name: "Supporting Individuals", covered: true },
-          ].map((c) => (
-            <div
-              key={c.name}
-              className={`rounded-xl border p-3 ${
-                c.covered
-                  ? "border-emerald-500/25 bg-emerald-500/[0.05]"
-                  : "border-amber-500/25 bg-amber-500/[0.05]"
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <span
-                  className={`h-2 w-2 shrink-0 rounded-full ${
-                    c.covered ? "bg-emerald-500" : "bg-amber-400"
-                  }`}
+          <div className="ml-4 space-y-3 border-l border-white/[0.08] pl-5 md:ml-6 md:pl-7">
+            <OrgNode
+              name="Chifong Dong"
+              role="Investment Director"
+              dots={baseDots("green", "green", "green", "green")}
+              score="9.5/10"
+            />
+
+            <div>
+              <OrgNode
+                name="Lili Mao"
+                role="Operations Lead"
+                dots={baseDots("green", "green", "amber", "green")}
+                score="8.4/10"
+              />
+              <div className="ml-4 mt-3 space-y-3 border-l border-white/[0.08] pl-5 md:ml-6 md:pl-7">
+                <OrgNode
+                  name="Eric Li"
+                  role="Senior Analyst"
+                  dots={baseDots("green", "green", "green", "amber")}
+                  score="9.2/10"
                 />
-                <span className="text-xs text-zinc-300">{c.name}</span>
+                <OrgNode
+                  name="Yijun Sim"
+                  role="Senior Analyst"
+                  dots={baseDots("amber", "green", "green", "green")}
+                  score="9.2/10"
+                />
+                <OrgNode
+                  atRisk
+                  name="Yuzhe Zhao"
+                  role="Analyst"
+                  dots={baseDots("red", "red", "amber", "amber")}
+                  score="4.1/10"
+                />
               </div>
-              <p
-                className={`mt-1 text-[10px] font-medium ${
-                  c.covered ? "text-emerald-400" : "text-amber-400"
-                }`}
-              >
-                {c.covered ? "Covered" : "Gap"}
-              </p>
+            </div>
+
+            <div>
+              <OrgNode
+                name="Supriya Kumar"
+                role="Research Director"
+                dots={baseDots("green", "green", "green", "amber")}
+                score="9.4/10"
+              />
+              <div className="ml-4 mt-3 space-y-3 border-l border-white/[0.08] pl-5 md:ml-6 md:pl-7">
+                <OrgNode
+                  name="Joyce Zhang"
+                  role="Business Development"
+                  dots={baseDots("amber", "amber", "green", "red")}
+                  score="7.2/10"
+                />
+              </div>
+            </div>
+
+            <OrgNode
+              name="Luke Cai"
+              role="Strategy Lead"
+              dots={baseDots("green", "green", "amber", "green")}
+              score="9.0/10"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Team heatmap */}
+      <div>
+        <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
+          Team Heatmap Summary
+        </p>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {teams.map((t) => (
+            <div key={t.name} className={`rounded-xl border p-5 ${teamToneClass[t.tone]}`}>
+              <h4 className="text-sm font-bold text-white">{t.name}</h4>
+              <p className="mt-1 text-[11px] text-zinc-400">{t.summary}</p>
+              <div className="mt-4 space-y-3">
+                {t.stats.map((s) => (
+                  <HeatBar key={s.label} value={s.value} label={s.label} />
+                ))}
+              </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Team insights */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <div className="rounded-2xl border border-[rgba(99,102,241,0.15)] border-l-4 border-l-emerald-500 bg-[#111118] p-5">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] font-medium uppercase tracking-widest text-emerald-300">Investment Team</p>
+            <span className="rounded-full border border-emerald-500/30 bg-emerald-500/[0.08] px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest text-emerald-300">Strong</span>
+          </div>
+          <p className="mt-3 flex items-start gap-2 text-sm text-zinc-300">
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+            <span>
+              <strong className="text-white">High execution balance.</strong>{" "}
+              Chifong, Eric, and Yijun maintain strong scores across all dimensions. Investment capacity is well-covered.
+            </span>
+          </p>
+        </div>
+        <div className="rounded-2xl border border-[rgba(99,102,241,0.15)] border-l-4 border-l-rose-500 bg-[#111118] p-5">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] font-medium uppercase tracking-widest text-rose-300">Operations Team</p>
+            <span className="rounded-full border border-rose-500/30 bg-rose-500/[0.08] px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest text-rose-300">Restructuring Risk</span>
+          </div>
+          <p className="mt-3 flex items-start gap-2 text-sm text-zinc-300">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-rose-400" />
+            <span>
+              Low adaptability + low leadership scores in Operations.{" "}
+              <strong className="text-white">Yuzhe Zhao</strong> shows near-critical gaps across all four dimensions. Dependency on Lili Mao is high.
+            </span>
+          </p>
+        </div>
+        <div className="rounded-2xl border border-[rgba(99,102,241,0.15)] border-l-4 border-l-amber-400 bg-[#111118] p-5">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] font-medium uppercase tracking-widest text-amber-300">Research Team</p>
+            <span className="rounded-full border border-amber-400/30 bg-amber-400/[0.08] px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest text-amber-300">Collaboration Risk</span>
+          </div>
+          <p className="mt-3 flex items-start gap-2 text-sm text-zinc-300">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+            <span>
+              High influence concentration around{" "}
+              <strong className="text-white">Supriya Kumar</strong>. Joyce Zhang shows a mixed profile. Team resilience is below benchmark.
+            </span>
+          </p>
         </div>
       </div>
     </div>
   );
 }
 
-/* ─────────────────────────────────────────── */
-/*  TEAM RISKS                                  */
-/* ─────────────────────────────────────────── */
+// =============================================================
+// SECTION 3: ROLE FIT
+// =============================================================
+type RoleKey = "investment" | "operations" | "research";
 
-function RisksSection() {
-  const risks: { title: string; body: string; level: "high" | "medium" }[] = [
-    {
-      title: "Founder Bottleneck",
-      body: "Founder still involved in too many sales decisions. Limits structured operating model transition.",
-      level: "high",
-    },
-    {
-      title: "Sales Leadership Gap",
-      body: "No dedicated sales leader. Pipeline split between Growth Lead (Jamie Carter) and Sales Manager (Avery Wilson) without clear ownership.",
-      level: "high",
-    },
-    {
-      title: "Ownership Gap",
-      body: "Unclear boundary between Growth, Sales, and Customer Success functions.",
-      level: "medium",
-    },
-    {
-      title: "Key-Person Dependency",
-      body: "Jordan Lee (CTO) is a single point of failure for all technical decisions.",
-      level: "high",
-    },
-    {
-      title: "Customer Handoff Risk",
-      body: "Handoff process from Sales to Customer Success is undefined. Risk of churn at onboarding.",
-      level: "medium",
-    },
-    {
-      title: "Product/Engineering Tension",
-      body: "Prioritization conflicts between Head of Product (Taylor Brooks) and Engineering Lead (Morgan Chen).",
-      level: "medium",
-    },
-  ];
+interface DemoCandidate {
+  name: string;
+  fit: number;
+  strengths: string[];
+  gaps: string[];
+  insight: string;
+}
+
+const DEMO_ROLES: Record<RoleKey, { label: string; candidates: DemoCandidate[] }> = {
+  investment: {
+    label: "Investment Lead",
+    candidates: [
+      {
+        name: "Chifong Dong",
+        fit: 95,
+        strengths: ["Strategic Thinking", "Stakeholder Influence"],
+        gaps: ["Acting with Consideration"],
+        insight: "Top investment leadership profile. Dominant analytical and stakeholder posture.",
+      },
+      {
+        name: "Eric Li",
+        fit: 91,
+        strengths: ["Analytical Rigor", "Drive"],
+        gaps: ["Team Leadership"],
+        insight: "Execution-strong deputy candidate. Develop people-leadership for next step.",
+      },
+      {
+        name: "Yijun Sim",
+        fit: 90,
+        strengths: ["Execution Focus", "Structure"],
+        gaps: ["Innovation"],
+        insight: "Highly structured; pair with creative profiles for portfolio breadth.",
+      },
+      {
+        name: "Luke Cai",
+        fit: 84,
+        strengths: ["Strategy", "Communication"],
+        gaps: ["Detail Orientation"],
+        insight: "Strong strategic communicator; better suited to thematic investment lead.",
+      },
+      {
+        name: "Supriya Kumar",
+        fit: 81,
+        strengths: ["Research Depth", "Delivery"],
+        gaps: ["Influence"],
+        insight: "Strong analytical anchor; better aligned to research direction.",
+      },
+    ],
+  },
+  operations: {
+    label: "Operations Lead",
+    candidates: [
+      {
+        name: "Lili Mao",
+        fit: 94,
+        strengths: ["People Leadership", "Delivery", "Standards"],
+        gaps: ["Analytical Depth"],
+        insight: "Highest operational fit. Add analytical support to relieve cognitive load.",
+      },
+      {
+        name: "Supriya Kumar",
+        fit: 88,
+        strengths: ["Planning", "Research"],
+        gaps: ["Team Motivation"],
+        insight: "Strong process leader; pair with energetic culture-builder.",
+      },
+      {
+        name: "Eric Li",
+        fit: 79,
+        strengths: ["Execution", "Drive"],
+        gaps: ["People Development"],
+        insight: "Execution-anchored fallback; better as ops contingency than primary lead.",
+      },
+    ],
+  },
+  research: {
+    label: "Research Director",
+    candidates: [
+      {
+        name: "Supriya Kumar",
+        fit: 96,
+        strengths: ["Depth", "Precision", "Innovation"],
+        gaps: ["Speed"],
+        insight: "Ideal research director. Manage scope to mitigate speed risk.",
+      },
+      {
+        name: "Yijun Sim",
+        fit: 85,
+        strengths: ["Analysis", "Structure"],
+        gaps: ["Research Breadth"],
+        insight: "Strong methodological fit; broaden research scope progressively.",
+      },
+      {
+        name: "Luke Cai",
+        fit: 77,
+        strengths: ["Strategy"],
+        gaps: ["Research Methodology"],
+        insight: "Better suited to thematic research strategy than research operations.",
+      },
+    ],
+  },
+};
+
+function SectionRoleFit() {
+  const [role, setRole] = useState<RoleKey>("investment");
+  const [expanded, setExpanded] = useState<number | null>(0);
+  const data = DEMO_ROLES[role];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400">
-          Team risks
-        </p>
-        <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
-          What could limit the next growth phase
-        </h2>
-        <p className="mt-2 max-w-2xl text-sm text-zinc-400">
-          Structural and people risks identified across AtlasFlow
-          Technologies&rsquo; current team and org design.
-        </p>
+    <div>
+      <SectionTitle
+        num="04"
+        title="Role–Competency Fit Ranking"
+        subtitle="Top candidates ranked against role-specific competency requirements"
+      />
+
+      {/* Role tabs */}
+      <div className="mb-6 inline-flex flex-wrap gap-1 rounded-lg border border-white/[0.08] bg-[#111116] p-1">
+        {(Object.keys(DEMO_ROLES) as RoleKey[]).map((k) => (
+          <button
+            key={k}
+            onClick={() => { setRole(k); setExpanded(0); }}
+            className={`rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors ${
+              role === k ? "bg-indigo-500 text-white shadow-sm" : "text-zinc-400 hover:text-white"
+            }`}
+          >
+            {DEMO_ROLES[k].label}
+          </button>
+        ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-        {risks.map((r) => {
-          const tone =
-            r.level === "high"
-              ? {
-                  border: "border-rose-500/30",
-                  bg: "from-rose-500/[0.06]",
-                  badge: "bg-rose-500/15 text-rose-200 border-rose-400/40",
-                  iconColor: "text-rose-300",
-                  label: "High",
-                }
-              : {
-                  border: "border-amber-500/30",
-                  bg: "from-amber-500/[0.06]",
-                  badge: "bg-amber-500/15 text-amber-200 border-amber-400/40",
-                  iconColor: "text-amber-300",
-                  label: "Medium",
-                };
+      <div className="space-y-3">
+        {data.candidates.map((c, i) => {
+          const open = expanded === i;
           return (
             <div
-              key={r.title}
-              className={`rounded-2xl border ${tone.border} bg-gradient-to-b ${tone.bg} to-[#0F0F12] p-6`}
+              key={c.name}
+              className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#111116] transition-colors hover:border-indigo-500/30"
             >
-              <div className="flex items-start justify-between gap-3">
-                <div
-                  className={`flex h-10 w-10 items-center justify-center rounded-lg bg-white/[0.04] ${tone.iconColor}`}
-                >
-                  <ShieldAlert className="h-5 w-5" />
-                </div>
-                <span
-                  className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest ${tone.badge}`}
-                >
-                  {tone.label} risk
+              <button
+                onClick={() => setExpanded(open ? null : i)}
+                className="flex w-full items-center gap-4 p-5 text-left"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.04] font-mono text-sm font-bold text-zinc-300 ring-1 ring-inset ring-white/[0.06]">
+                  {i + 1}
                 </span>
-              </div>
-              <h3 className="mt-4 text-base font-semibold text-white">
-                {r.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-300">
-                {r.body}
-              </p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-base font-bold text-white">{c.name}</p>
+                  <div className="mt-2 flex h-1.5 overflow-hidden rounded-full bg-white/[0.04]">
+                    <div
+                      className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400"
+                      style={{ width: `${c.fit}%` }}
+                    />
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {c.strengths.slice(0, 2).map((s) => (
+                      <span key={s} className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-300 ring-1 ring-inset ring-emerald-500/30">
+                        <CheckCircle2 className="h-2.5 w-2.5" />{s}
+                      </span>
+                    ))}
+                    {c.gaps.slice(0, 2).map((g) => (
+                      <span key={g} className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-300 ring-1 ring-inset ring-amber-500/30">
+                        <ShieldAlert className="h-2.5 w-2.5" />{g}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-[11px] font-bold ${
+                  c.fit >= 90
+                    ? "bg-emerald-500/15 text-emerald-300 ring-1 ring-inset ring-emerald-500/30"
+                    : "bg-indigo-500/15 text-indigo-300 ring-1 ring-inset ring-indigo-500/30"
+                }`}>
+                  {c.fit}% Fit
+                </span>
+                <ChevronDown className={`h-4 w-4 shrink-0 text-zinc-500 transition-transform ${open ? "rotate-180" : ""}`} />
+              </button>
+
+              {open && (
+                <div className="grid grid-cols-1 gap-5 border-t border-white/[0.06] bg-white/[0.02] p-5 md:grid-cols-3">
+                  <div>
+                    <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-emerald-400">
+                      <CheckCircle2 className="h-3.5 w-3.5" />Strengths
+                    </p>
+                    <ul className="mt-3 space-y-2">
+                      {c.strengths.map((s) => (
+                        <li key={s} className="rounded-md bg-emerald-500/[0.06] px-2.5 py-1.5 text-xs text-zinc-200 ring-1 ring-inset ring-emerald-500/20">{s}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-amber-400">
+                      <ShieldAlert className="h-3.5 w-3.5" />Gaps
+                    </p>
+                    <ul className="mt-3 space-y-2">
+                      {c.gaps.map((g) => (
+                        <li key={g} className="rounded-md bg-amber-500/[0.06] px-2.5 py-1.5 text-xs text-zinc-200 ring-1 ring-inset ring-amber-500/20">{g}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-indigo-400">
+                      <Sparkles className="h-3.5 w-3.5" />AI Insight
+                    </p>
+                    <p className="mt-3 text-xs leading-relaxed text-zinc-200">{c.insight}</p>
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
@@ -905,150 +1032,509 @@ function RisksSection() {
   );
 }
 
-/* ─────────────────────────────────────────── */
-/*  RECOMMENDATIONS                             */
-/* ─────────────────────────────────────────── */
+// =============================================================
+// SECTION 4: LEADERSHIP COVERAGE (Competency Impact)
+// =============================================================
+function SectionLeadership() {
+  const { ref, inView } = useInView<HTMLDivElement>();
 
-function RecommendationsSection() {
-  const recs = [
-    "Clarify sales ownership and leadership coverage before hiring additional sales roles or expanding pipeline targets.",
-    "Define clear ownership boundary between Growth Lead and Sales Manager for pipeline responsibility.",
-    "Establish a defined handoff process from Sales to Customer Success before next growth cycle.",
-    "Reduce CTO key-person dependency — identify second technical leader or cross-train Engineering Lead.",
-    "Clarify Casey Miller's Operations scope relative to Finance & People Operations functions.",
-    "Run an org readiness assessment before adding a new management layer or making senior hires.",
-    "Address Product/Engineering prioritization conflicts with a shared roadmap process.",
-    "Evaluate founder involvement in sales decisions and create a delegation plan.",
+  const rows = [
+    {
+      label: "Leadership Coverage",
+      before: 58,
+      after: 76,
+      insight: "Eric Li promoted to Operations deputy closes the leadership gap.",
+    },
+    {
+      label: "Execution Strength",
+      before: 71,
+      after: 84,
+      insight: "Role redesign frees top performers from low-fit allocation.",
+    },
+    {
+      label: "Stability Index",
+      before: 65,
+      after: 72,
+      insight: "Workload redistribution reduces burnout risk in Operations.",
+    },
+    {
+      label: "Adaptability Score",
+      before: 62,
+      after: 78,
+      insight: "BD repositioning unlocks Joyce Zhang's flexible profile.",
+    },
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400">
-          Recommended actions
-        </p>
-        <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
-          Eight things AtlasFlow should do next
-        </h2>
-        <p className="mt-2 max-w-2xl text-sm text-zinc-400">
-          Prioritized actions to clarify ownership, reduce key-person risk, and
-          set the org up for its next stage.
-        </p>
-      </div>
+    <div>
+      <SectionTitle
+        num="05"
+        title="Leadership Coverage"
+        subtitle="Competency deltas under Scenario B (Balanced Redesign)"
+      />
 
-      <ol className="space-y-3">
-        {recs.map((r, i) => (
-          <li
-            key={i}
-            className="flex items-start gap-4 rounded-2xl border border-[#1E1E24] bg-[#0F0F12] p-5"
-          >
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-indigo-400/40 bg-indigo-500/15 font-mono text-sm font-semibold text-indigo-200">
-              {i + 1}
-            </span>
-            <p className="pt-1.5 text-sm leading-relaxed text-zinc-200">{r}</p>
-          </li>
-        ))}
-      </ol>
+      <div ref={ref} className="rounded-xl border border-white/[0.08] bg-[#111116] p-6 md:p-8">
+        <div className="space-y-7">
+          {rows.map((r, i) => (
+            <div key={r.label} className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-center">
+              <div className="lg:col-span-3">
+                <p className="text-sm font-semibold text-white">{r.label}</p>
+                <p className="mt-1 hidden text-[11px] leading-relaxed text-zinc-500 lg:block">{r.insight}</p>
+              </div>
+              <div className="lg:col-span-7 space-y-2">
+                <div className="flex items-center gap-3">
+                  <span className="w-14 text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Before</span>
+                  <div className="flex-1">
+                    <AnimatedBar value={r.before} tone="gray" delay={i * 80} active={inView} />
+                  </div>
+                  <span className="w-12 text-right font-mono text-xs font-semibold text-zinc-400">{r.before}%</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="w-14 text-[10px] font-semibold uppercase tracking-widest text-indigo-400">After</span>
+                  <div className="flex-1">
+                    <AnimatedBar value={r.after} tone="indigo" delay={i * 80 + 200} active={inView} />
+                  </div>
+                  <span className="w-12 text-right font-mono text-xs font-semibold text-white">{r.after}%</span>
+                </div>
+              </div>
+              <div className="lg:col-span-2 lg:text-right">
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-inset ring-emerald-500/30">
+                  ↑ +{r.after - r.before}pp
+                </span>
+              </div>
+              <p className="text-[11px] leading-relaxed text-zinc-500 lg:hidden">{r.insight}</p>
+            </div>
+          ))}
+
+          {/* Organizational Fragility */}
+          <div className="grid grid-cols-1 gap-4 border-t border-white/[0.05] pt-6 lg:grid-cols-12 lg:items-center">
+            <div className="lg:col-span-3">
+              <p className="text-sm font-semibold text-white">Organizational Fragility</p>
+              <p className="mt-1 hidden text-[11px] leading-relaxed text-zinc-500 lg:block">
+                Risk concentration drops as leadership distributes.
+              </p>
+            </div>
+            <div className="lg:col-span-7 grid grid-cols-2 gap-3">
+              <div className="rounded-lg border border-rose-500/30 bg-rose-500/[0.06] p-3">
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Before</p>
+                <p className="mt-1 font-mono text-base font-bold text-rose-300">HIGH</p>
+              </div>
+              <div className="rounded-lg border border-amber-500/30 bg-amber-500/[0.06] p-3">
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">After</p>
+                <p className="mt-1 font-mono text-base font-bold text-amber-300">MODERATE</p>
+              </div>
+            </div>
+            <div className="lg:col-span-2 lg:text-right">
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-inset ring-emerald-500/30">
+                ↓ Reduced
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-/* ─────────────────────────────────────────── */
-/*  DECISION REPORT                             */
-/* ─────────────────────────────────────────── */
+// =============================================================
+// SECTION 5: TEAM RISKS
+// =============================================================
+function SectionRisks() {
+  const risks = [
+    {
+      title: "Leadership Dependency",
+      severity: "HIGH",
+      severityClass: "bg-rose-500/15 text-rose-300 ring-rose-500/30",
+      borderClass: "border-l-rose-500",
+      team: "Operations",
+      detail:
+        "40% of delivery capability concentrated in 2 people (Chifong Dong, Lili Mao). No succession depth.",
+      action:
+        "Develop Eric Li as Operations deputy. Cross-train Yijun Sim on stakeholder management.",
+    },
+    {
+      title: "Burnout Risk",
+      severity: "MEDIUM",
+      severityClass: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
+      borderClass: "border-l-amber-500",
+      team: "Operations, Research",
+      detail:
+        "Lili Mao's 360 feedback shows impatience signals and urgency pressure passed to team. Sustained high load for 12+ months.",
+      action:
+        "Redistribute 2 direct reports. Add structured recovery protocols.",
+    },
+    {
+      title: "Execution Imbalance",
+      severity: "MEDIUM",
+      severityClass: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
+      borderClass: "border-l-amber-500",
+      team: "Business Development",
+      detail:
+        "Joyce Zhang (Influencer/Networker type) in delivery-heavy role. Low Execution score creates delivery gaps.",
+      action:
+        "Redesign role toward BD/partnerships. Pair with execution-strong Analyst.",
+    },
+    {
+      title: "Role Misalignment",
+      severity: "HIGH",
+      severityClass: "bg-rose-500/15 text-rose-300 ring-rose-500/30",
+      borderClass: "border-l-rose-500",
+      team: "Operations",
+      detail:
+        "Yuzhe Zhao scoring below threshold on 6/8 competencies. Role fit score: 34%. Exit or reassignment risk.",
+      action:
+        "Performance review with structured support plan. Consider role redesign or transition plan.",
+    },
+  ];
 
-function DecisionSection() {
   return (
-    <div className="space-y-8">
-      <div>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400">
-          Decision report
-        </p>
-        <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
-          Founder-ready brief — AtlasFlow Technologies
-        </h2>
-        <p className="mt-2 max-w-2xl text-sm text-zinc-400">
-          A consolidated narrative summary of the report — structured to support
-          a board, co-founder, or operator conversation.
-        </p>
+    <div>
+      <SectionTitle
+        num="06"
+        title="Team Risks"
+        subtitle="Critical risks identified through behavioral and structural signals"
+      />
+
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        {risks.map((r) => (
+          <div
+            key={r.title}
+            className={`rounded-xl border border-white/[0.08] border-l-4 ${r.borderClass} bg-[#111116] p-5`}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <h3 className="text-base font-bold text-white">{r.title}</h3>
+              <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest ring-1 ring-inset ${r.severityClass}`}>
+                {r.severity}
+              </span>
+            </div>
+            <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-zinc-400 ring-1 ring-inset ring-white/[0.06]">
+              <Briefcase className="h-3 w-3" />
+              {r.team}
+            </span>
+            <p className="mt-4 text-sm leading-relaxed text-zinc-300">{r.detail}</p>
+            <div className="mt-4 rounded-lg bg-white/[0.03] p-3.5 ring-1 ring-inset ring-white/[0.05]">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-indigo-300">Recommended Action</p>
+              <p className="mt-1.5 text-xs leading-relaxed text-zinc-200">{r.action}</p>
+            </div>
+          </div>
+        ))}
       </div>
+    </div>
+  );
+}
 
-      <article className="rounded-2xl border border-[#1E1E24] bg-[#0F0F12] p-8 md:p-10">
-        <div className="space-y-8 text-sm leading-relaxed text-zinc-300">
+// =============================================================
+// SECTION 6: RECOMMENDATIONS (Scenario Comparison)
+// =============================================================
+function SectionRecommendations() {
+  const cards = [
+    {
+      key: "A",
+      name: "Lean Efficiency",
+      borderClass: "border-amber-500/40",
+      ringClass: "ring-amber-500/20",
+      pillClass: "bg-rose-500/15 text-rose-300 ring-rose-500/30",
+      pillLabel: "High Risk ⚠",
+      stats: [
+        { label: "Headcount Impact", value: "−4 roles (13% reduction)" },
+        { label: "Cost Reduction", value: "$320K / year" },
+        { label: "Execution Effect", value: "Moderate decline (−15%)" },
+      ],
+      tradeoff: "Removes buffer capacity; increases dependency on top performers.",
+      recommended: false,
+    },
+    {
+      key: "B",
+      name: "Balanced Redesign",
+      borderClass: "border-indigo-500/50",
+      ringClass: "ring-indigo-500/30",
+      pillClass: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
+      pillLabel: "Moderate Risk ✓",
+      stats: [
+        { label: "Headcount Impact", value: "−2 roles + 1 redesign" },
+        { label: "Cost Reduction", value: "$180K / year" },
+        { label: "Execution Effect", value: "Stable → Strong (+18%)" },
+      ],
+      tradeoff: "Minor short-term adjustment cost; sustainable long-term capability.",
+      recommended: true,
+    },
+    {
+      key: "C",
+      name: "AI-Augmented Organization",
+      borderClass: "border-cyan-500/40",
+      ringClass: "ring-cyan-500/20",
+      pillClass: "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30",
+      pillLabel: "Low Risk ✓",
+      stats: [
+        { label: "Headcount Impact", value: "−1 role + 2 AI-enhanced roles" },
+        { label: "Cost Reduction", value: "$90K / year" },
+        { label: "Execution Effect", value: "Strong improvement (+32%)" },
+      ],
+      tradeoff: "Requires 60-day tooling transition; high upside if executed.",
+      recommended: false,
+    },
+  ];
+
+  return (
+    <div>
+      <SectionTitle
+        num="07"
+        title="Recommendations"
+        subtitle="Three restructuring paths evaluated for cost, risk, and execution impact"
+      />
+
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+        {cards.map((c) => (
+          <div
+            key={c.key}
+            className={`relative rounded-xl border ${c.borderClass} bg-[#111116] p-6 ring-1 ring-inset ${c.ringClass} ${
+              c.recommended ? "shadow-[0_0_40px_-15px_rgba(99,102,241,0.6)]" : ""
+            }`}
+          >
+            {c.recommended && (
+              <span className="absolute -top-3 left-6 inline-flex items-center gap-1 rounded-full bg-indigo-500 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white shadow-md">
+                <Sparkles className="h-3 w-3" />
+                Recommended
+              </span>
+            )}
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500">Scenario {c.key}</span>
+              <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ring-1 ring-inset ${c.pillClass}`}>
+                {c.pillLabel}
+              </span>
+            </div>
+            <h3 className="mt-3 text-lg font-bold text-white">{c.name}</h3>
+            <div className="mt-5 space-y-3">
+              {c.stats.map((s) => (
+                <div key={s.label} className="border-b border-white/[0.05] pb-3 last:border-0 last:pb-0">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">{s.label}</p>
+                  <p className="mt-1 text-sm font-semibold text-white">{s.value}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 rounded-lg bg-white/[0.03] p-3 ring-1 ring-inset ring-white/[0.05]">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Trade-off</p>
+              <p className="mt-1.5 text-xs leading-relaxed text-zinc-300">{c.tradeoff}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// =============================================================
+// SECTION 7: DECISION REPORT (Founder Memo)
+// =============================================================
+function SectionDecision() {
+  const today = useMemo(() => {
+    const d = new Date();
+    return d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  }, []);
+
+  const findings = [
+    {
+      title: "LEADERSHIP GAP IN OPERATIONS",
+      body: "Current leadership coverage in Operations stands at 58% — below the 70% threshold required for sustainable execution at your growth stage. The primary risk is over-reliance on Lili Mao as a single point of leadership with insufficient succession depth.",
+    },
+    {
+      title: "ROLE MISALIGNMENT — YUZHE ZHAO",
+      body: "Yuzhe Zhao's competency profile scores below role requirements on 6 of 8 dimensions. Continuation in the current role creates drag on the Operations team. Immediate intervention recommended.",
+    },
+    {
+      title: "TALENT CONCENTRATION RISK",
+      body: "Chifong Dong and Eric Li together account for approximately 40% of the firm's high-execution delivery capacity. Loss of either would materially impact client delivery timelines.",
+    },
+    {
+      title: "JOYCE ZHANG — MISAPPLIED TALENT",
+      body: "Zhang's psychometric profile (Influencer 9.7, Networker 9.7, Pioneer 7.6) positions her as an exceptional relationship and alignment driver. The current role under-utilizes this profile. Redesigning toward business development or strategic partnerships would deliver higher returns.",
+    },
+  ];
+
+  const priorities = [
+    {
+      label: "Priority 1",
+      window: "Immediate — 0–30 days",
+      items: [
+        "Initiate Yuzhe Zhao performance review with structured support plan",
+        "Begin Eric Li leadership development track",
+        "Redistribute 1–2 direct reports from Lili Mao",
+      ],
+    },
+    {
+      label: "Priority 2",
+      window: "Short-term — 30–60 days",
+      items: [
+        "Redesign Joyce Zhang's role toward BD/Partnerships",
+        "Implement cross-training: Yijun Sim on stakeholder management",
+        "Document Chifong Dong's institutional knowledge (succession risk mitigation)",
+      ],
+    },
+    {
+      label: "Priority 3",
+      window: "Structural — 60–90 days",
+      items: [
+        "Implement Scenario B: Balanced Redesign",
+        "Introduce 2 new role definitions aligned to AI-augmented workflow",
+        "Re-run OrgLens analysis post-restructuring to measure improvement",
+      ],
+    },
+  ];
+
+  return (
+    <div>
+      <SectionTitle num="08" title="Decision Report" />
+
+      <article className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white text-zinc-900 shadow-[0_0_60px_-20px_rgba(99,102,241,0.4)]">
+        {/* Memo header */}
+        <header className="bg-[#0a0e27] px-7 py-6 text-white md:px-10 md:py-8">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-indigo-500/20 ring-1 ring-inset ring-indigo-500/40">
+                <FileText className="h-5 w-5 text-indigo-300" />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-indigo-300">
+                  Confidential — Founder Memo
+                </p>
+                <p className="mt-1 text-sm font-semibold tracking-wide text-white">
+                  Alpha Investment Group
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-[11px] uppercase tracking-widest text-zinc-400">
+              <span>OrgLens AI</span>
+              <span className="text-zinc-700">·</span>
+              <span>{today}</span>
+            </div>
+          </div>
+          <div className="mt-6 grid grid-cols-1 gap-4 border-t border-white/[0.08] pt-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">To</p>
+              <p className="mt-1 text-sm font-semibold text-white">Wenjing Li, CEO</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">From</p>
+              <p className="mt-1 text-sm font-semibold text-white">OrgLens AI Organizational Intelligence</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Re</p>
+              <p className="mt-1 text-sm font-semibold text-white">Organizational Restructuring Assessment</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Classification</p>
+              <p className="mt-1 text-sm font-semibold text-white">Confidential</p>
+            </div>
+          </div>
+        </header>
+
+        {/* Memo body */}
+        <div className="space-y-10 px-7 py-10 md:px-12 md:py-12">
           <section>
-            <h3 className="text-base font-semibold text-white">
-              Team Strengths
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.28em] text-indigo-600">Executive Summary</h3>
+            <p className="mt-3 text-sm leading-relaxed text-zinc-700 md:text-base">
+              Alpha Investment Group presents a strong competency foundation with identifiable execution risk
+              concentrated in the Operations function. This memo outlines our findings, recommended
+              restructuring path, and priority actions for Q2 2025.
+            </p>
+          </section>
+
+          <section>
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.28em] text-indigo-600">Key Findings</h3>
+            <ol className="mt-4 space-y-5">
+              {findings.map((f, i) => (
+                <li key={f.title} className="flex gap-4">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-100 font-mono text-xs font-bold text-indigo-700">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <p className="text-sm font-bold uppercase tracking-wider text-zinc-900">{f.title}</p>
+                    <p className="mt-1.5 text-sm leading-relaxed text-zinc-700">{f.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          <section>
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.28em] text-indigo-600">
+              Recommended Actions (Priority Order)
             </h3>
-            <p className="mt-3">
-              AtlasFlow Technologies has a strong core at the leadership level.
-              Jordan Lee (CTO) leads with the highest overall score at 7.94,
-              followed by Alex Morgan (CEO) at 7.76 and Taylor Brooks (Head of
-              Product) at 7.64. The engineering function has strong competency
-              alignment across Evaluating Information and Creating Solutions.
-              The company has a credible foundation to build a more structured
-              operating model from.
+            <div className="mt-4 space-y-4">
+              {priorities.map((p) => (
+                <div key={p.label} className="rounded-lg border border-zinc-200 bg-zinc-50/60 p-5">
+                  <div className="flex flex-wrap items-baseline gap-3">
+                    <span className="inline-flex items-center rounded-full bg-indigo-600 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white">
+                      {p.label}
+                    </span>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">{p.window}</p>
+                  </div>
+                  <ul className="mt-4 space-y-2">
+                    {p.items.map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2.5 text-sm leading-relaxed text-zinc-800">
+                        <span className="mt-1 text-indigo-600">→</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.28em] text-indigo-600">Restructuring Guidance</h3>
+            <p className="mt-3 text-sm leading-relaxed text-zinc-700 md:text-base">
+              Scenario B (Balanced Redesign) is recommended as the risk-adjusted optimal path. It achieves
+              $180K in annual cost reduction while improving leadership coverage from 58% to 76% and execution
+              stability from Medium to Strong. Unlike Scenario A (Lean Efficiency), it does not create execution
+              fragility. Unlike Scenario C (AI-Augmented), it does not require a 60-day tooling transition.
             </p>
           </section>
 
           <section>
-            <h3 className="text-base font-semibold text-white">Key Risks</h3>
-            <p className="mt-3">
-              The primary risk is structural: sales execution risk is high. The
-              founder is still driving strategic sales decisions, while the
-              Growth Lead and Sales Manager split pipeline ownership without
-              clear leadership coverage. Jordan Lee (CTO) represents a
-              key-person dependency for all technical decisions. The handoff
-              from Sales to Customer Success is undefined, creating churn risk.
-              Casey Miller&rsquo;s Operations scope is unclear relative to
-              Finance and People functions, creating potential ownership
-              confusion.
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.28em] text-indigo-600">Conclusion</h3>
+            <p className="mt-3 text-sm leading-relaxed text-zinc-700 md:text-base">
+              The organization has strong talent at the senior layer. The priority is structural — not
+              performance. Addressing role misalignment, leadership succession depth, and talent misapplication
+              will unlock execution capacity without additional headcount cost.
+            </p>
+            <p className="mt-3 text-sm italic leading-relaxed text-zinc-600 md:text-base">
+              OrgLens AI recommends re-analysis in 90 days to measure competency movement post-restructuring.
             </p>
           </section>
 
-          <section>
-            <h3 className="text-base font-semibold text-white">
-              Recommended Next Steps
-            </h3>
-            <p className="mt-3">
-              Clarify sales ownership and leadership coverage before hiring
-              additional sales roles or expanding pipeline targets. Define the
-              ownership boundary between Jamie Carter (Growth Lead) and Avery
-              Wilson (Sales Manager) for pipeline responsibility. Establish a
-              handoff process from Sales to Customer Success before the next
-              growth cycle. Reduce CTO key-person dependency by identifying a
-              second technical leader or cross-training Morgan Chen. Run an org
-              readiness assessment before adding a management layer.
-            </p>
-          </section>
+          <div className="flex items-center gap-4 border-t border-zinc-200 pt-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-indigo-100">
+              <Sparkles className="h-5 w-5 text-indigo-600" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-zinc-900">OrgLens AI</p>
+              <p className="text-xs text-zinc-500">Organizational Decision Intelligence</p>
+            </div>
+          </div>
         </div>
       </article>
 
       {/* Bottom CTA */}
-      <div className="relative overflow-hidden rounded-3xl border border-indigo-500/30 bg-gradient-to-b from-indigo-500/[0.10] to-[#0F0F12] p-10 text-center shadow-[0_0_60px_-15px_rgba(99,102,241,0.5)]">
-        <div className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-indigo-500/20 blur-[80px]" />
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-400">
-          Your team
-        </p>
-        <h3 className="mt-3 text-2xl font-bold tracking-tight text-white md:text-3xl">
-          Ready to run this analysis for your actual team?
-        </h3>
-        <p className="mx-auto mt-3 max-w-xl text-sm text-zinc-400">
-          Same report, your data. Built from your team. Delivered in days.
-        </p>
-        <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <div className="mt-12 overflow-hidden rounded-2xl border border-indigo-500/30 bg-gradient-to-b from-indigo-500/[0.08] to-[#0f0f14] p-10 text-center shadow-[0_0_60px_-20px_rgba(99,102,241,0.5)]">
+        <div className="mx-auto max-w-xl">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-indigo-400">Your turn</p>
+          <h3 className="mt-3 text-2xl font-bold tracking-tight text-white md:text-3xl">
+            Ready to run this analysis on your own team?
+          </h3>
+          <p className="mx-auto mt-3 max-w-md text-sm text-zinc-400">
+            Upload your team's HUCAMA reports. Get a McKinsey-quality organizational analysis report in minutes.
+          </p>
           <a
             href={CHECKOUT_URL}
-            className="inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-400"
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-7 py-3.5 text-sm font-semibold text-white shadow-[0_0_40px_-5px_rgba(99,102,241,0.7)] transition-all hover:bg-indigo-400 hover:shadow-[0_0_50px_-5px_rgba(99,102,241,0.9)]"
           >
-            Get Founder Snapshot — $49
-            <ArrowRight className="h-4 w-4" />
+            <Sparkles className="h-4 w-4" />
+            Analyze My Organization — $49
+            <ArrowUpRight className="h-4 w-4" />
           </a>
-          <Link
-            href="/pricing"
-            className="inline-flex items-center gap-2 rounded-lg border border-indigo-400/50 px-6 py-3 text-sm font-semibold text-indigo-200 transition-all hover:bg-indigo-500/10 hover:text-white"
-          >
-            View Pricing
-          </Link>
+          <p className="mt-3 text-xs text-zinc-500">One-time payment. Instant access. No subscription.</p>
         </div>
       </div>
     </div>
