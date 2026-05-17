@@ -2,6 +2,8 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
+import posthog from "posthog-js";
+import { decorateCheckoutUrl } from "@/lib/posthog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -130,7 +132,17 @@ export default function BillingPage() {
           )}
           {workspace.checkoutUrl && (
             <Button asChild>
-              <a href={workspace.checkoutUrl} target="_blank" rel="noopener noreferrer">
+              <a
+                href={decorateCheckoutUrl(workspace.checkoutUrl)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() =>
+                  posthog.capture("begin_checkout", {
+                    current_plan: currentPlan,
+                    $groups: { business: process.env.NEXT_PUBLIC_BUSINESS_ID },
+                  })
+                }
+              >
                 Upgrade Plan
                 <ArrowUpRight className="h-4 w-4" />
               </a>

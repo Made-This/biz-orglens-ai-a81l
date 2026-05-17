@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect } from "react";
+import posthog from "posthog-js";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 
@@ -107,6 +111,12 @@ const faqs = [
 ];
 
 export default function PricingPage() {
+  useEffect(() => {
+    posthog.capture("pricing_viewed", {
+      $groups: { business: process.env.NEXT_PUBLIC_BUSINESS_ID },
+    });
+  }, []);
+
   return (
     <div className="relative overflow-hidden">
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-0 h-[500px]">
@@ -207,6 +217,13 @@ export default function PricingPage() {
 
 function TierCard({ tier }: { tier: Tier }) {
   const isHighlighted = tier.tone === "highlighted";
+  const handlePlanSelected = () => {
+    posthog.capture("plan_selected", {
+      plan: tier.name,
+      price: tier.badge,
+      $groups: { business: process.env.NEXT_PUBLIC_BUSINESS_ID },
+    });
+  };
 
   const cardClasses = isHighlighted
     ? "relative flex flex-col rounded-2xl border border-indigo-400/60 bg-gradient-to-b from-indigo-500/[0.12] to-[#0F0F12] p-7 shadow-[0_0_60px_-15px_rgba(99,102,241,0.45)]"
@@ -253,12 +270,12 @@ function TierCard({ tier }: { tier: Tier }) {
       </ul>
 
       {tier.ctaExternal ? (
-        <a href={tier.ctaHref} className={ctaClasses}>
+        <a href={tier.ctaHref} className={ctaClasses} onClick={handlePlanSelected}>
           {tier.ctaLabel}
           <ArrowRight className="h-4 w-4" />
         </a>
       ) : (
-        <Link href={tier.ctaHref} className={ctaClasses}>
+        <Link href={tier.ctaHref} className={ctaClasses} onClick={handlePlanSelected}>
           {tier.ctaLabel}
           <ArrowRight className="h-4 w-4" />
         </Link>

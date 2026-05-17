@@ -1,8 +1,9 @@
 "use client";
 
 import { useAuthActions } from "@convex-dev/auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import posthog from "posthog-js";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
@@ -17,6 +18,12 @@ export default function SignUpPage() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    posthog.capture("sign_up_started", {
+      $groups: { business: process.env.NEXT_PUBLIC_BUSINESS_ID },
+    });
+  }, []);
 
   return (
     <div className="relative overflow-hidden px-4 py-12 md:py-20">
@@ -51,6 +58,9 @@ export default function SignUpPage() {
                 const formData = new FormData(e.currentTarget);
                 try {
                   await signIn("password", formData);
+                  posthog.capture("sign_up_completed", {
+                    $groups: { business: process.env.NEXT_PUBLIC_BUSINESS_ID },
+                  });
                   router.push("/app/workspace");
                 } catch {
                   setError(

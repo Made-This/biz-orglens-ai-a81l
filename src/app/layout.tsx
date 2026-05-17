@@ -3,7 +3,10 @@ import { Inter } from "next/font/google";
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import { Providers } from "@/lib/convex";
 import { Toaster } from "@/components/ui/toaster";
+import { PostHogProvider } from "@/lib/posthog";
 import "./globals.css";
+
+const GSC_TOKEN = process.env.NEXT_PUBLIC_GSC_VERIFICATION_TOKEN;
 
 const inter = Inter({
   subsets: ["latin"],
@@ -51,11 +54,18 @@ export default function RootLayout({
   return (
     <ConvexAuthNextjsServerProvider>
       <html lang="en">
+        <head>
+          {GSC_TOKEN && (
+            <meta name="google-site-verification" content={GSC_TOKEN} />
+          )}
+        </head>
         <body className={`${inter.variable} font-sans antialiased`}>
-          <Providers>
-            {children}
-            <Toaster />
-          </Providers>
+          <PostHogProvider>
+            <Providers>
+              {children}
+              <Toaster />
+            </Providers>
+          </PostHogProvider>
         </body>
       </html>
     </ConvexAuthNextjsServerProvider>
