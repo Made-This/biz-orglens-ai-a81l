@@ -150,6 +150,81 @@ const SCENARIOS: Scenario[] = [
   },
 ];
 
+// ---------- ROLE-COMPETENCY FIT DATA ----------
+
+type FitBadge = "Strong" | "Moderate" | "Gap";
+
+interface TeamMemberFit {
+  name: string;
+  role: string;
+  fitScore: number;
+  fitBadge: FitBadge;
+  strengths: string[];
+  developments: string[];
+  callout: string;
+}
+
+interface ScenarioFitData {
+  members: TeamMemberFit[];
+  orgStrengths: string[];
+  orgGaps: string[];
+  orgReadiness: number;
+}
+
+const FIT_DATA: Record<"lean" | "balanced" | "ai-native", ScenarioFitData> = {
+  lean: {
+    members: [
+      { name: "Alex Morgan", role: "CEO", fitScore: 76, fitBadge: "Moderate", strengths: ["Leading & Deciding", "Enterprising & Performing"], developments: ["Organising & Executing", "Analysing & Interpreting"], callout: "Strong vision and commercial drive, but lean operating model exposes an execution oversight gap." },
+      { name: "Jordan Lee", role: "CTO", fitScore: 85, fitBadge: "Strong", strengths: ["Analysing & Interpreting", "Organising & Executing", "Creating & Conceptualising"], developments: ["Interacting & Presenting", "Enterprising & Performing"], callout: "High-precision execution anchor — lean scenario plays directly to Jordan's core competency profile." },
+      { name: "Taylor Brooks", role: "Head of Product", fitScore: 70, fitBadge: "Moderate", strengths: ["Creating & Conceptualising", "Analysing & Interpreting"], developments: ["Leading & Deciding", "Enterprising & Performing"], callout: "Product creativity is strong, but constrained scope in a lean org limits Taylor's full impact." },
+      { name: "Casey Miller", role: "Head of Ops", fitScore: 88, fitBadge: "Strong", strengths: ["Organising & Executing", "Supporting & Cooperating", "Adapting & Coping"], developments: ["Creating & Conceptualising", "Enterprising & Performing"], callout: "Ops execution is the team's anchor — Casey's fit peaks in a lean, efficiency-first structure." },
+      { name: "Morgan Chen", role: "Engineering Lead", fitScore: 82, fitBadge: "Strong", strengths: ["Analysing & Interpreting", "Organising & Executing"], developments: ["Leading & Deciding", "Interacting & Presenting"], callout: "Reliable technical execution; lean model rewards Morgan's precision over innovation appetite." },
+      { name: "Riley Johnson", role: "CS Lead", fitScore: 68, fitBadge: "Moderate", strengths: ["Supporting & Cooperating", "Interacting & Presenting", "Adapting & Coping"], developments: ["Analysing & Interpreting", "Enterprising & Performing"], callout: "Strong interpersonal skills, but CS headcount compression creates a coverage gap risk." },
+      { name: "Jamie Carter", role: "Growth Lead", fitScore: 65, fitBadge: "Moderate", strengths: ["Enterprising & Performing", "Creating & Conceptualising"], developments: ["Organising & Executing", "Analysing & Interpreting"], callout: "Growth creativity is high, but lean ops discipline gap limits campaign execution reliability." },
+      { name: "Avery Wilson", role: "Sales Manager", fitScore: 71, fitBadge: "Moderate", strengths: ["Interacting & Presenting", "Enterprising & Performing"], developments: ["Organising & Executing", "Analysing & Interpreting"], callout: "Commercial drive is present, but sales pipeline discipline gap surfaces under lean headcount." },
+      { name: "Sam Parker", role: "Finance", fitScore: 86, fitBadge: "Strong", strengths: ["Analysing & Interpreting", "Organising & Executing", "Adapting & Coping"], developments: ["Interacting & Presenting", "Leading & Deciding"], callout: "Financial rigour is well-matched to the lean scenario's cost-control mandate." },
+      { name: "Dana Reed", role: "People Ops", fitScore: 62, fitBadge: "Moderate", strengths: ["Supporting & Cooperating", "Interacting & Presenting", "Adapting & Coping"], developments: ["Analysing & Interpreting", "Enterprising & Performing"], callout: "Culture anchoring is valuable, but People Ops scope compresses significantly in a lean restructure." },
+    ],
+    orgStrengths: ["Organising & Executing", "Analysing & Interpreting", "Adapting & Coping"],
+    orgGaps: ["Creating & Conceptualising", "Interacting & Presenting", "Enterprising & Performing"],
+    orgReadiness: 72,
+  },
+  balanced: {
+    members: [
+      { name: "Alex Morgan", role: "CEO", fitScore: 82, fitBadge: "Strong", strengths: ["Leading & Deciding", "Interacting & Presenting", "Enterprising & Performing"], developments: ["Organising & Executing", "Analysing & Interpreting"], callout: "Well-positioned for a growth-stage CEO role — leadership depth compensates for execution gaps." },
+      { name: "Jordan Lee", role: "CTO", fitScore: 88, fitBadge: "Strong", strengths: ["Analysing & Interpreting", "Creating & Conceptualising", "Organising & Executing"], developments: ["Interacting & Presenting", "Leading & Deciding"], callout: "Consistently strong fit — balanced scenario preserves Jordan's technical leadership mandate." },
+      { name: "Taylor Brooks", role: "Head of Product", fitScore: 84, fitBadge: "Strong", strengths: ["Creating & Conceptualising", "Analysing & Interpreting", "Supporting & Cooperating"], developments: ["Leading & Deciding", "Enterprising & Performing"], callout: "Expanded scope in Scenario B unlocks Taylor's full product and strategy potential." },
+      { name: "Casey Miller", role: "Head of Ops", fitScore: 85, fitBadge: "Strong", strengths: ["Organising & Executing", "Supporting & Cooperating", "Adapting & Coping"], developments: ["Creating & Conceptualising", "Enterprising & Performing"], callout: "Ops clarity in Scenario B gives Casey a well-defined mandate — strong fit confirmed." },
+      { name: "Morgan Chen", role: "Engineering Lead", fitScore: 84, fitBadge: "Strong", strengths: ["Analysing & Interpreting", "Organising & Executing", "Creating & Conceptualising"], developments: ["Leading & Deciding", "Interacting & Presenting"], callout: "Steady performer across all dimensions; balanced scenario retains Morgan's full contribution." },
+      { name: "Riley Johnson", role: "CS Lead", fitScore: 78, fitBadge: "Moderate", strengths: ["Supporting & Cooperating", "Interacting & Presenting", "Adapting & Coping"], developments: ["Analysing & Interpreting", "Enterprising & Performing"], callout: "Riley's interpersonal depth anchors cross-functional alignment — a genuine asset in the balanced model." },
+      { name: "Jamie Carter", role: "Growth Lead", fitScore: 76, fitBadge: "Moderate", strengths: ["Enterprising & Performing", "Creating & Conceptualising", "Interacting & Presenting"], developments: ["Organising & Executing", "Analysing & Interpreting"], callout: "Growth-Sales boundary clarity in Scenario B reduces Jamie's execution friction significantly." },
+      { name: "Avery Wilson", role: "Sales Manager", fitScore: 79, fitBadge: "Moderate", strengths: ["Interacting & Presenting", "Enterprising & Performing", "Leading & Deciding"], developments: ["Analysing & Interpreting", "Organising & Executing"], callout: "Commercial instincts are strong — new VP Sales hire provides the structure Avery currently lacks." },
+      { name: "Sam Parker", role: "Finance", fitScore: 82, fitBadge: "Strong", strengths: ["Analysing & Interpreting", "Organising & Executing", "Adapting & Coping"], developments: ["Interacting & Presenting", "Leading & Deciding"], callout: "Financial precision is a reliable team asset; balanced scenario keeps Sam's role well-scoped." },
+      { name: "Dana Reed", role: "People Ops", fitScore: 80, fitBadge: "Strong", strengths: ["Supporting & Cooperating", "Interacting & Presenting", "Adapting & Coping"], developments: ["Analysing & Interpreting", "Enterprising & Performing"], callout: "Balanced redesign preserves the culture function — Dana's empathy skills are a genuine retention asset." },
+    ],
+    orgStrengths: ["Leading & Deciding", "Supporting & Cooperating", "Analysing & Interpreting"],
+    orgGaps: ["Enterprising & Performing", "Creating & Conceptualising", "Organising & Executing"],
+    orgReadiness: 84,
+  },
+  "ai-native": {
+    members: [
+      { name: "Alex Morgan", role: "CEO", fitScore: 79, fitBadge: "Moderate", strengths: ["Leading & Deciding", "Enterprising & Performing", "Adapting & Coping"], developments: ["Organising & Executing", "Analysing & Interpreting"], callout: "AI-Native scenario demands Alex act as stabilising node — leadership agility is tested under high disruption." },
+      { name: "Jordan Lee", role: "CTO", fitScore: 91, fitBadge: "Strong", strengths: ["Creating & Conceptualising", "Analysing & Interpreting", "Adapting & Coping"], developments: ["Interacting & Presenting", "Leading & Deciding"], callout: "Jordan's technical creativity is maximised in the AI-Native model — highest fit score across all scenarios." },
+      { name: "Taylor Brooks", role: "Head of Product", fitScore: 82, fitBadge: "Strong", strengths: ["Creating & Conceptualising", "Analysing & Interpreting", "Adapting & Coping"], developments: ["Leading & Deciding", "Enterprising & Performing"], callout: "Product design for AI-augmented workflows plays directly to Taylor's conceptual strengths." },
+      { name: "Casey Miller", role: "Head of Ops", fitScore: 62, fitBadge: "Moderate", strengths: ["Organising & Executing", "Supporting & Cooperating"], developments: ["Creating & Conceptualising", "Adapting & Coping", "Enterprising & Performing"], callout: "Ops role compressed in an AI-first model — Casey's traditional execution strengths have diminished leverage." },
+      { name: "Morgan Chen", role: "Engineering Lead", fitScore: 90, fitBadge: "Strong", strengths: ["Creating & Conceptualising", "Analysing & Interpreting", "Adapting & Coping"], developments: ["Leading & Deciding", "Interacting & Presenting"], callout: "Top fit in AI-Native scenario — Morgan's technical creativity and adaptability are the defining profile." },
+      { name: "Riley Johnson", role: "CS Lead", fitScore: 55, fitBadge: "Gap", strengths: ["Supporting & Cooperating", "Adapting & Coping"], developments: ["Analysing & Interpreting", "Enterprising & Performing", "Creating & Conceptualising"], callout: "CS role is substantially automated — Riley's interpersonal strengths are underutilised in an AI-first model." },
+      { name: "Jamie Carter", role: "Growth Lead", fitScore: 84, fitBadge: "Strong", strengths: ["Enterprising & Performing", "Creating & Conceptualising", "Adapting & Coping"], developments: ["Organising & Executing", "Analysing & Interpreting"], callout: "AI-augmented growth stack elevates Jamie's creative and commercial instincts — strong scenario fit." },
+      { name: "Avery Wilson", role: "Sales Manager", fitScore: 74, fitBadge: "Moderate", strengths: ["Interacting & Presenting", "Enterprising & Performing", "Leading & Deciding"], developments: ["Analysing & Interpreting", "Adapting & Coping"], callout: "Interpersonal sales skills remain relevant, but AI-driven pipeline management stretches Avery's adaptability." },
+      { name: "Sam Parker", role: "Finance", fitScore: 72, fitBadge: "Moderate", strengths: ["Analysing & Interpreting", "Organising & Executing"], developments: ["Creating & Conceptualising", "Adapting & Coping", "Enterprising & Performing"], callout: "Routine finance tasks are heavily automated — Sam's analytical depth remains relevant but role scope narrows." },
+      { name: "Dana Reed", role: "People Ops", fitScore: 58, fitBadge: "Gap", strengths: ["Supporting & Cooperating", "Interacting & Presenting"], developments: ["Analysing & Interpreting", "Adapting & Coping", "Enterprising & Performing"], callout: "People Ops role is substantially reduced in the AI-Native model — headcount drop limits cultural influence." },
+    ],
+    orgStrengths: ["Creating & Conceptualising", "Analysing & Interpreting", "Adapting & Coping"],
+    orgGaps: ["Supporting & Cooperating", "Organising & Executing", "Interacting & Presenting"],
+    orgReadiness: 68,
+  },
+};
+
 const ACCENT_STYLES: Record<
   Accent,
   {
@@ -561,6 +636,9 @@ function ScenarioDetailView({ scenario }: { scenario: Scenario }) {
         </div>
       </div>
 
+      {/* Role-Competency Fit Panel */}
+      <RoleFitPanel scenarioKey={scenario.key} scenarioAccent={scenario.accent} />
+
       {/* Bottom CTA */}
       <div className="relative overflow-hidden rounded-3xl border border-indigo-500/30 bg-gradient-to-b from-indigo-500/[0.08] to-[#111113] p-10 text-center shadow-[0_0_60px_-15px_rgba(99,102,241,0.5)]">
         <div className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-indigo-500/20 blur-[80px]" />
@@ -942,6 +1020,180 @@ function CompareScenarioCard({
           AI Insight
         </p>
         <p className="mt-1.5 text-[11px] leading-relaxed text-zinc-200">{scenario.insight}</p>
+      </div>
+    </div>
+  );
+}
+
+// ---------- ROLE-COMPETENCY FIT PANEL ----------
+function RoleFitPanel({
+  scenarioKey,
+  scenarioAccent,
+}: {
+  scenarioKey: ScenarioKey;
+  scenarioAccent: Accent;
+}) {
+  if (scenarioKey === "compare") return null;
+  const fitData = FIT_DATA[scenarioKey];
+  const accent = ACCENT_STYLES[scenarioAccent];
+
+  function badgeStyles(badge: FitBadge) {
+    if (badge === "Strong") return "bg-emerald-500/15 text-emerald-300 border-emerald-500/30";
+    if (badge === "Moderate") return "bg-amber-500/15 text-amber-300 border-amber-500/30";
+    return "bg-rose-500/15 text-rose-300 border-rose-500/30";
+  }
+
+  function scoreColor(score: number) {
+    if (score >= 80) return "text-emerald-300";
+    if (score >= 60) return "text-amber-300";
+    return "text-rose-300";
+  }
+
+  const readinessColor =
+    fitData.orgReadiness >= 80
+      ? { text: "text-emerald-300", bar: "bg-emerald-500" }
+      : fitData.orgReadiness >= 65
+      ? { text: "text-amber-300", bar: "bg-amber-400" }
+      : { text: "text-rose-300", bar: "bg-rose-500" };
+
+  return (
+    <div id="role-fit" className="space-y-8 border-t border-[#1E1E24] pt-10">
+      {/* Section header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400">
+            Role-Competency Fit
+          </p>
+          <h2 className="mt-2 text-xl font-bold tracking-tight text-white">
+            Individual fit scores — this scenario
+          </h2>
+          <p className="mt-1.5 text-sm text-zinc-400">
+            Competency signals mapped against role requirements. Role-fit indicators based on the Great 8 framework.
+          </p>
+        </div>
+        {/* Org Readiness Score chip */}
+        <div className="shrink-0 rounded-2xl border border-[#1E1E24] bg-[#0F0F12] px-6 py-4 text-center">
+          <p className="text-[9px] font-semibold uppercase tracking-widest text-zinc-500">Org Readiness</p>
+          <p className={`mt-1 text-4xl font-bold tabular-nums leading-none ${readinessColor.text}`}>
+            {fitData.orgReadiness}
+          </p>
+          <p className="text-[10px] text-zinc-600">/100</p>
+        </div>
+      </div>
+
+      {/* Readiness bar + org-level summary */}
+      <div className="rounded-2xl border border-[#1E1E24] bg-[#0F0F12] p-5 md:p-6">
+        <div className="flex items-center justify-between text-xs mb-3">
+          <span className="text-zinc-400">Team readiness for this restructure scenario</span>
+          <span className={`font-mono font-bold ${readinessColor.text}`}>{fitData.orgReadiness}/100</span>
+        </div>
+        <div className="h-2 overflow-hidden rounded-full bg-white/[0.05]">
+          <div
+            className={`h-full rounded-full ${readinessColor.bar} transition-[width] duration-[1200ms] ease-out`}
+            style={{ width: `${fitData.orgReadiness}%` }}
+          />
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-4 border-t border-[#1E1E24] pt-5 sm:grid-cols-2">
+          {/* Org strengths */}
+          <div>
+            <p className="mb-3 text-[9px] font-semibold uppercase tracking-widest text-emerald-400">
+              Top 3 Org-Wide Strengths
+            </p>
+            <div className="space-y-2">
+              {fitData.orgStrengths.map((s) => (
+                <div key={s} className="flex items-center gap-2.5 rounded-lg border border-emerald-500/20 bg-emerald-500/[0.07] px-3 py-2">
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
+                  <span className="text-xs font-medium text-emerald-200">{s}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Org gaps */}
+          <div>
+            <p className="mb-3 text-[9px] font-semibold uppercase tracking-widest text-amber-400">
+              Top 3 Org-Wide Development Gaps
+            </p>
+            <div className="space-y-2">
+              {fitData.orgGaps.map((g) => (
+                <div key={g} className="flex items-center gap-2.5 rounded-lg border border-amber-500/20 bg-amber-500/[0.07] px-3 py-2">
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+                  <span className="text-xs font-medium text-amber-200">{g}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Member cards grid */}
+      <div className="grid gap-4 sm:grid-cols-2">
+        {fitData.members.map((member) => (
+          <div
+            key={member.name}
+            className="rounded-2xl border border-[#1E1E24] bg-[#111113] p-5 space-y-4"
+          >
+            {/* Header row */}
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-white">{member.name}</p>
+                <p className="text-[11px] text-zinc-500 mt-0.5">{member.role}</p>
+              </div>
+              <div className="shrink-0 text-right">
+                <p className={`text-2xl font-bold tabular-nums leading-none ${scoreColor(member.fitScore)}`}>
+                  {member.fitScore}
+                </p>
+                <p className="text-[9px] text-zinc-600 mt-0.5">/100</p>
+                <span
+                  className={`mt-1.5 inline-block rounded-full border px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest ${badgeStyles(member.fitBadge)}`}
+                >
+                  {member.fitBadge}
+                </span>
+              </div>
+            </div>
+
+            {/* Strengths */}
+            <div>
+              <p className="mb-1.5 text-[9px] font-semibold uppercase tracking-widest text-emerald-400">
+                Areas of Strength
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {member.strengths.map((s) => (
+                  <span
+                    key={s}
+                    className="rounded-full border border-emerald-500/25 bg-emerald-500/[0.1] px-2.5 py-1 text-[10px] font-medium text-emerald-300"
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Developments */}
+            <div>
+              <p className="mb-1.5 text-[9px] font-semibold uppercase tracking-widest text-amber-400">
+                Areas for Development
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {member.developments.map((d) => (
+                  <span
+                    key={d}
+                    className="rounded-full border border-amber-500/25 bg-amber-500/[0.1] px-2.5 py-1 text-[10px] font-medium text-amber-300"
+                  >
+                    {d}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Callout */}
+            <div className={`rounded-lg border ${accent.softBorder} ${accent.softBg} px-3 py-2.5`}>
+              <p className={`text-[11px] leading-relaxed italic ${accent.text}`}>
+                &ldquo;{member.callout}&rdquo;
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
