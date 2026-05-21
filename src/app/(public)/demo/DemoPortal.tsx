@@ -14,6 +14,7 @@ import {
   ArrowRight,
   Building2,
   ShieldCheck,
+  ShieldAlert,
 } from "lucide-react";
 
 const CHECKOUT_URL =
@@ -22,6 +23,7 @@ const CHECKOUT_URL =
 // ─── Types ───────────────────────────────────────────────────────
 type SectionId =
   | "executive-summary"
+  | "orglens-risk-view"
   | "org-health"
   | "team-structure"
   | "leadership-strengths"
@@ -33,6 +35,7 @@ type SectionId =
 // ─── Navigation ──────────────────────────────────────────────────
 const NAV_ITEMS: { id: SectionId; label: string; icon: ElementType }[] = [
   { id: "executive-summary", label: "Executive Summary", icon: BarChart2 },
+  { id: "orglens-risk-view", label: "OrgLens Risk View", icon: ShieldAlert },
   { id: "org-health", label: "Org Health Score", icon: Activity },
   { id: "team-structure", label: "Team Competency Map", icon: Network },
   { id: "leadership-strengths", label: "Leadership Strengths", icon: TrendingUp },
@@ -315,7 +318,7 @@ function SectionOrgHealth() {
 
   return (
     <SectionWrap>
-      <SectionHeading label="Section 2 of 8" title="Org Health Score" />
+      <SectionHeading label="Section 3 of 9" title="Org Health Score" />
 
       <Card className="mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center gap-6 mb-6">
@@ -399,7 +402,7 @@ function SectionOrgHealth() {
 function SectionTeamStructure() {
   return (
     <SectionWrap>
-      <SectionHeading label="Section 3 of 8" title="Team Competency Map" />
+      <SectionHeading label="Section 4 of 9" title="Team Competency Map" />
 
       <p className="text-sm text-zinc-400 leading-relaxed mb-6">
         OrgLens overlays risk intelligence on the standard org chart — revealing
@@ -490,7 +493,7 @@ function SectionLeadershipStrengths() {
 
   return (
     <SectionWrap>
-      <SectionHeading label="Section 4 of 8" title="Leadership Strengths" />
+      <SectionHeading label="Section 5 of 9" title="Leadership Strengths" />
 
       <p className="text-sm text-zinc-400 leading-relaxed mb-6">
         Where the team has clear ownership, strong capability, and functional
@@ -579,7 +582,7 @@ function SectionRoleFit() {
 
   return (
     <SectionWrap>
-      <SectionHeading label="Section 5 of 8" title="Role-Fit Analysis" />
+      <SectionHeading label="Section 6 of 9" title="Role-Fit Analysis" />
 
       <div className="mb-5 rounded-xl border border-zinc-700/50 bg-zinc-800/20 px-4 py-3">
         <p className="text-xs text-zinc-400">
@@ -648,7 +651,7 @@ function SectionOwnershipGaps() {
 
   return (
     <SectionWrap>
-      <SectionHeading label="Section 6 of 8" title="Ownership Gaps" />
+      <SectionHeading label="Section 7 of 9" title="Ownership Gaps" />
 
       <p className="text-sm text-zinc-400 leading-relaxed mb-6">
         Areas where decision rights, accountability, or reporting lines are
@@ -697,7 +700,7 @@ function SectionRiskSignals() {
 
   return (
     <SectionWrap>
-      <SectionHeading label="Section 7 of 8" title="Risk Signals" />
+      <SectionHeading label="Section 8 of 9" title="Risk Signals" />
 
       <p className="text-sm text-zinc-400 leading-relaxed mb-6">
         Prioritized risk matrix showing severity, business impact, and urgency
@@ -800,7 +803,7 @@ function SectionRecommendedActions() {
 
   return (
     <SectionWrap>
-      <SectionHeading label="Section 8 of 8" title="Recommended Actions" />
+      <SectionHeading label="Section 9 of 9" title="Recommended Actions" />
 
       <p className="text-sm text-zinc-400 leading-relaxed mb-6">
         Prioritized actions based on org health score, risk severity, and
@@ -891,12 +894,379 @@ function SectionRecommendedActions() {
   );
 }
 
+// ─── OrgLens Risk View: Risk Node Card ───────────────────────────
+
+function RiskNodeCard({
+  name,
+  title,
+  risk,
+  flag,
+}: {
+  name: string;
+  title: string;
+  risk: "HIGH" | "MEDIUM" | "LOW";
+  flag: string;
+}) {
+  const borderColor =
+    risk === "HIGH"
+      ? "border-rose-500/60"
+      : risk === "MEDIUM"
+        ? "border-amber-400/50"
+        : "border-emerald-500/40";
+  const dot =
+    risk === "HIGH"
+      ? "bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.8)]"
+      : risk === "MEDIUM"
+        ? "bg-amber-400 shadow-[0_0_6px_rgba(245,158,11,0.7)]"
+        : "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)]";
+  const badgeCls =
+    risk === "HIGH"
+      ? "bg-rose-500/20 text-rose-200 ring-1 ring-rose-400/40"
+      : risk === "MEDIUM"
+        ? "bg-amber-500/20 text-amber-200 ring-1 ring-amber-400/40"
+        : "bg-emerald-500/20 text-emerald-200 ring-1 ring-emerald-400/40";
+
+  return (
+    <div className={`rounded-xl border ${borderColor} bg-[#0A0A0B] p-3`}>
+      <div className="flex items-start gap-2 mb-2">
+        <span className={`mt-1 h-2 w-2 shrink-0 rounded-full ${dot}`} />
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-semibold text-white truncate">{name}</p>
+          <p className="text-[10px] text-zinc-500 truncate">{title}</p>
+        </div>
+        <span className={`shrink-0 rounded-full px-2 py-0.5 text-[9px] font-bold ${badgeCls}`}>
+          {risk}
+        </span>
+      </div>
+      <p className="text-[10px] text-zinc-400 leading-snug">{flag}</p>
+    </div>
+  );
+}
+
+// ─── OrgLens Risk View Section ────────────────────────────────────
+
+function SectionOrgLensRiskView() {
+  const members: {
+    name: string;
+    title: string;
+    risk: "HIGH" | "MEDIUM" | "LOW";
+    flag: string;
+  }[] = [
+    {
+      name: "Alex Morgan",
+      title: "CEO",
+      risk: "HIGH",
+      flag: "7 direct reports, founder bottleneck, single point of failure",
+    },
+    {
+      name: "Jordan Lee",
+      title: "CTO",
+      risk: "MEDIUM",
+      flag: "Tech roadmap concentration, no deputy",
+    },
+    {
+      name: "Taylor Brooks",
+      title: "Head of Product",
+      risk: "MEDIUM",
+      flag: "Misaligned with sales priorities, low execution score",
+    },
+    {
+      name: "Casey Miller",
+      title: "Head of Ops",
+      risk: "LOW",
+      flag: "Strong operational coverage, solid span of control",
+    },
+    {
+      name: "Morgan Chen",
+      title: "Engineering Lead",
+      risk: "HIGH",
+      flag: "Key-person dependency, 60% of critical IP",
+    },
+    {
+      name: "Riley Johnson",
+      title: "CS Lead",
+      risk: "HIGH",
+      flag: "At-risk role in AI-Native scenario, no succession",
+    },
+    {
+      name: "Jamie Carter",
+      title: "Growth Lead",
+      risk: "MEDIUM",
+      flag: "Growth pipeline thin, low strategic influence",
+    },
+    {
+      name: "Avery Wilson",
+      title: "Sales Manager",
+      risk: "MEDIUM",
+      flag: "Sales execution gaps, coaching dependency",
+    },
+    {
+      name: "Sam Parker",
+      title: "Finance",
+      risk: "LOW",
+      flag: "Stable, process-driven, low risk",
+    },
+    {
+      name: "Dana Reed",
+      title: "People Ops",
+      risk: "LOW",
+      flag: "Low exposure, support function",
+    },
+  ];
+
+  const topRisks = [
+    {
+      title: "Founder Bottleneck",
+      desc: "Alex Morgan holds 7 direct reports + key decisions across all functions, compressing strategic capacity",
+      tone: "red" as const,
+    },
+    {
+      title: "Key-Person Dependency",
+      desc: "Morgan Chen owns 60% of critical engineering IP — no deputy, no succession plan, single point of failure",
+      tone: "red" as const,
+    },
+    {
+      title: "Succession Gap",
+      desc: "Riley Johnson role eliminated in AI-Native scenario — no succession plan or internal handoff ready",
+      tone: "red" as const,
+    },
+  ];
+
+  const riskFlags: {
+    label: string;
+    desc: string;
+    severity: "HIGH" | "MEDIUM";
+  }[] = [
+    {
+      label: "Founder Span of Control",
+      desc: "Alex Morgan has 7 direct reports — exceeds healthy range (5–6)",
+      severity: "HIGH",
+    },
+    {
+      label: "Engineering IP Concentration",
+      desc: "Morgan Chen controls 60% of critical tech IP with no documented succession",
+      severity: "HIGH",
+    },
+    {
+      label: "CS Role Automation Risk",
+      desc: "Riley Johnson role is at-risk in AI-Native scenario with no internal successor",
+      severity: "HIGH",
+    },
+    {
+      label: "No CTO Deputy",
+      desc: "Jordan Lee has no technical backup — single engineering decision point",
+      severity: "MEDIUM",
+    },
+    {
+      label: "Product-Sales Misalignment",
+      desc: "Taylor Brooks roadmap not aligned with revenue priorities; low cross-function execution score",
+      severity: "MEDIUM",
+    },
+    {
+      label: "Growth Pipeline Thinness",
+      desc: "Jamie Carter lacks strategic influence; pipeline depth insufficient for growth stage",
+      severity: "MEDIUM",
+    },
+    {
+      label: "Sales Coaching Dependency",
+      desc: "Avery Wilson requires ongoing coaching to perform consistently — scalability risk",
+      severity: "MEDIUM",
+    },
+    {
+      label: "No Revenue Leadership Layer",
+      desc: "No VP-level sales accountability above Sales Manager — coverage gap as company scales",
+      severity: "MEDIUM",
+    },
+  ];
+
+  return (
+    <SectionWrap>
+      <SectionHeading
+        label="OrgLens AI · Risk Intelligence"
+        title="OrgLens Risk View"
+      />
+
+      {/* ── Hero-style glass card: side-by-side comparison ── */}
+      <div className="relative rounded-2xl border border-white/10 bg-slate-900/40 p-3 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.7)] mb-6">
+        {/* Window chrome */}
+        <div className="mb-3 flex items-center justify-between rounded-xl border border-white/[0.06] bg-slate-950/60 px-3 py-2">
+          <div className="flex items-center gap-1.5">
+            <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
+            <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
+          </div>
+          <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500">
+            OrgLens · Org Chart Comparison — AtlasFlow Technologies
+          </p>
+          <p className="text-[10px] font-medium text-zinc-600">Live</p>
+        </div>
+
+        {/* Two mini charts side by side */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mb-3">
+          <div className="relative overflow-hidden rounded-xl border border-white/10 bg-slate-950/40 p-3">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500 mb-1">
+              Traditional View
+            </p>
+            <p className="text-[9px] text-zinc-600 mb-3">Static org chart · no signals</p>
+            <OrgTree showRisks={false} />
+          </div>
+          <div className="relative overflow-hidden rounded-xl border border-white/10 bg-gradient-to-b from-slate-900/70 to-slate-950/80 p-3">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-indigo-300 mb-1">
+              OrgLens Risk View
+            </p>
+            <p className="text-[9px] text-zinc-500 mb-3">Same structure · risks surfaced</p>
+            <OrgTree showRisks={true} />
+          </div>
+        </div>
+
+        {/* Risk summary + health score row */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-5">
+          {/* Risk signals panel */}
+          <div className="rounded-xl border border-white/10 bg-slate-900/80 p-4 shadow-lg sm:col-span-3">
+            <div className="flex items-center gap-2 mb-3">
+              <AlertTriangle className="h-4 w-4 text-amber-300" />
+              <h4 className="text-sm font-semibold text-white">Risk Signals Detected</h4>
+            </div>
+            <ul className="space-y-2">
+              {[
+                { tone: "red" as const, label: "Founder dependency (Alex Morgan)", value: "High" },
+                { tone: "red" as const, label: "Key-person risk (Morgan Chen)", value: "High" },
+                { tone: "red" as const, label: "CS succession gap (Riley Johnson)", value: "High" },
+                { tone: "amber" as const, label: "Tech roadmap concentration", value: "Medium" },
+                { tone: "amber" as const, label: "Sales execution gaps", value: "Medium" },
+              ].map((row) => (
+                <li key={row.label} className="flex items-center justify-between text-xs">
+                  <span className="flex items-center gap-2 text-zinc-300">
+                    <span
+                      className={`inline-block h-2 w-2 rounded-full ${
+                        row.tone === "red"
+                          ? "bg-red-400 shadow-[0_0_8px_rgba(239,68,68,0.7)]"
+                          : "bg-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.7)]"
+                      }`}
+                    />
+                    {row.label}
+                  </span>
+                  <span
+                    className={`font-medium ${
+                      row.tone === "red" ? "text-red-300" : "text-amber-200"
+                    }`}
+                  >
+                    {row.value}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Org Health Score card */}
+          <div className="rounded-xl border border-rose-400/30 bg-gradient-to-b from-rose-500/[0.10] to-slate-900/80 p-4 shadow-lg sm:col-span-2">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-rose-300 mb-2">
+              Org Health Score
+            </p>
+            <div className="flex items-baseline gap-1 mb-2">
+              <p className="font-mono text-3xl font-bold text-amber-300">62</p>
+              <p className="text-zinc-500 text-sm">/ 100</p>
+            </div>
+            <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06] mb-3">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-rose-500 via-amber-400 to-indigo-400"
+                style={{ width: "62%" }}
+              />
+            </div>
+            <div className="grid grid-cols-3 gap-1 text-center">
+              <div className="rounded-lg border border-rose-500/30 bg-rose-500/[0.08] py-1.5">
+                <p className="font-mono text-sm font-bold text-rose-400">3</p>
+                <p className="text-[8px] text-zinc-500 mt-0.5">HIGH</p>
+              </div>
+              <div className="rounded-lg border border-amber-500/30 bg-amber-500/[0.08] py-1.5">
+                <p className="font-mono text-sm font-bold text-amber-400">4</p>
+                <p className="text-[8px] text-zinc-500 mt-0.5">MED</p>
+              </div>
+              <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/[0.08] py-1.5">
+                <p className="font-mono text-sm font-bold text-emerald-400">3</p>
+                <p className="text-[8px] text-zinc-500 mt-0.5">LOW</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Full 10-member risk node map ── */}
+      <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500 mb-3">
+        Full Team Risk Map — All 10 Members
+      </p>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mb-6">
+        {members.map((m) => (
+          <RiskNodeCard key={m.name} {...m} />
+        ))}
+      </div>
+
+      {/* ── Top 3 risk callout cards ── */}
+      <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500 mb-3">
+        Top 3 Surfaced Risks
+      </p>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 mb-6">
+        {topRisks.map((r, i) => (
+          <div
+            key={r.title}
+            className="rounded-xl border border-rose-500/30 bg-rose-500/[0.04] p-4"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-rose-500/20 text-[10px] font-bold text-rose-300 shrink-0">
+                {i + 1}
+              </span>
+              <p className="text-xs font-semibold text-rose-200 leading-tight">{r.title}</p>
+            </div>
+            <p className="text-[10px] text-zinc-400 leading-relaxed">{r.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Risk flags list ── */}
+      <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500 mb-3">
+        Surfaced Risk Flags
+      </p>
+      <div className="space-y-2">
+        {riskFlags.map((f) => {
+          const severityCls =
+            f.severity === "HIGH"
+              ? "bg-rose-500/20 text-rose-200 border border-rose-400/40"
+              : "bg-amber-500/20 text-amber-200 border border-amber-400/40";
+          const iconColor =
+            f.severity === "HIGH" ? "text-rose-400" : "text-amber-400";
+          return (
+            <div
+              key={f.label}
+              className="flex items-start gap-3 rounded-lg border border-[#1E1E24] bg-[#0F0F12] px-4 py-3"
+            >
+              <AlertTriangle
+                className={`h-3.5 w-3.5 shrink-0 mt-0.5 ${iconColor}`}
+              />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-white">{f.label}</p>
+                <p className="text-[10px] text-zinc-500 mt-0.5">{f.desc}</p>
+              </div>
+              <span
+                className={`shrink-0 rounded-full px-2 py-0.5 text-[9px] font-bold ${severityCls}`}
+              >
+                {f.severity}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </SectionWrap>
+  );
+}
+
 // ─── Section router ───────────────────────────────────────────────
 
 function renderSection(id: SectionId) {
   switch (id) {
     case "executive-summary":
       return <SectionExecutiveSummary />;
+    case "orglens-risk-view":
+      return <SectionOrgLensRiskView />;
     case "org-health":
       return <SectionOrgHealth />;
     case "team-structure":
@@ -970,6 +1340,7 @@ export default function DemoPortal() {
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const active = activeSection === item.id;
+              const isRisk = item.id === "orglens-risk-view";
               return (
                 <button
                   key={item.id}
@@ -977,12 +1348,20 @@ export default function DemoPortal() {
                   onClick={() => setActiveSection(item.id)}
                   className={`w-full flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-all text-left ${
                     active
-                      ? "bg-indigo-500/15 text-indigo-200 border border-indigo-500/30"
+                      ? isRisk
+                        ? "bg-rose-500/15 text-rose-200 border border-rose-500/30"
+                        : "bg-indigo-500/15 text-indigo-200 border border-indigo-500/30"
                       : "text-zinc-500 hover:bg-[#16161A] hover:text-white border border-transparent"
                   }`}
                 >
                   <Icon
-                    className={`h-3.5 w-3.5 shrink-0 ${active ? "text-indigo-400" : "text-zinc-600"}`}
+                    className={`h-3.5 w-3.5 shrink-0 ${
+                      active
+                        ? isRisk
+                          ? "text-rose-400"
+                          : "text-indigo-400"
+                        : "text-zinc-600"
+                    }`}
                   />
                   <span className="leading-tight">{item.label}</span>
                 </button>
@@ -1005,6 +1384,7 @@ export default function DemoPortal() {
           <div className="flex px-2 py-2 gap-1 min-w-max">
             {NAV_ITEMS.map((item) => {
               const active = activeSection === item.id;
+              const isRisk = item.id === "orglens-risk-view";
               return (
                 <button
                   key={item.id}
@@ -1012,7 +1392,9 @@ export default function DemoPortal() {
                   onClick={() => setActiveSection(item.id)}
                   className={`shrink-0 rounded-lg px-3 py-1.5 text-[10px] font-medium transition-all ${
                     active
-                      ? "bg-indigo-500/20 text-indigo-200 border border-indigo-500/30"
+                      ? isRisk
+                        ? "bg-rose-500/20 text-rose-200 border border-rose-500/30"
+                        : "bg-indigo-500/20 text-indigo-200 border border-indigo-500/30"
                       : "text-zinc-500 hover:text-white border border-transparent"
                   }`}
                 >
