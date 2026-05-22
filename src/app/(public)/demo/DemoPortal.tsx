@@ -24,6 +24,7 @@ const CHECKOUT_URL =
 type SectionId =
   | "executive-summary"
   | "orglens-risk-view"
+  | "interactive-org-map"
   | "org-health"
   | "team-structure"
   | "leadership-strengths"
@@ -36,6 +37,7 @@ type SectionId =
 const NAV_ITEMS: { id: SectionId; label: string; icon: ElementType }[] = [
   { id: "executive-summary", label: "Executive Summary", icon: BarChart2 },
   { id: "orglens-risk-view", label: "OrgLens Risk View", icon: ShieldAlert },
+  { id: "interactive-org-map", label: "Interactive Org Map", icon: Network },
   { id: "org-health", label: "Org Health Score", icon: Activity },
   { id: "team-structure", label: "Team Competency Map", icon: Network },
   { id: "leadership-strengths", label: "Leadership Strengths", icon: TrendingUp },
@@ -1259,6 +1261,698 @@ function SectionOrgLensRiskView() {
   );
 }
 
+// ─── Section: Interactive Org Map ────────────────────────────────
+
+// Data for all 10 AtlasFlow team members
+const ORG_MEMBERS = [
+  {
+    id: "alex-morgan",
+    name: "Alex Morgan",
+    title: "CEO",
+    risk: "HIGH" as const,
+    insightLabel: "Ownership Gap",
+    bullets: [
+      "Accountability for revenue and pipeline is shared across 3 functions with no clear owner.",
+      "Founder still holds final sign-off on deals >$50K, creating a bottleneck at scale.",
+      "Strategic bandwidth compressed by 7 direct reports — above recommended span for growth-stage CEO.",
+    ],
+    fitScore: 71,
+    aiInsight: "High commercial drive but execution oversight gaps surface under lean operating conditions — delegation infrastructure urgently needed.",
+    competencies: [82, 68, 75, 70, 78, 62, 65, 88],
+    strengths: ["Enterprising & Performing", "Leading & Deciding"],
+    devAreas: ["Organising & Executing", "Adapting & Coping"],
+  },
+  {
+    id: "jordan-lee",
+    name: "Jordan Lee",
+    title: "CTO",
+    risk: "LOW" as const,
+    insightLabel: "Key-Person Risk",
+    bullets: [
+      "Key-person dependency risk. 70% of infrastructure decisions funnel through this role.",
+      "No documented succession or deputy — single engineering decision point.",
+      "Technical depth is strong; stakeholder communication remains a development gap.",
+    ],
+    fitScore: 78,
+    aiInsight: "Consistently strong technical fit — thrives in analytical, execution-heavy environments, but presentation and stakeholder communication require deliberate development.",
+    competencies: [74, 72, 62, 91, 85, 80, 70, 68],
+    strengths: ["Analysing & Interpreting", "Creating & Conceptualising"],
+    devAreas: ["Interacting & Presenting"],
+  },
+  {
+    id: "morgan-chen",
+    name: "Morgan Chen",
+    title: "Eng Lead",
+    risk: "HIGH" as const,
+    insightLabel: "Burnout Signal",
+    bullets: [
+      "Scope exceeds tenure. Managing 8 ICs with limited leadership development support.",
+      "Leading & Deciding score (55) is below threshold for the current span of control.",
+      "Burnout signal — adaptability index at 52, well below the team average.",
+    ],
+    fitScore: 61,
+    aiInsight: "Technical precision is high, but the leadership scope has outpaced competency development — without structural support, performance risk increases within 90 days.",
+    competencies: [55, 68, 58, 84, 76, 62, 52, 60],
+    strengths: ["Analysing & Interpreting", "Creating & Conceptualising"],
+    devAreas: ["Leading & Deciding", "Adapting & Coping"],
+  },
+  {
+    id: "taylor-brooks",
+    name: "Taylor Brooks",
+    title: "Head of Product",
+    risk: "MEDIUM" as const,
+    insightLabel: "Authority Diffuse",
+    bullets: [
+      "Product roadmap authority diffuse. Competing priorities from CEO and CTO unresolved.",
+      "Execution risk high — organising score (60) insufficient for the current roadmap scale.",
+      "Creative and presentation strengths underutilised due to structural misalignment.",
+    ],
+    fitScore: 69,
+    aiInsight: "Strong product intuition, but without clear mandate boundaries between CEO and CTO input, execution reliability will remain unpredictable.",
+    competencies: [65, 74, 78, 72, 80, 60, 68, 62],
+    strengths: ["Creating & Conceptualising", "Interacting & Presenting"],
+    devAreas: ["Organising & Executing", "Leading & Deciding"],
+  },
+  {
+    id: "casey-miller",
+    name: "Casey Miller",
+    title: "Head of Ops",
+    risk: "LOW" as const,
+    insightLabel: "Executional Anchor",
+    bullets: [
+      "Strong executional anchor. Low flight risk. Competency fit strong for current scope.",
+      "Organising & Executing score (91) is the highest on the leadership team.",
+      "Supporting & Cooperating at 82 — cross-functional alignment asset.",
+    ],
+    fitScore: 84,
+    aiInsight: "Ops execution is the team's most reliable anchor — Casey's profile peaks in structured, efficiency-first environments.",
+    competencies: [76, 82, 70, 78, 65, 91, 80, 72],
+    strengths: ["Organising & Executing", "Supporting & Cooperating"],
+    devAreas: ["Creating & Conceptualising"],
+  },
+  {
+    id: "sam-parker",
+    name: "Sam Parker",
+    title: "Finance",
+    risk: "MEDIUM" as const,
+    insightLabel: "CFO Gap Emerging",
+    bullets: [
+      "Finance function operating reactively. No forward-looking model in place.",
+      "CFO-level gap emerging as the company approaches Series B scale.",
+      "Strong analytical depth (88) — scope expansion would be justified with additional support.",
+    ],
+    fitScore: 73,
+    aiInsight: "Financial rigour is well-matched to the current mandate, but the absence of a forward-looking financial model is a material gap for growth-stage operations.",
+    competencies: [65, 70, 60, 88, 62, 78, 74, 65],
+    strengths: ["Analysing & Interpreting", "Organising & Executing"],
+    devAreas: ["Interacting & Presenting", "Creating & Conceptualising"],
+  },
+  {
+    id: "dana-reed",
+    name: "Dana Reed",
+    title: "People Ops",
+    risk: "LOW" as const,
+    insightLabel: "Infrastructure Lag",
+    bullets: [
+      "People infrastructure scaling behind headcount. No structured L&D or performance calibration cadence.",
+      "Supporting & Cooperating at 84 — highest empathy score on the team.",
+      "People function needs a structured framework before headcount doubles.",
+    ],
+    fitScore: 72,
+    aiInsight: "Strong culture and empathy anchor — but the people infrastructure is scaling reactively and will require structural investment within the next quarter.",
+    competencies: [68, 84, 72, 66, 65, 74, 78, 60],
+    strengths: ["Supporting & Cooperating", "Adapting & Coping"],
+    devAreas: ["Enterprising & Performing", "Creating & Conceptualising"],
+  },
+  {
+    id: "jamie-carter",
+    name: "Jamie Carter",
+    title: "Growth Lead",
+    risk: "MEDIUM" as const,
+    insightLabel: "Underresourced",
+    bullets: [
+      "Growth function underresourced. Single contributor with no team support.",
+      "High dependency on founder network for pipeline — not scalable post-Series A.",
+      "Interacting & Presenting at 80 — commercial presence strong, execution infra weak.",
+    ],
+    fitScore: 70,
+    aiInsight: "Commercial instincts and presentation strengths are present, but without team build-out, growth function output will remain founder-dependent.",
+    competencies: [68, 65, 80, 62, 74, 60, 70, 78],
+    strengths: ["Interacting & Presenting", "Enterprising & Performing"],
+    devAreas: ["Organising & Executing", "Analysing & Interpreting"],
+  },
+  {
+    id: "riley-johnson",
+    name: "Riley Johnson",
+    title: "CS Lead",
+    risk: "HIGH" as const,
+    insightLabel: "Retention Gap",
+    bullets: [
+      "Revenue retention accountability unclear. CS and Sales overlap on renewals.",
+      "No defined handoff protocol — churn attribution is ambiguous.",
+      "Supporting & Cooperating at 78 — strong with customers, but role clarity is the constraint.",
+    ],
+    fitScore: 66,
+    aiInsight: "Interpersonal depth and customer empathy are genuine assets, but without a clear CS-to-Sales handoff protocol, revenue retention accountability remains diffuse.",
+    competencies: [62, 78, 74, 65, 60, 68, 72, 58],
+    strengths: ["Supporting & Cooperating", "Interacting & Presenting"],
+    devAreas: ["Enterprising & Performing", "Creating & Conceptualising"],
+  },
+  {
+    id: "avery-wilson",
+    name: "Avery Wilson",
+    title: "Sales Mgr",
+    risk: "MEDIUM" as const,
+    insightLabel: "Process Gap",
+    bullets: [
+      "Pipeline accountability diffuse. No formalized sales process in place.",
+      "Quota attainment tracking is manual — no CRM discipline.",
+      "Interacting & Presenting at 82 — strong relationship skills; execution framework is the gap.",
+    ],
+    fitScore: 67,
+    aiInsight: "Commercial instincts are strong but sales pipeline discipline is absent — a formal CRM process and quota framework would materially improve output predictability.",
+    competencies: [70, 62, 82, 58, 60, 64, 66, 80],
+    strengths: ["Interacting & Presenting", "Enterprising & Performing"],
+    devAreas: ["Analysing & Interpreting", "Creating & Conceptualising"],
+  },
+] as const;
+
+type OrgMember = typeof ORG_MEMBERS[number];
+
+const GREAT_8_LABELS = [
+  "Leading & Deciding",
+  "Supporting & Cooperating",
+  "Interacting & Presenting",
+  "Analysing & Interpreting",
+  "Creating & Conceptualising",
+  "Organising & Executing",
+  "Adapting & Coping",
+  "Enterprising & Performing",
+] as const;
+
+function competencyColor(score: number): string {
+  if (score >= 80) return "#22c55e";
+  if (score >= 60) return "#f59e0b";
+  return "#f43f5e";
+}
+
+function fitGradient(score: number): string {
+  if (score >= 80) return "from-emerald-500 to-emerald-400";
+  if (score >= 70) return "from-amber-400 to-emerald-400";
+  if (score >= 60) return "from-amber-500 to-amber-400";
+  return "from-rose-500 to-amber-400";
+}
+
+function riskBorderClass(risk: "HIGH" | "MEDIUM" | "LOW"): string {
+  if (risk === "HIGH") return "border-rose-500/60";
+  if (risk === "MEDIUM") return "border-amber-400/50";
+  return "border-emerald-500/40";
+}
+
+function riskDotClass(risk: "HIGH" | "MEDIUM" | "LOW"): string {
+  if (risk === "HIGH") return "bg-rose-500";
+  if (risk === "MEDIUM") return "bg-amber-400";
+  return "bg-emerald-500";
+}
+
+function riskTextClass(risk: "HIGH" | "MEDIUM" | "LOW"): string {
+  if (risk === "HIGH") return "text-rose-300";
+  if (risk === "MEDIUM") return "text-amber-300";
+  return "text-emerald-300";
+}
+
+// ─── Competency Panel (slide-in from right) ──────────────────────
+
+function CompetencyPanel({
+  member,
+  onClose,
+}: {
+  member: OrgMember;
+  onClose: () => void;
+}) {
+  return (
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      {/* Panel */}
+      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-[440px] flex flex-col bg-[#0f1117] border-l border-white/10 shadow-2xl overflow-y-auto">
+        {/* Header */}
+        <div className="flex items-start justify-between gap-3 p-5 border-b border-white/[0.08]">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="text-base font-bold text-white">{member.name}</h3>
+              <span
+                className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
+                  member.risk === "HIGH"
+                    ? "bg-rose-500/15 border-rose-500/30 text-rose-300"
+                    : member.risk === "MEDIUM"
+                    ? "bg-amber-400/15 border-amber-400/30 text-amber-300"
+                    : "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
+                }`}
+              >
+                {member.risk} RISK
+              </span>
+            </div>
+            <p className="mt-0.5 text-sm text-zinc-400">{member.title}</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="shrink-0 rounded-lg p-1.5 text-zinc-400 hover:bg-white/10 hover:text-white transition-colors"
+          >
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Role Fit Score */}
+        <div className="p-5 border-b border-white/[0.08]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-500 mb-3">
+            Overall Role Fit
+          </p>
+          <div className="flex items-end gap-3 mb-3">
+            <span className="text-5xl font-bold text-white leading-none">{member.fitScore}</span>
+            <span className="text-lg text-zinc-500 mb-1">/100</span>
+            <span
+              className={`ml-auto text-sm font-semibold ${
+                member.fitScore >= 80
+                  ? "text-emerald-300"
+                  : member.fitScore >= 70
+                  ? "text-amber-300"
+                  : "text-rose-300"
+              }`}
+            >
+              {member.fitScore >= 80 ? "Strong Fit" : member.fitScore >= 70 ? "Moderate Fit" : "Fit Gap"}
+            </span>
+          </div>
+          {/* Gradient bar */}
+          <div className="h-2.5 w-full rounded-full bg-white/10 overflow-hidden">
+            <div
+              className={`h-full rounded-full bg-gradient-to-r ${fitGradient(member.fitScore)} transition-all`}
+              style={{ width: `${member.fitScore}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Great 8 Breakdown */}
+        <div className="p-5 border-b border-white/[0.08]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-500 mb-4">
+            Great 8 Competency Breakdown
+          </p>
+          <div className="space-y-3">
+            {GREAT_8_LABELS.map((label, idx) => {
+              const score = member.competencies[idx];
+              const color = competencyColor(score);
+              return (
+                <div key={label}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[11px] text-zinc-400">{label}</span>
+                    <span
+                      className="text-[11px] font-semibold font-mono"
+                      style={{ color }}
+                    >
+                      {score}
+                    </span>
+                  </div>
+                  <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{ width: `${score}%`, backgroundColor: color }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Strength & Dev Tags */}
+        <div className="p-5 border-b border-white/[0.08]">
+          <div className="mb-3">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-500 mb-2">
+              Strengths
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {member.strengths.map((s) => (
+                <span
+                  key={s}
+                  className="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-1 text-[10px] font-medium text-emerald-300"
+                >
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-500 mb-2">
+              Development Areas
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {member.devAreas.map((d) => (
+                <span
+                  key={d}
+                  className="rounded-full bg-amber-400/15 border border-amber-400/30 px-2.5 py-1 text-[10px] font-medium text-amber-300"
+                >
+                  {d}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* AI Insight */}
+        <div className="p-5">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400 mb-2">
+            AI Insight
+          </p>
+          <p className="text-xs leading-relaxed text-zinc-300 italic">
+            &ldquo;{member.aiInsight}&rdquo;
+          </p>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ─── Interactive Org Node ─────────────────────────────────────────
+
+function InteractiveOrgNode({
+  member,
+  onHover,
+  onLeave,
+  onClick,
+  isHovered,
+}: {
+  member: OrgMember;
+  onHover: (id: string) => void;
+  onLeave: () => void;
+  onClick: (id: string) => void;
+  isHovered: boolean;
+}) {
+  return (
+    <div
+      className={`relative w-full rounded-lg border ${riskBorderClass(member.risk)} bg-[#0D0D10] cursor-pointer select-none transition-all duration-150 px-2.5 py-2 flex items-start gap-1.5 ${
+        isHovered ? "bg-[#14141A] shadow-lg" : "hover:bg-[#111116]"
+      }`}
+      onMouseEnter={() => onHover(member.id)}
+      onMouseLeave={onLeave}
+      onClick={() => onClick(member.id)}
+    >
+      <span className={`mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full ${riskDotClass(member.risk)}`} />
+      <div className="min-w-0">
+        <p className="text-[11px] font-semibold text-white truncate">{member.name}</p>
+        <p className="text-[9px] text-zinc-500 truncate">{member.title}</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Hover Tooltip ────────────────────────────────────────────────
+
+function OrgTooltip({ member }: { member: OrgMember }) {
+  return (
+    <div
+      className="absolute z-30 w-64 rounded-xl border bg-[#111318]/95 p-4 shadow-2xl backdrop-blur-md animate-fade-in pointer-events-none"
+      style={{
+        borderColor:
+          member.risk === "HIGH"
+            ? "rgba(244,63,94,0.35)"
+            : member.risk === "MEDIUM"
+            ? "rgba(251,191,36,0.35)"
+            : "rgba(34,197,94,0.35)",
+        left: "calc(100% + 10px)",
+        top: "0",
+      }}
+    >
+      <div className="mb-2">
+        <p className="text-xs font-bold text-white">{member.name}</p>
+        <p className="text-[10px] text-zinc-400">{member.title}</p>
+      </div>
+      <p className={`text-[10px] font-semibold uppercase tracking-wider mb-2 ${riskTextClass(member.risk)}`}>
+        {member.insightLabel}
+      </p>
+      <ul className="space-y-1.5">
+        {member.bullets.map((b) => (
+          <li key={b} className="flex items-start gap-1.5">
+            <span className={`mt-0.5 h-1 w-1 shrink-0 rounded-full ${riskDotClass(member.risk)}`} />
+            <span className="text-[10px] leading-relaxed text-zinc-300">{b}</span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-2.5 text-[9px] text-zinc-600 border-t border-white/[0.06] pt-2">
+        Click to view full competency profile
+      </p>
+    </div>
+  );
+}
+
+// ─── Section: Interactive Org Map ────────────────────────────────
+
+function SectionInteractiveOrgMap() {
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const byId = (id: string) => ORG_MEMBERS.find((m) => m.id === id)!;
+
+  const selectedMember = selectedId ? byId(selectedId) : null;
+
+  const nodeProps = (id: string) => ({
+    member: byId(id),
+    onHover: setHoveredId,
+    onLeave: () => setHoveredId(null),
+    onClick: setSelectedId,
+    isHovered: hoveredId === id,
+  });
+
+  return (
+    <SectionWrap>
+      <SectionHeading
+        label="OrgLens AI · Interactive Org Map"
+        title="Interactive Org Map"
+      />
+
+      {/* Legend */}
+      <div className="mb-5 flex flex-wrap items-center gap-3 text-[10px]">
+        <span className="text-zinc-500 font-medium">Risk level:</span>
+        {(["HIGH", "MEDIUM", "LOW"] as const).map((r) => (
+          <span key={r} className="flex items-center gap-1.5">
+            <span className={`h-2 w-2 rounded-full ${riskDotClass(r)}`} />
+            <span className={riskTextClass(r)}>{r}</span>
+          </span>
+        ))}
+        <span className="ml-auto text-zinc-600 italic">Hover for insights · Click for competency profile</span>
+      </div>
+
+      {/* Org Chart */}
+      <div className="rounded-xl border border-[#1E1E24] bg-[#0F0F12] p-5 mb-6 overflow-x-auto">
+        <div className="min-w-[680px]">
+          {/* CEO row */}
+          <div className="flex justify-center mb-1">
+            <div className="relative flex flex-col items-center" style={{ width: "18%" }}>
+              <InteractiveOrgNode {...nodeProps("alex-morgan")} />
+              {hoveredId === "alex-morgan" && (
+                <OrgTooltip member={byId("alex-morgan")} />
+              )}
+            </div>
+          </div>
+
+          {/* V-line down */}
+          <div className="mx-auto h-5 w-px bg-zinc-700" />
+
+          {/* Horizontal bar + columns */}
+          <div className="relative flex justify-between px-2">
+            <div className="absolute left-[8%] right-[8%] top-0 h-px bg-zinc-700" />
+
+            {/* Jordan Lee (CTO) + Morgan Chen */}
+            <div className="flex flex-col items-center" style={{ width: "16%" }}>
+              <div className="h-5 w-px bg-zinc-700" />
+              <div className="relative w-full">
+                <InteractiveOrgNode {...nodeProps("jordan-lee")} />
+                {hoveredId === "jordan-lee" && (
+                  <OrgTooltip member={byId("jordan-lee")} />
+                )}
+              </div>
+              <div className="h-4 w-px bg-zinc-700" />
+              <div className="relative w-full">
+                <InteractiveOrgNode {...nodeProps("morgan-chen")} />
+                {hoveredId === "morgan-chen" && (
+                  <OrgTooltip member={byId("morgan-chen")} />
+                )}
+              </div>
+            </div>
+
+            {/* Taylor Brooks */}
+            <div className="flex flex-col items-center" style={{ width: "16%" }}>
+              <div className="h-5 w-px bg-zinc-700" />
+              <div className="relative w-full">
+                <InteractiveOrgNode {...nodeProps("taylor-brooks")} />
+                {hoveredId === "taylor-brooks" && (
+                  <OrgTooltip member={byId("taylor-brooks")} />
+                )}
+              </div>
+            </div>
+
+            {/* Casey Miller + Sam Parker + Dana Reed */}
+            <div className="flex flex-col items-center" style={{ width: "16%" }}>
+              <div className="h-5 w-px bg-zinc-700" />
+              <div className="relative w-full">
+                <InteractiveOrgNode {...nodeProps("casey-miller")} />
+                {hoveredId === "casey-miller" && (
+                  <OrgTooltip member={byId("casey-miller")} />
+                )}
+              </div>
+              <div className="h-3 w-px bg-zinc-700" />
+              <div className="flex gap-1 w-full">
+                <div className="relative flex-1">
+                  <div
+                    className={`relative w-full rounded-lg border ${riskBorderClass(byId("sam-parker").risk)} bg-[#0D0D10] cursor-pointer px-1.5 py-1 flex items-start gap-1 transition-all hover:bg-[#111116]`}
+                    onMouseEnter={() => setHoveredId("sam-parker")}
+                    onMouseLeave={() => setHoveredId(null)}
+                    onClick={() => setSelectedId("sam-parker")}
+                  >
+                    <span className={`mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full ${riskDotClass(byId("sam-parker").risk)}`} />
+                    <div className="min-w-0">
+                      <p className="text-[9px] font-semibold text-white truncate">Sam P.</p>
+                      <p className="text-[7px] text-zinc-500 truncate">Finance</p>
+                    </div>
+                    {hoveredId === "sam-parker" && (
+                      <OrgTooltip member={byId("sam-parker")} />
+                    )}
+                  </div>
+                </div>
+                <div className="relative flex-1">
+                  <div
+                    className={`relative w-full rounded-lg border ${riskBorderClass(byId("dana-reed").risk)} bg-[#0D0D10] cursor-pointer px-1.5 py-1 flex items-start gap-1 transition-all hover:bg-[#111116]`}
+                    onMouseEnter={() => setHoveredId("dana-reed")}
+                    onMouseLeave={() => setHoveredId(null)}
+                    onClick={() => setSelectedId("dana-reed")}
+                  >
+                    <span className={`mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full ${riskDotClass(byId("dana-reed").risk)}`} />
+                    <div className="min-w-0">
+                      <p className="text-[9px] font-semibold text-white truncate">Dana R.</p>
+                      <p className="text-[7px] text-zinc-500 truncate">People</p>
+                    </div>
+                    {hoveredId === "dana-reed" && (
+                      <OrgTooltip member={byId("dana-reed")} />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Jamie Carter */}
+            <div className="flex flex-col items-center" style={{ width: "16%" }}>
+              <div className="h-5 w-px bg-zinc-700" />
+              <div className="relative w-full">
+                <InteractiveOrgNode {...nodeProps("jamie-carter")} />
+                {hoveredId === "jamie-carter" && (
+                  <OrgTooltip member={byId("jamie-carter")} />
+                )}
+              </div>
+            </div>
+
+            {/* Riley Johnson */}
+            <div className="flex flex-col items-center" style={{ width: "16%" }}>
+              <div className="h-5 w-px bg-zinc-700" />
+              <div className="relative w-full">
+                <InteractiveOrgNode {...nodeProps("riley-johnson")} />
+                {hoveredId === "riley-johnson" && (
+                  <OrgTooltip member={byId("riley-johnson")} />
+                )}
+              </div>
+            </div>
+
+            {/* Avery Wilson */}
+            <div className="flex flex-col items-center" style={{ width: "16%" }}>
+              <div className="h-5 w-px bg-zinc-700" />
+              <div className="relative w-full">
+                <InteractiveOrgNode {...nodeProps("avery-wilson")} />
+                {hoveredId === "avery-wilson" && (
+                  <OrgTooltip member={byId("avery-wilson")} />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Summary stats */}
+      <div className="grid grid-cols-3 gap-3 mb-6">
+        {[
+          { label: "HIGH Risk", count: ORG_MEMBERS.filter((m) => m.risk === "HIGH").length, cls: "text-rose-300", bg: "bg-rose-500/[0.06] border-rose-500/20" },
+          { label: "MEDIUM Risk", count: ORG_MEMBERS.filter((m) => m.risk === "MEDIUM").length, cls: "text-amber-300", bg: "bg-amber-400/[0.06] border-amber-400/20" },
+          { label: "LOW Risk", count: ORG_MEMBERS.filter((m) => m.risk === "LOW").length, cls: "text-emerald-300", bg: "bg-emerald-500/[0.06] border-emerald-500/20" },
+        ].map((stat) => (
+          <div key={stat.label} className={`rounded-xl border ${stat.bg} p-4 text-center`}>
+            <p className={`text-2xl font-bold font-mono ${stat.cls}`}>{stat.count}</p>
+            <p className="text-[10px] text-zinc-500 mt-0.5">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Member list with fit scores */}
+      <div className="rounded-xl border border-[#1E1E24] bg-[#0F0F12] overflow-hidden">
+        <div className="px-5 py-3 border-b border-white/[0.06]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
+            Team Competency Summary — Click any row to view full profile
+          </p>
+        </div>
+        <div className="divide-y divide-white/[0.04]">
+          {ORG_MEMBERS.map((m) => (
+            <button
+              key={m.id}
+              type="button"
+              onClick={() => setSelectedId(m.id)}
+              className="w-full flex items-center gap-3 px-5 py-3 text-left hover:bg-white/[0.03] transition-colors group"
+            >
+              <span className={`h-2 w-2 shrink-0 rounded-full ${riskDotClass(m.risk)}`} />
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-medium text-white">{m.name}</p>
+                <p className="text-[10px] text-zinc-500">{m.title}</p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <div className="w-20 h-1.5 rounded-full bg-white/10 overflow-hidden hidden sm:block">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${m.fitScore}%`,
+                      backgroundColor: competencyColor(m.fitScore),
+                    }}
+                  />
+                </div>
+                <span
+                  className="text-xs font-semibold font-mono w-10 text-right"
+                  style={{ color: competencyColor(m.fitScore) }}
+                >
+                  {m.fitScore}
+                </span>
+                <span className={`text-[9px] font-semibold uppercase tracking-wider ${riskTextClass(m.risk)} hidden sm:block`}>
+                  {m.risk}
+                </span>
+                <svg className="h-3.5 w-3.5 text-zinc-600 group-hover:text-zinc-400 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Competency panel */}
+      {selectedMember && (
+        <CompetencyPanel
+          member={selectedMember}
+          onClose={() => setSelectedId(null)}
+        />
+      )}
+    </SectionWrap>
+  );
+}
+
 // ─── Section router ───────────────────────────────────────────────
 
 function renderSection(id: SectionId) {
@@ -1267,6 +1961,8 @@ function renderSection(id: SectionId) {
       return <SectionExecutiveSummary />;
     case "orglens-risk-view":
       return <SectionOrgLensRiskView />;
+    case "interactive-org-map":
+      return <SectionInteractiveOrgMap />;
     case "org-health":
       return <SectionOrgHealth />;
     case "team-structure":
