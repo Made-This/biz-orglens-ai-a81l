@@ -125,6 +125,7 @@ export default function HeroOrgChart({
   founderSnapshotUrl: string;
 }) {
   const [mounted, setMounted] = useState(false);
+  const [orgLensHovered, setOrgLensHovered] = useState(false);
 
   useEffect(() => {
     const t = window.setTimeout(() => setMounted(true), 60);
@@ -198,18 +199,37 @@ export default function HeroOrgChart({
 
         {/* Two mini charts side by side */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <MiniOrgChart
-            label="Traditional View"
-            sublabel="Static org chart · no signals"
-            showRisks={false}
-            mounted={mounted}
-          />
-          <MiniOrgChart
-            label="OrgLens Risk View"
-            sublabel="Same structure · risks surfaced"
-            showRisks
-            mounted={mounted}
-          />
+          <div
+            style={{
+              transition: "transform 0.3s ease, opacity 0.3s ease",
+              transform: orgLensHovered ? "scale(0.72)" : "scale(1)",
+              opacity: orgLensHovered ? 0.6 : 1,
+              transformOrigin: "center center",
+            }}
+          >
+            <MiniOrgChart
+              label="Traditional View"
+              sublabel="Static org chart · no signals"
+              showRisks={false}
+              mounted={mounted}
+            />
+          </div>
+          <div
+            onMouseEnter={() => setOrgLensHovered(true)}
+            onMouseLeave={() => setOrgLensHovered(false)}
+            style={{
+              transition: "transform 0.3s ease",
+              transform: orgLensHovered ? "scale(1.03)" : "scale(1)",
+              transformOrigin: "center center",
+            }}
+          >
+            <MiniOrgChart
+              label="OrgLens Risk View"
+              sublabel="Same structure · risks surfaced"
+              showRisks
+              mounted={mounted}
+            />
+          </div>
         </div>
 
         {/* Risk summary + recommendation row */}

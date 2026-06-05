@@ -27,9 +27,9 @@ export default function HomePage() {
     <>
       <Hero />
       <BenchmarkStrip />
+      <OrgChartSection />
       <PainSection />
       <CostOfWaiting />
-      <OrgChartSection />
       <ReportOutputCards />
       <PurchaseDriver />
       <ResponsibleAINote />
