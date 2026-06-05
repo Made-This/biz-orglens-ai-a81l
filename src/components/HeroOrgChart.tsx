@@ -36,6 +36,8 @@ type RiskBadge = {
   position?: "above" | "below";
   /** show red pulsing dot next to badge */
   withDot?: boolean;
+  /** allow label text to wrap (removes whitespace-nowrap, adds narrow max-width) */
+  wrapLabel?: boolean;
 };
 
 /* ─────────────────────────────────────────── */
@@ -78,6 +80,7 @@ const RISK_BADGES: RiskBadge[] = [
     tooltip: "Key operational areas lack dedicated leadership coverage.",
     tone: "amber",
     position: "below",
+    wrapLabel: true,
   },
   {
     nodeId: "product",
@@ -496,16 +499,20 @@ function RiskBadgePin({
           />
         )}
         <span
-          className={`orglens-badge inline-flex cursor-default items-center whitespace-nowrap rounded-full px-1.5 py-[2px] text-[8px] font-semibold tracking-wide sm:text-[9px] ${toneClasses}`}
+          className={`orglens-badge inline-flex cursor-default items-center rounded-full px-1.5 py-[2px] text-[8px] font-semibold tracking-wide sm:text-[9px] ${
+            badge.wrapLabel
+              ? "w-[52px] text-center leading-tight"
+              : "whitespace-nowrap"
+          } ${toneClasses}`}
         >
           {badge.label}
         </span>
         {/* Tooltip */}
         <div
           role="tooltip"
-          className={`pointer-events-none absolute left-1/2 z-30 w-48 -translate-x-1/2 rounded-md border border-white/10 bg-slate-950/95 px-2.5 py-1.5 text-[10px] leading-snug text-zinc-200 opacity-0 shadow-xl backdrop-blur transition-opacity duration-150 group-hover:opacity-100 ${
+          className={`pointer-events-none absolute z-30 w-36 rounded-md border border-white/10 bg-slate-950/95 px-2.5 py-1.5 text-[10px] leading-snug text-zinc-200 opacity-0 shadow-xl backdrop-blur transition-opacity duration-150 group-hover:opacity-100 ${
             isAbove ? "bottom-full mb-2" : "top-full mt-2"
-          }`}
+          } ${badge.wrapLabel ? "left-0" : "left-1/2 -translate-x-1/2"}`}
         >
           {badge.tooltip}
         </div>
