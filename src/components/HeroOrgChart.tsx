@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { AlertTriangle, ArrowRight, ChevronRight } from "lucide-react";
 
@@ -36,8 +37,6 @@ type RiskBadge = {
   position?: "above" | "below";
   /** show red pulsing dot next to badge */
   withDot?: boolean;
-  /** allow label text to wrap (removes whitespace-nowrap, adds narrow max-width) */
-  wrapLabel?: boolean;
 };
 
 /* ─────────────────────────────────────────── */
@@ -80,7 +79,6 @@ const RISK_BADGES: RiskBadge[] = [
     tooltip: "Key operational areas lack dedicated leadership coverage.",
     tone: "amber",
     position: "below",
-    wrapLabel: true,
   },
   {
     nodeId: "product",
@@ -319,7 +317,7 @@ function MiniOrgChart({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-xl border border-white/10 p-2 sm:p-3 ${
+      className={`relative rounded-xl border border-white/10 p-2 sm:p-3 ${
         showRisks
           ? "bg-gradient-to-b from-slate-900/70 to-slate-950/80"
           : "bg-slate-950/40"
@@ -482,16 +480,36 @@ function RiskBadgePin({
   // Offset above vs below the node
   const offsetY = isAbove ? -16 : 16;
 
+  const badgeRef = useRef<HTMLSpanElement>(null);
+  const [tooltipCoords, setTooltipCoords] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
+
+  const handleMouseEnter = () => {
+    if (badgeRef.current) {
+      const rect = badgeRef.current.getBoundingClientRect();
+      setTooltipCoords({
+        x: rect.left + rect.width / 2,
+        y: isAbove ? rect.top - 8 : rect.bottom + 8,
+      });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setTooltipCoords(null);
+  };
+
   return (
     <div
-      className="absolute z-10 -translate-x-1/2"
+      className="absolute z-10"
       style={{
         left: `${x}%`,
         top: `calc(${y}% + ${offsetY}px)`,
         transform: "translate(-50%, -50%)",
       }}
     >
-      <div className="group relative inline-flex items-center gap-1">
+      <div className="relative inline-flex items-center gap-1">
         {badge.withDot && (
           <span
             aria-hidden
@@ -499,23 +517,34 @@ function RiskBadgePin({
           />
         )}
         <span
-          className={`orglens-badge inline-flex cursor-default items-center rounded-full px-1.5 py-[2px] text-[8px] font-semibold tracking-wide sm:text-[9px] ${
-            badge.wrapLabel
-              ? "w-[52px] text-center leading-tight"
-              : "whitespace-nowrap"
-          } ${toneClasses}`}
+          ref={badgeRef}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          className={`orglens-badge inline-flex cursor-default items-center rounded-full px-1.5 py-[2px] text-[8px] font-semibold tracking-wide whitespace-nowrap sm:text-[9px] ${toneClasses}`}
         >
           {badge.label}
         </span>
-        {/* Tooltip */}
-        <div
-          role="tooltip"
-          className={`pointer-events-none absolute z-30 w-36 rounded-md border border-white/10 bg-slate-950/95 px-2.5 py-1.5 text-[10px] leading-snug text-zinc-200 opacity-0 shadow-xl backdrop-blur transition-opacity duration-150 group-hover:opacity-100 ${
-            isAbove ? "bottom-full mb-2" : "top-full mt-2"
-          } ${badge.wrapLabel ? "left-0" : "left-1/2 -translate-x-1/2"}`}
-        >
-          {badge.tooltip}
-        </div>
+
+        {/* Tooltip rendered via portal at document.body to escape overflow-hidden */}
+        {tooltipCoords &&
+          createPortal(
+            <div
+              role="tooltip"
+              style={{
+                position: "fixed",
+                left: tooltipCoords.x,
+                top: tooltipCoords.y,
+                transform: isAbove
+                  ? "translate(-50%, -100%)"
+                  : "translate(-50%, 0)",
+                zIndex: 9999,
+              }}
+              className="w-40 rounded-md border border-white/10 bg-slate-950/95 px-2.5 py-1.5 text-[10px] leading-snug text-zinc-200 shadow-xl backdrop-blur pointer-events-none"
+            >
+              {badge.tooltip}
+            </div>,
+            document.body
+          )}
       </div>
     </div>
   );
