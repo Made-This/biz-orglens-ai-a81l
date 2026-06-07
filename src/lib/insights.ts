@@ -308,6 +308,98 @@ export const blogPosts: BlogPost[] = [
       "We believe this is the right default for a category that touches people's livelihoods. Show the work first. Earn the purchase second. The demo is the front door on purpose.",
     ].join("\n\n"),
   },
+  {
+    slug: "ai-readiness-org-design-2025",
+    title: "Your Org Chart Was Designed for 2019. AI Readiness Demands a Redesign.",
+    category: "AI in HR Tech",
+    author: "OrgLens AI",
+    publishDate: "2026-05-12",
+    tags: ["AI Readiness", "Org Design", "AI Strategy", "Structural Change", "2026"],
+    status: "published",
+    seoTitle: "Your Org Chart Was Designed for 2019. AI Readiness Demands a Redesign.",
+    seoDescription:
+      "Most companies have layered AI tools on top of org structures built for a pre-AI world — creating capability gaps that no tool purchase fixes.",
+    summary:
+      "Most companies have layered AI tools on top of org structures built for a pre-AI world — creating capability gaps that no tool purchase fixes.",
+    content: [
+      "The most common AI adoption mistake isn't picking the wrong tool. It's deploying the right tool into the wrong structure. Across hundreds of early-stage companies, the same pattern repeats: a founder buys a category-leading AI product, the team spends three weeks onboarding it, and six months later the output is inconsistent and the ROI is unclear. The technology is fine. The org around it wasn't designed to use it.",
+      "The mismatch runs deeper than workflow. Most org structures were built for a world where data lived in one team, decisions lived in another, and the work between them moved through documented handoffs at predictable intervals. AI tools assume something different: that data, inference, and decision authority are close together — close enough to create a real-time loop. When data is siloed in ops, intelligence lives in a separate analytics function, and the people making decisions don't control either, you haven't adopted AI. You've installed it.",
+      "Three structural patterns consistently block adoption. The first is siloed decision rights: departments own their data but don't have authority over the decisions that data should inform. A sales team generating rich pipeline signals can't act on them because pricing authority sits in finance, which sits two layers removed. The AI tool surfaces the insight; the org structure prevents the response.",
+      "The second is the missing 'AI translator' role. Most orgs have technical people who understand the models and operational people who understand the workflows, but almost no one who can navigate both fluently. This gap means AI outputs get generated without being interpreted, recommendations get made without being contextualized, and the system eventually gets abandoned as 'not quite right for our use case.' What it actually needed was a person who could bridge both domains.",
+      "The third is no feedback loop between ops and engineering. AI systems improve when they receive structured feedback about what worked and what didn't. In most orgs, the people generating feedback (front-line ops, sales, customer success) have no channel to the people who could update the models. The feedback loop is broken at the structural level, not the technical one.",
+      "An AI-ready org looks different. It's built around lightweight, fast-decision units with clear ownership of both the intelligence function and the decisions that intelligence is meant to inform. The unit that runs a sales motion also owns the signals feeding it. The team that manages customer success also interprets the churn risk output. Intelligence and authority are co-located.",
+      "The role-fit implication is worth naming directly. The people who thrived in pre-AI org structures were often experts in navigating complexity through relationships and escalation — knowing who to call, how to move a decision through the right rooms. That skill is still valuable. But AI-ready orgs also need people who can close the loop between data output and decision input without routing through three departments first. This isn't a headcount cut. It's a capability audit. The question is not who should leave — it's whether the current team, in the current seats, has what the next structure requires.",
+      "The business case for getting the structure right before buying more tools is clear. According to the Gartner 2024 AI Workforce Report, organizations that restructure before deploying AI investments see 3× the ROI compared to those that retrofit structure after implementation. The tool isn't the investment. The structure that can use the tool is the investment.",
+    ].join("\n\n"),
+  },
+  {
+    slug: "competency-gaps-series-a-to-b",
+    title: "The Hidden Competency Gap Between Series A and Series B",
+    category: "Org Design for Growing Teams",
+    author: "OrgLens AI",
+    publishDate: "2026-05-26",
+    tags: ["Series A", "Series B", "Competency Gaps", "Great 8", "Scaling", "Org Design"],
+    status: "published",
+    seoTitle: "The Hidden Competency Gap Between Series A and Series B",
+    seoDescription:
+      "The team that gets you to Series A is rarely the team that can execute a Series B scale-up — and most founders find out too late.",
+    summary:
+      "The team that gets you to Series A is rarely the team that can execute a Series B scale-up — and most founders find out too late.",
+    content: [
+      "Series A is a proof-of-concept bet. Series B is an execution bet. That distinction sounds simple, but it has a precise implication most founders don't fully confront until they're mid-scale and things are slowing down: the competency profile that got you through Series A is not the same profile you need to execute a Series B scale-up. The gap is real, it's measurable, and it catches almost everyone.",
+      "What changes between A and B isn't the ambition — it's the operational environment. At Series A, speed and adaptability are the dominant currencies. A strong founding team can outrun structural weaknesses through effort, improvisation, and the kind of full-team context sharing that only works when you're small. At Series B, the company has more people than can fit in one room, more processes than one person can hold in their head, and more moving parts than the founder can personally coordinate. The team that succeeded in the first environment was built for improvisation. The environment it now operates in demands coordination.",
+      "Three Great 8 competencies come under the most pressure during this transition. Leading & Deciding — the capacity to direct others, set clear priorities, and make consequential calls without consensus — becomes critical as functional leads need to operate independently rather than escalating to the founder. Analysing & Interpreting — the ability to draw conclusions from complex, sometimes contradictory data — becomes non-negotiable as data volume grows and gut instinct reaches its coverage limits. Creating & Conceptualising — the skill to develop novel approaches and design systems that don't yet exist — gets exercised constantly as a Series B company is, in almost every department, building infrastructure for the first time.",
+      "The founder trap operates quietly. When you've built a team together through the hardest years, loyalty isn't a flaw — it's a reasonable response to shared sacrifice. But loyalty creates a systematic blind spot in competency assessment. Founders routinely overestimate the readiness of people they trust and underestimate the size of the competency gap because the shortfall has been absorbed invisibly. The founder has been compensating — taking calls, sitting in on decisions, catching things that fell between seats. The team looks capable because the founder is papering over the gaps.",
+      "The case pattern looks like this: a 42-person SaaS company with strong individual performers. Product ships on time. Sales closes. Customer success keeps NPS positive. Every direct report is talented and loyal. But execution on cross-functional initiatives consistently slips. A new product line takes twice as long as planned because three departments each wait on the others. A key enterprise deal dies in the handoff from sales to implementation. The org-level execution capacity is below what the individual performance scores would predict. The problem isn't people quality — it's people placement. Strong individuals in roles that don't align to the organization's current competency demands produce weak collective output.",
+      "The practical framework is straightforward: before your next fundraise, assess your top 10 by Great 8 — not to build a firing list, but to build an execution risk map. Which of your leadership roles require competencies that the current occupants don't have at the required level? Where is the company's Series B execution plan most likely to underperform? Which gaps can be developed in the next 12 months, and which represent structural mis-hires that need to be addressed now, not after the close?",
+      "This assessment isn't a performance review — it's a structural readiness audit. The goal is to see your execution risk clearly before investors see it for you. If you're carrying competency gaps into a Series B fundraise and the diligence process surfaces them, you're negotiating from a weaker position than if you'd already identified and addressed them. Run the Great 8 assessment across your leadership team now. OrgLens Full Analysis does it in five minutes — and gives you the map you need before the conversation starts. See what's included at the $49 tier.",
+    ].join("\n\n"),
+  },
+  {
+    slug: "restructuring-without-layoffs",
+    title: "How to Restructure Without Laying Anyone Off",
+    category: "Founder and SME Leadership",
+    author: "OrgLens AI",
+    publishDate: "2026-06-02",
+    tags: ["Restructuring", "Role Fit", "Org Design", "Leadership", "Founders", "Team"],
+    status: "published",
+    seoTitle: "How to Restructure Without Laying Anyone Off",
+    seoDescription:
+      "Restructuring isn't a headcount conversation — it's a role-fit conversation. Here's how to redesign your org without losing the people you built it with.",
+    summary:
+      "Restructuring isn't a headcount conversation — it's a role-fit conversation. Here's how to redesign your org without losing the people you built it with.",
+    content: [
+      "The word 'restructuring' has a specific meaning in most founders' minds: people leaving. That framing is almost always wrong, and it leads to the most expensive kind of restructuring — one that loses people who would have thrived in the redesigned org if anyone had taken the time to think clearly about where they actually fit.",
+      "Most restructuring failures are role-function mismatches, not people failures. The person who struggled in a role they were over-promoted into often succeeds at a level below with a narrower scope and clearer ownership. The strong individual contributor who underperformed as a manager frequently becomes a high performer again when put back into an IC role that uses the competencies they've actually developed. The problem wasn't the person — it was the assignment. Restructuring without that diagnosis produces turnover. Restructuring with it produces a stronger team from the same people.",
+      "There are three restructuring levers worth separating clearly before making any changes. Reporting lines determine who reviews, develops, and is responsible for whom — changing them affects coordination, communication, and culture more than output directly. Decision rights determine who can make which calls without escalation — this is the lever most underused in early-stage restructuring, and the one that most directly affects execution speed. Role scope determines what a person is actually responsible for achieving — narrowing or broadening scope is often the most powerful lever for improving role-fit without changing who holds the seat.",
+      "Competency data makes these decisions visible rather than instinctive. When you know which competencies a role requires and which competencies the current occupant has actually developed, role-fit scoring becomes a structured exercise instead of a political one. The question shifts from 'should we move this person?' to 'what roles in the redesigned structure best match the competency profile this person has demonstrated?' Those are answerable questions. The first one usually isn't.",
+      "The most common restructuring mistake is promoting high performers into leadership roles that require a completely different competency profile. Someone who excels at Doing & Organising — executing with precision, following process, delivering consistently — is not automatically well-suited for a role that requires Creating & Conceptualising or Leading & Deciding at scale. These are different cognitive and behavioral profiles. Promoting on the basis of past performance without assessing fit for the next role's demands is how you lose your best individual contributors while simultaneously creating weak leadership.",
+      "The 'right seat' method runs in three steps before anything is announced. First, org map the current team against the redesigned structure: not who reports where, but who owns which decisions and what the actual function demands at each seat. Second, score role-fit: for each current team member, compare their Great 8 competency profile against the demands of the roles in the new structure — not just their current role, but across all roles they might plausibly fill. Third, identify the moves: which people are better suited to a different seat in the new structure than the one they currently hold? Make those moves first — the ones that unlock potential — before addressing any genuine gaps.",
+      "Transparency is the part most founders avoid and most teams need. You don't owe your team a full technical briefing on every decision, but you do owe them clarity on what you're optimizing for and why. Telling your team 'we're redesigning around clearer decision rights and better role-fit because we're moving into a more complex operating environment' is a coherent, respectful message. It treats them as adults. It also makes it much easier for good people to stay — because they understand the logic and can see where they fit in it.",
+    ].join("\n\n"),
+  },
+  {
+    slug: "founder-bottleneck-ai-age",
+    title: "The Founder Bottleneck Is Worse in the AI Age",
+    category: "Founder and SME Leadership",
+    author: "OrgLens AI",
+    publishDate: "2026-06-07",
+    tags: ["Founder Bottleneck", "AI", "Leadership", "Org Design", "Decision Rights", "Great 8"],
+    status: "published",
+    seoTitle: "The Founder Bottleneck Is Worse in the AI Age",
+    seoDescription:
+      "AI makes individual founders more capable — which makes it even easier to become the single point of failure in your own company.",
+    summary:
+      "AI makes individual founders more capable — which makes it even easier to become the single point of failure in your own company.",
+    content: [
+      "The most counterintuitive thing about AI augmentation for founders is that it makes the classic bottleneck problem worse, not better. When a founder becomes 10× more productive — faster research, faster drafts, faster analysis, faster decision inputs — the natural response is to do more. The founder's output expands to fill the capacity that AI created. The org around them doesn't scale at the same rate. The gap between what the founder can do and what the team can do without the founder widens.",
+      "The signs that you're the bottleneck are consistent across company stage. Every major decision routes through you, even decisions that should be well inside a senior leader's scope. Your team can't operate in your absence for more than a few days without something stalling. Your direct reports have become very good at reading what you want and optimizing for your approval — rather than optimizing for customer outcomes or strategic goals. These aren't discipline problems. They're structural signals. The org has learned to route through you because the structure rewards it.",
+      "AI makes this worse through a specific mechanism: faster iteration cycles. When a founder can produce a strategy memo, a product spec, or a market analysis in an hour that previously took a week, the team's feedback loop compresses. There's less time between decisions. There's less idle space in which individual contributors and managers develop their own judgment by working through a problem without a ready-made answer. The team gets faster at executing what the founder produces — and slower at generating the kind of autonomous reasoning that makes an organization genuinely scalable.",
+      "The fix isn't to use less AI. It's to redesign the org structure to force decision rights downward, regardless of how fast the founder can produce inputs. This means defining, explicitly and in writing, which decisions each leadership role owns — and committing to not making those calls, even when doing so would be faster. It means investing in the competency development of the next layer of leadership, not just in tools that make the founder more capable. Speed at the top is not a substitute for capacity below it.",
+      "The Great 8 angle is worth measuring directly. Founders who score high on Leading & Deciding — and most successful founders do — often have an unintended side effect in their organizations: they unintentionally suppress the same competency in their direct reports. When a high-agency leader is always present and always fast, the reports around them have fewer opportunities to exercise the decision muscle independently. Over time, the team's Leading & Deciding scores stay low not because of individual ceiling but because of structural opportunity. You can't develop a competency you're never called on to use.",
+      "OrgLens Full Analysis surfaces exactly this pattern across your team. It maps the Great 8 competency profile of each team member against the decision-making demands of their role — and flags where founder-as-decision-layer is creating structural suppression of leadership capacity in the next tier. If you're augmenting yourself with AI while the team around you stays flat, this is the report that shows you where the gap is and what to do about it. The $49 analysis takes five minutes to generate and gives you the map you need to build a team that scales without you in every decision.",
+    ].join("\n\n"),
+  },
 ];
 
 // Legacy alias — existing imports may reference INSIGHT_POSTS.
