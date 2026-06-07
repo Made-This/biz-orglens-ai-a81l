@@ -46,7 +46,7 @@ type RiskBadge = {
 
 const NODES: OrgNode[] = [
   { id: "ceo", role: "Founder / CEO", x: 50, y: 10 },
-  { id: "ops", role: "Operations Lead", x: 20, y: 46 },
+  { id: "ops", role: "Operations Lead", x: 10, y: 46 },
   { id: "product", role: "Product Lead", x: 37, y: 46 },
   { id: "eng", role: "Engineering Lead", x: 63, y: 46 },
   { id: "sales", role: "Growth / Sales Lead", x: 87, y: 46 },
