@@ -145,6 +145,36 @@ function VLine({ h = 5 }: { h?: number }) {
   return <div className="w-px bg-zinc-700 mx-auto" style={{ height: `${h * 4}px` }} />;
 }
 
+// ─── Vacancy Node ─────────────────────────────────────────────────
+
+function VacancyNode({ title }: { title: string }) {
+  const [showTooltip, setShowTooltip] = useState(false);
+  return (
+    <div className="relative">
+      <div
+        className="rounded-lg border-2 border-dashed border-indigo-400/60 bg-indigo-950/30 px-3 py-2.5 flex items-start gap-2 cursor-default select-none"
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+      >
+        <div className="mt-0.5 h-4 w-4 shrink-0 rounded-full border-2 border-dashed border-indigo-400/50 flex items-center justify-center">
+          <span className="text-[10px] text-indigo-400/60 leading-none">+</span>
+        </div>
+        <div className="min-w-0">
+          <p className="text-[11px] font-medium text-indigo-300/70 truncate">{title}</p>
+          <p className="text-[9px] text-indigo-400/50">Open Role · Hiring</p>
+        </div>
+      </div>
+      {showTooltip && (
+        <div className="absolute z-30 bottom-full mb-2 left-1/2 -translate-x-1/2 w-60 rounded-lg border border-indigo-400/30 bg-[#111318]/95 p-3 shadow-xl backdrop-blur-md pointer-events-none">
+          <p className="text-[10px] text-zinc-300 leading-relaxed">
+            Suggested open role based on AI capability gaps identified in this org
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Org Tree ────────────────────────────────────────────────────
 
 function OrgTree({ showRisks }: { showRisks: boolean }) {
@@ -428,7 +458,7 @@ function SectionTeamStructure() {
       </div>
 
       {/* Legend */}
-      <Card className="border-zinc-700/50">
+      <Card className="border-zinc-700/50 mb-8">
         <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500 mb-3">
           Risk Legend
         </p>
@@ -447,6 +477,93 @@ function SectionTeamStructure() {
           </div>
         </div>
       </Card>
+
+      {/* ── Suggested AI-Ready Org Structure ── */}
+      <div className="mb-3 flex items-center gap-2">
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-indigo-400">
+          Suggested Structure · AI-Ready AtlasFlow
+        </p>
+        <span className="rounded-full border border-indigo-400/30 bg-indigo-500/10 px-2 py-0.5 text-[9px] font-medium text-indigo-300">
+          +3 Open Roles
+        </span>
+      </div>
+      <Card className="border-indigo-500/25 bg-gradient-to-b from-indigo-500/[0.04] to-transparent mb-4">
+        <p className="text-[10px] text-zinc-500 mb-5">
+          Current team + AI-capability roles OrgLens identifies as high-value gaps for this org
+        </p>
+        <div className="overflow-x-auto pb-2">
+          <div className="min-w-[680px] text-xs">
+            {/* CEO row */}
+            <div className="flex justify-center mb-1">
+              <div className="flex flex-col items-center gap-1 w-44">
+                <OrgNode name="Alex Morgan" title="Founder & CEO" large />
+              </div>
+            </div>
+            <VLine h={5} />
+            {/* L2: 6 columns — 3 existing leads + 3 vacancy nodes */}
+            <div className="relative">
+              <div className="absolute top-0 left-[4%] right-[4%] h-px bg-zinc-700" />
+              <div className="flex justify-between">
+                {/* Eng */}
+                <div className="flex flex-col items-center gap-0.5" style={{ width: "15%" }}>
+                  <VLine h={5} />
+                  <OrgNode name="Jordan Lee" title="CTO" />
+                  <VLine h={3} />
+                  <OrgNode name="Morgan Chen" title="Eng. Lead" />
+                </div>
+                {/* Product */}
+                <div className="flex flex-col items-center gap-0.5" style={{ width: "15%" }}>
+                  <VLine h={5} />
+                  <OrgNode name="Taylor Brooks" title="Head of Product" />
+                </div>
+                {/* Ops */}
+                <div className="flex flex-col items-center gap-0.5" style={{ width: "15%" }}>
+                  <VLine h={5} />
+                  <OrgNode name="Casey Miller" title="Head of Operations" />
+                  <VLine h={3} />
+                  <div className="flex gap-1 w-full">
+                    <OrgNode name="Sam Parker" title="Finance" tiny />
+                    <OrgNode name="Dana Reed" title="People Ops" tiny />
+                  </div>
+                </div>
+                {/* Vacancy: AI Enablement */}
+                <div className="flex flex-col items-center gap-0.5" style={{ width: "17%" }}>
+                  <VLine h={5} />
+                  <VacancyNode title="AI Enablement Lead" />
+                </div>
+                {/* Vacancy: Data Intelligence */}
+                <div className="flex flex-col items-center gap-0.5" style={{ width: "17%" }}>
+                  <VLine h={5} />
+                  <VacancyNode title="Data Intelligence Lead" />
+                </div>
+                {/* Vacancy: AI Ops */}
+                <div className="flex flex-col items-center gap-0.5" style={{ width: "17%" }}>
+                  <VLine h={5} />
+                  <VacancyNode title="AI Ops Manager" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Vacancy legend */}
+        <div className="mt-5 flex items-center gap-2 text-[10px] text-zinc-500">
+          <div className="h-3 w-5 rounded-sm border-2 border-dashed border-indigo-400/60 bg-indigo-950/30 shrink-0" />
+          <span>Dashed nodes = suggested open roles based on AI capability gaps in this org. Hover to learn more.</span>
+        </div>
+      </Card>
+
+      {/* ── Gartner Insight Callout ── */}
+      <div className="rounded-xl border-l-4 border-indigo-500/70 border border-indigo-500/20 bg-indigo-500/[0.05] px-5 py-4">
+        <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-indigo-400/70 mb-1.5">
+          Research · Gartner 2024 AI Workforce Report
+        </p>
+        <p className="text-sm leading-relaxed text-zinc-300">
+          &ldquo;Organizations that mature their AI capabilities create{" "}
+          <span className="font-semibold text-indigo-300">2.4× more net-new roles</span> than they
+          eliminate — with the highest growth in intelligence, enablement, and operations functions.&rdquo;
+        </p>
+      </div>
     </SectionWrap>
   );
 }
