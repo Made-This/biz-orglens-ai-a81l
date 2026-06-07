@@ -502,14 +502,14 @@ function RiskBadgePin({
 
   return (
     <div
-      className="absolute z-10"
+      className="absolute z-10 w-max"
       style={{
         left: `${x}%`,
         top: `calc(${y}% + ${offsetY}px)`,
         transform: "translate(-50%, -50%)",
       }}
     >
-      <div className="relative inline-flex items-center gap-1">
+      <div className="relative inline-flex items-center gap-1 whitespace-nowrap">
         {badge.withDot && (
           <span
             aria-hidden
@@ -520,7 +520,7 @@ function RiskBadgePin({
           ref={badgeRef}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          className={`orglens-badge inline-flex cursor-default items-center rounded-full px-1.5 py-[2px] text-[8px] font-semibold tracking-wide whitespace-nowrap sm:text-[9px] ${toneClasses}`}
+          className={`orglens-badge inline-flex cursor-default items-center rounded-full px-1.5 py-1 text-[8px] font-semibold tracking-wide whitespace-nowrap sm:text-[9px] ${toneClasses}`}
         >
           {badge.label}
         </span>
