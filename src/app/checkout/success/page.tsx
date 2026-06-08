@@ -43,8 +43,11 @@ function SuccessInner() {
     let cancelled = false;
     (async () => {
       try {
+        const convexSiteUrl =
+          process.env.NEXT_PUBLIC_CONVEX_SITE_URL ??
+          "https://grandiose-goshawk-617.convex.site";
         const res = await fetch(
-          `https://grandiose-goshawk-617.convex.site/checkout/order?session_id=${encodeURIComponent(
+          `${convexSiteUrl}/checkout/order?session_id=${encodeURIComponent(
             sessionId
           )}`
         );
@@ -190,50 +193,91 @@ function SuccessInner() {
           </div>
         )}
 
-        {/* Upload reports CTA — primary next step */}
-        <div className="mt-8 rounded-2xl border border-indigo-500/40 bg-gradient-to-b from-indigo-500/[0.12] to-[#0F0F12] p-6 shadow-[0_0_60px_-15px_rgba(99,102,241,0.4)] md:p-8">
-          <div className="flex flex-col items-start gap-4 md:flex-row md:items-center">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-indigo-400/40 bg-indigo-500/15 text-indigo-200">
-              <Upload className="h-5 w-5" />
-            </div>
-            <div className="flex-1">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-300">
-                Next step
-              </p>
-              <p className="mt-1 text-base font-semibold text-white md:text-lg">
-                You&rsquo;re one step away from your OrgLens analysis.
-              </p>
-              <p className="mt-1 text-sm text-zinc-300">
-                Upload your team&rsquo;s HUCAMA reports to get started.
-              </p>
-            </div>
-            <Link
-              href="/app/upload"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.7)] transition-colors hover:bg-indigo-400 md:w-auto"
-            >
-              Upload Your Team Reports
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
+        {/* Primary CTA — switches based on product (only after order loads) */}
+        {(() => {
+          const isAdvisory =
+            !loading &&
+            typeof order?.productName === "string" &&
+            (order.productName.includes("Founder Advisory") ||
+              order.productName.includes("Advisory Review"));
 
-        {/* Secondary CTAs */}
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <Link
-            href="/app/intake"
-            className="inline-flex items-center gap-2 rounded-lg border border-indigo-400/50 bg-indigo-500/10 px-5 py-2.5 text-sm font-semibold text-indigo-200 transition-colors hover:bg-indigo-500/20 hover:text-white"
-          >
-            Or start with Intake Form
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-          <Link
-            href="/app/workspace"
-            className="inline-flex items-center gap-2 rounded-lg border border-[#1E1E24] bg-transparent px-5 py-2.5 text-sm font-semibold text-zinc-300 transition-colors hover:bg-[#16161A] hover:text-white"
-          >
-            Go to My Workspace
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
+          if (isAdvisory) {
+            return (
+              <div className="mt-8 rounded-2xl border border-indigo-500/40 bg-gradient-to-b from-indigo-500/[0.12] to-[#0F0F12] p-6 shadow-[0_0_60px_-15px_rgba(99,102,241,0.4)] md:p-8">
+                <div className="flex flex-col items-start gap-4 md:flex-row md:items-center">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-indigo-400/40 bg-indigo-500/15 text-indigo-200">
+                    <ShieldCheck className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-300">
+                      Next step
+                    </p>
+                    <p className="mt-1 text-base font-semibold text-white md:text-lg">
+                      Complete your pre-session intake.
+                    </p>
+                    <p className="mt-1 text-sm text-zinc-300">
+                      Takes 5 minutes. We&rsquo;ll use your answers to prepare a focused, high-value 1:1 session.
+                    </p>
+                  </div>
+                  <Link
+                    href={`/app/intake?session_id=${sessionId ?? ""}`}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.7)] transition-colors hover:bg-indigo-400 md:w-auto"
+                  >
+                    Complete Your Intake Form
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+            );
+          }
+
+          return (
+            <>
+              <div className="mt-8 rounded-2xl border border-indigo-500/40 bg-gradient-to-b from-indigo-500/[0.12] to-[#0F0F12] p-6 shadow-[0_0_60px_-15px_rgba(99,102,241,0.4)] md:p-8">
+                <div className="flex flex-col items-start gap-4 md:flex-row md:items-center">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-indigo-400/40 bg-indigo-500/15 text-indigo-200">
+                    <Upload className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-300">
+                      Next step
+                    </p>
+                    <p className="mt-1 text-base font-semibold text-white md:text-lg">
+                      You&rsquo;re one step away from your OrgLens analysis.
+                    </p>
+                    <p className="mt-1 text-sm text-zinc-300">
+                      Upload your team&rsquo;s HUCAMA reports to get started.
+                    </p>
+                  </div>
+                  <Link
+                    href="/app/upload"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(99,102,241,0.7)] transition-colors hover:bg-indigo-400 md:w-auto"
+                  >
+                    Upload Your Team Reports
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                <Link
+                  href="/app/intake"
+                  className="inline-flex items-center gap-2 rounded-lg border border-indigo-400/50 bg-indigo-500/10 px-5 py-2.5 text-sm font-semibold text-indigo-200 transition-colors hover:bg-indigo-500/20 hover:text-white"
+                >
+                  Or start with Intake Form
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  href="/app/workspace"
+                  className="inline-flex items-center gap-2 rounded-lg border border-[#1E1E24] bg-transparent px-5 py-2.5 text-sm font-semibold text-zinc-300 transition-colors hover:bg-[#16161A] hover:text-white"
+                >
+                  Go to My Workspace
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </>
+          );
+        })()}
 
         {sessionId && (
           <p className="mt-6 text-center font-mono text-[10px] uppercase tracking-widest text-zinc-600">

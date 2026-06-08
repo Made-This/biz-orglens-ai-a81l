@@ -174,6 +174,22 @@ export default defineSchema({
     .index("by_userId", ["userId"])
     .index("by_sessionId", ["sessionId"]),
 
+  // Post-purchase intake for the $999 Founder Advisory Review tier.
+  // Created when a client submits the /app/intake?session_id=... form.
+  advisoryIntakes: defineTable({
+    sessionId: v.string(),
+    companyName: v.string(),
+    role: v.string(),
+    companySize: v.string(),
+    stage: v.string(),
+    primaryChallenge: v.string(),
+    orgStructure: v.optional(v.string()),
+    successOutcome: v.string(),
+    preferredTiming: v.optional(v.string()),
+    additionalNotes: v.optional(v.string()),
+    submittedAt: v.number(),
+  }).index("by_sessionId", ["sessionId"]),
+
   // Contact form submissions from /contact.
   contactSubmissions: defineTable({
     name: v.string(),
