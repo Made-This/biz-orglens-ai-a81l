@@ -1,8 +1,9 @@
-import { mutation, query } from "./_generated/server";
+import { internalMutation, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
-// Mutation: write an advisory intake record to the DB.
-export const create = mutation({
+// Internal mutation: write an advisory intake record to the DB.
+// Called from advisoryIntakesActions.submitAndNotify (Node.js action).
+export const create = internalMutation({
   args: {
     sessionId: v.string(),
     companyName: v.string(),
